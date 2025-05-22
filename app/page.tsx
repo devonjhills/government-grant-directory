@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react"; // Removed useState as it's not used in the current version
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"; // Import from next/navigation for App Router
 import SearchBar from "@/app/components/SearchBar"; // Using alias from tsconfig.json
 import GrantList from "@/app/components/GrantList"; // Using alias from tsconfig.json
 import type { Grant } from "@/types"; // Using alias from tsconfig.json
+import { searchGrants } from "@/app/services/grantsGovService"; // Import the searchGrants function
 
 // Metadata is now handled in a separate file since this is a Client Component
 
@@ -81,7 +83,9 @@ export default function HomePage() {
         setFeaturedGrants(response.grants);
       } catch (err) {
         console.error("Failed to fetch featured grants:", err);
-        setError("Could not load featured grants.");
+        setError("Could not load featured grants. Using mock data instead.");
+        // Use mock data as fallback
+        setFeaturedGrants(mockGrantsData);
       } finally {
         setIsLoading(false);
       }
@@ -106,8 +110,16 @@ export default function HomePage() {
       <SearchBar onSearch={handleSearch} />
 
       <section style={{ marginTop: "30px" }}>
-        <h2>Available Grants</h2>
-        <GrantList grants={mockGrantsData} />
+        <h2>Featured Grants</h2>
+        {isLoading ? (
+          <p>Loading featured grants...</p>
+        ) : error ? (
+          <p style={{ color: "red" }}>{error}</p>
+        ) : featuredGrants.length > 0 ? (
+          <GrantList grants={featuredGrants} />
+        ) : (
+          <GrantList grants={mockGrantsData} />
+        )}
       </section>
     </main>
   );

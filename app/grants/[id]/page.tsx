@@ -3,6 +3,7 @@
 import React from "react";
 import type { Grant } from "@/types";
 import Link from "next/link"; // For "Back to Search" link
+import { getGrantDetails } from "@/app/services/grantsGovService"; // Import the getGrantDetails function
 
 interface GrantDetailPageProps {
   params: { id: string };
@@ -77,10 +78,56 @@ function fetchMockGrantById(id: string): Grant | undefined {
 
 // Metadata is now handled in a separate file since this is a Client Component
 
-export default async function GrantDetailPage({
-  params,
-}: GrantDetailPageProps) {
-  const grant = await getGrantDetails(params.id); // Use real data fetching
+import { useState, useEffect } from "react";
+
+export default function GrantDetailPage({ params }: GrantDetailPageProps) {
+  const [grant, setGrant] = useState<Grant | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true);
+      try {
+        // Try to get real data first
+        const grantData = await getGrantDetails(params.id);
+
+        if (grantData) {
+          setGrant(grantData);
+        } else {
+          // Fall back to mock data if API call fails
+          const mockGrant = fetchMockGrantById(params.id);
+          if (mockGrant) {
+            setGrant(mockGrant);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching grant details:", error);
+        // Try mock data as fallback
+        const mockGrant = fetchMockGrantById(params.id);
+        if (mockGrant) {
+          setGrant(mockGrant);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [params.id]);
+
+  if (isLoading) {
+    return (
+      <main
+        style={{
+          maxWidth: "800px",
+          margin: "20px auto",
+          padding: "20px",
+          textAlign: "center",
+        }}>
+        <p>Loading grant details...</p>
+      </main>
+    );
+  }
 
   if (!grant) {
     return (
