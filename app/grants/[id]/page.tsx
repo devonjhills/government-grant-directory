@@ -77,8 +77,10 @@ function fetchMockGrantById(id: string): Grant | undefined {
 
 // Metadata is now handled in a separate file since this is a Client Component
 
-const GrantDetailPage = ({ params }: GrantDetailPageProps) => {
-  const grant = fetchMockGrantById(params.id);
+export default async function GrantDetailPage({
+  params,
+}: GrantDetailPageProps) {
+  const grant = await getGrantDetails(params.id); // Use real data fetching
 
   if (!grant) {
     return (
@@ -100,10 +102,9 @@ const GrantDetailPage = ({ params }: GrantDetailPageProps) => {
     style: "currency",
     currency: "USD", // Assuming USD, adjust if grant data includes currency
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0, // Show whole dollars for simplicity
+    maximumFractionDigits: 0,
   }).format(grant.amount);
 
-  // Construct JSON-LD data
   const jsonLdData = {
     "@context": "https://schema.org",
     "@type": "GovernmentGrant", // Or "WebPage" if GovernmentGrant is too specific/not fitting
@@ -250,6 +251,4 @@ const GrantDetailPage = ({ params }: GrantDetailPageProps) => {
       </main>
     </React.Fragment>
   );
-};
-
-export default GrantDetailPage;
+}

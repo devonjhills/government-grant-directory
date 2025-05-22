@@ -62,18 +62,35 @@ const mockGrantsData: Grant[] = [
 ];
 
 export default function HomePage() {
-  // For now, the mock grants are directly used.
-  // Later, this could be state managed by useState if grants are fetched/filtered dynamically.
-  // const [grants, setGrants] = useState<Grant[]>(mockGrantsData);
+  const router = useRouter();
+  const [featuredGrants, setFeaturedGrants] = useState<Grant[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        // Fetch a few grants, e.g., 5, with a general keyword or recent status
+        const response = await searchGrants({
+          keyword: "business",
+          rows: 5,
+          oppStatuses: "posted",
+        });
+        setFeaturedGrants(response.grants);
+      } catch (err) {
+        console.error("Failed to fetch featured grants:", err);
+        setError("Could not load featured grants.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchFeatured();
+  }, []); // Empty dependency array to run once on mount
 
   const handleSearch = (searchTerm: string) => {
-    console.log("Search term:", searchTerm);
-    // In a real application, this would trigger a search/filter operation
-    // and potentially update the 'grants' state.
-    // For now, with mock data, it will just log.
-    // Example: if filtering mockGrantsData:
-    // const filteredGrants = mockGrantsData.filter(g => g.title.toLowerCase().includes(searchTerm.toLowerCase()));
-    // setGrants(filteredGrants);
+    router.push(`/grants?q=${encodeURIComponent(searchTerm)}`);
   };
 
   return (

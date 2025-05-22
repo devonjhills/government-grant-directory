@@ -45,10 +45,10 @@ const mockGrantsData: Grant[] = [
   },
 ];
 
-const itemsPerPage = 10; // Example, can be adjusted
+const itemsPerPage = 10; // Number of grants to display per page
 
 export default function GrantsPage() {
-  const [searchResults, setSearchResults] = useState<Grant[]>(mockGrantsData);
+  const [searchResults, setSearchResults] = useState<Grant[]>([]); // Initialize with empty array
   const [currentPage, setCurrentPage] = useState<number>(1);
   // Calculate total pages based on mock data for this example
   const [totalPages, setTotalPages] = useState<number>(
@@ -67,8 +67,7 @@ export default function GrantsPage() {
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    console.log("Page changed to:", pageNumber);
-    // In a real app, you might fetch data for the new page
+    // useEffect will trigger fetchData
   };
 
   // Simple pagination logic for display
