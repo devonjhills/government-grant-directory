@@ -15,6 +15,24 @@ interface GrantCardProps {
 }
 
 const GrantCard: React.FC<GrantCardProps> = ({ grant }) => {
+  // Helper function to check if title is undesirable
+  const isUndesirableTitle = (title: string): boolean => {
+    // Example pattern to detect test or export CSV titles
+    const undesirablePatterns = [
+      /^THUD-ExportCSVFILE-TEST\d{6}$/i,
+      /^TEST\d{6}$/i,
+      /^ExportCSVFILE/i,
+      /test/i,
+    ];
+    return undesirablePatterns.some((pattern) => pattern.test(title));
+  };
+
+  // Replace undesirable title with fallback
+  const displayTitle =
+    grant.title && !isUndesirableTitle(grant.title)
+      ? grant.title
+      : "Untitled Grant";
+
   const descriptionSnippet =
     grant.description && grant.description.length > 150
       ? `${grant.description.substring(0, 150)}...`
@@ -25,7 +43,7 @@ const GrantCard: React.FC<GrantCardProps> = ({ grant }) => {
       {" "}
       {/* Ensure card takes full height of grid cell and content is flexible */}
       <CardHeader>
-        <CardTitle>{grant.title}</CardTitle>
+        <CardTitle>{displayTitle}</CardTitle>
         <CardDescription>Agency: {grant.agency}</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">

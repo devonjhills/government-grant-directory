@@ -112,7 +112,6 @@ export default function GrantsPage() {
         ) : (
           <GrantList grants={paginatedGrants} />
         )}
-        {/* } */}
       </section>
 
       {/* Pagination: Already refactored */}
