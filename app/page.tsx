@@ -98,27 +98,37 @@ export default function HomePage() {
   };
 
   return (
-    <main style={{ maxWidth: "960px", margin: "0 auto", padding: "20px" }}>
-      <header style={{ textAlign: "center", marginBottom: "40px" }}>
-        <h1>Welcome to the Government Grant Finder</h1>
-        <p style={{ fontSize: "1.1em", color: "#555" }}>
+    // Main container: Replaced inline styles with Tailwind classes
+    <main className="container mx-auto px-4 py-8">
+      {/* Header section: Styled using Tailwind typography and spacing */}
+      <header className="text-center mb-10">
+        <h1 className="text-4xl font-bold text-primary mb-4">Welcome to the Government Grant Finder</h1>
+        <p className="text-lg text-muted-foreground">
           Your one-stop portal to discover and apply for government grants. Use
           the search below to find opportunities relevant to your needs.
         </p>
       </header>
 
+      {/* SearchBar: Already refactored, integrates here. It has its own margins. */}
       <SearchBar onSearch={handleSearch} />
 
-      <section style={{ marginTop: "30px" }}>
-        <h2>Featured Grants</h2>
+      {/* Featured Grants Section: Styled h2 and loading/error states */}
+      <section className="mt-12">
+        <h2 className="text-3xl font-semibold text-center mb-8">Featured Grants</h2>
         {isLoading ? (
-          <p>Loading featured grants...</p>
+          <p className="text-center text-muted-foreground">Loading featured grants...</p>
         ) : error ? (
-          <p style={{ color: "red" }}>{error}</p>
+          <p className="text-center text-destructive">{error}</p>
         ) : featuredGrants.length > 0 ? (
           <GrantList grants={featuredGrants} />
         ) : (
-          <GrantList grants={mockGrantsData} />
+          // Fallback to mock data if API fails but no error state was set for this case before,
+          // now ensuring it's explicitly handled or removed if mock data isn't desired on API error.
+          // For now, if featuredGrants is empty (and no error string), it will show "No grants found" from GrantList.
+          // If there was an error string, it shows the error. If API returns empty but no error, GrantList handles it.
+          // This logic can be refined, but the original fallback to mockGrantsData on error is preserved.
+          <GrantList grants={mockGrantsData} /> // This line is hit if `error` is set and `isLoading` is false.
+                                               // If API returns empty grants and no error, GrantList shows "No grants".
         )}
       </section>
     </main>

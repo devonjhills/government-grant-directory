@@ -76,16 +76,39 @@ export default function GrantsPage() {
     currentPage * itemsPerPage
   );
 
+  // Placeholder for applying filters - in a real app, this would trigger API calls
+  const handleApplyFilters = (filters: any) => { // TODO: Use GrantFilters type from FilterControls
+    console.log("Applying filters:", filters);
+    // Example: Fetch new data based on filters and searchTerm
+    // For now, mock data is static so this won't visually change the list.
+  };
+
   return (
-    <main style={{ maxWidth: "960px", margin: "0 auto", padding: "20px" }}>
-      <header style={{ textAlign: "center", marginBottom: "30px" }}>
-        <h1>Grant Search Results</h1>
+    // Main container: Replaced inline styles with Tailwind classes
+    <main className="container mx-auto px-4 py-8">
+      {/* Header section: Styled using Tailwind typography */}
+      <header className="text-center mb-10">
+        <h1 className="text-4xl font-bold text-primary mb-4">Grant Search Results</h1>
       </header>
+
+      {/* SearchBar: Already refactored */}
       <SearchBar onSearch={handleSearch} />
-      <FilterControls /> {/* Placeholder, no props needed yet */}
-      <section style={{ marginTop: "30px" }}>
+
+      {/* FilterControls: Now refactored, pass the onApplyFilters prop */}
+      {/* Consider wrapping SearchBar and FilterControls in a Card or a div for better grouping if desired */}
+      <FilterControls onApplyFilters={handleApplyFilters} />
+
+      {/* Results Section: Styled with Tailwind */}
+      <section className="mt-8">
+        {/* TODO: Add loading/error states here if data fetching is implemented */}
+        {/* For example:
+        {isLoading ? <p className="text-center text-muted-foreground">Loading grants...</p> :
+         error ? <p className="text-center text-destructive">{error}</p> : */}
         <GrantList grants={paginatedGrants} />
+        {/* } */}
       </section>
+
+      {/* Pagination: Already refactored */}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
