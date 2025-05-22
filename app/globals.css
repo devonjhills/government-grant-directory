@@ -1,0 +1,11 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f0f0f0;
+}
+main {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
