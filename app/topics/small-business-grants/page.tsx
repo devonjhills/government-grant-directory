@@ -1,12 +1,21 @@
-import type { Metadata } from 'next';
+"use client"; // Convert to client component
+
+import React, { useState, useEffect } from 'react'; // Import hooks
+import type { Metadata } from 'next'; // Keep Metadata for potential static export if needed, though not primary for client components
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'; // Assuming Card is used for structure
+} from '@/components/ui/card';
+import { searchGrants } from '@/app/services/grantsGovService'; // Import searchGrants
+import GrantList from '@/app/components/GrantList'; // Import GrantList
+import type { Grant } from '@/types'; // Import Grant type
 
+// Metadata can still be exported from client components, but it's often better handled
+// by a layout or a separate metadata.ts if complex/dynamic metadata based on client state is not required.
+// For this task, we'll keep it as is, assuming it's for static aspects.
 export const metadata: Metadata = {
   title: "Small Business Grants | Grant Finder",
   description: "Explore a wide range of grants specifically for small businesses. Find funding for startup, growth, innovation, and more.",
@@ -17,7 +26,7 @@ export const metadata: Metadata = {
     url: "/topics/small-business-grants", // Relative to metadataBase
     images: [
       {
-        url: '/og-image-smb.jpg', // Placeholder image, relative to metadataBase
+        url: '/og-image-grant-listings.png', // New grant listings OG image
         width: 1200,
         height: 630,
         alt: 'Grants for Small Businesses on Grant Finder',
@@ -29,15 +38,78 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Small Business Grants | Grant Finder",
     description: "Find funding for startup, growth, innovation, and more.",
-    images: ['/og-image-smb.jpg'], // Placeholder image
+    images: ['/og-image-grant-listings.png'], // New grant listings OG image
   },
 };
 
 export default function SmallBusinessGrantsPage() {
+  const [grants, setGrants] = useState<Grant[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchGrants = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await searchGrants({
+          keyword: "small business", // Specific keyword for this page
+          oppStatuses: "posted",       // Fetch active grants
+          rows: 6,                     // Fetch a limited number for "featured"
+        });
+        setGrants(response.grants);
+      } catch (err) {
+        console.error("Failed to fetch small business grants:", err);
+        setError("Failed to load grants. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchGrants();
+  }, []); // Empty dependency array means this runs once on mount
+
+  const generateJsonLd = () => {
+    if (!grants || grants.length === 0) {
+      return null;
+    }
+    const itemListElement = grants.map((grant, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "GovernmentGrant", 
+        name: grant.title,
+        description: grant.description ? grant.description.substring(0, 150) + '...' : 'No description available.', // Snippet
+        url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.grantfinder.example.com'}/grants/${grant.id}`, 
+        provider: { // Example of adding provider
+          "@type": "GovernmentOrganization", // Or "Organization"
+          name: grant.agency,
+        }
+      }
+    }));
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Featured Small Business Grants", 
+      description: "A curated list of featured grants relevant to small businesses.",
+      numberOfItems: grants.length,
+      itemListElement: itemListElement,
+    };
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <header className="mb-10 text-center">
-        <h1 className="text-4xl font-bold text-primary mb-4">Grants for Small Businesses</h1>
+    <>
+      {/* JSON-LD Script */}
+      {!isLoading && grants && grants.length > 0 && ( // Render only when grants are available and not loading
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(generateJsonLd()) }}
+        />
+      )}
+      <div className="container mx-auto px-4 py-8">
+        <header className="mb-10 text-center">
+          <h1 className="text-4xl font-bold text-primary mb-4">Grants for Small Businesses</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           Navigating the world of grants can be challenging, but we're here to help.
           Discover a variety of funding opportunities designed to support small businesses
@@ -54,17 +126,17 @@ export default function SmallBusinessGrantsPage() {
         </CardHeader>
         <CardContent>
           {/* 
-            Placeholder for GrantList. 
-            To implement GrantList here, this page would need to become a client component 
-            or use Server Components with async data fetching for GrantList.
-            For now, a placeholder message is used as per subtask instructions.
-          */}
-          <div className="text-center py-10 bg-muted/20 rounded-lg">
-            <p className="text-muted-foreground">
-              Content and dynamic grant listings for this topic will be implemented soon.
-              Check back for updates on featured grants tailored for small businesses!
-            </p>
-          </div>
+            {isLoading ? (
+              <p className="text-center text-muted-foreground py-10">Loading grants...</p>
+            ) : error ? (
+              <p className="text-center text-destructive py-10">{error}</p>
+            ) : grants.length > 0 ? (
+              <GrantList grants={grants} />
+            ) : (
+              <p className="text-center text-muted-foreground py-10">
+                No featured grants for small businesses found at this time.
+              </p>
+            )}
         </CardContent>
       </Card>
 

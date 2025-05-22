@@ -46,7 +46,7 @@ export async function generateMetadata(
       url: ogUrl, 
       images: [
         {
-          url: '/og-image-grant-detail.jpg', // Placeholder image, relative to metadataBase
+          url: '/og-image-grant-specific.png', // New grant specific OG image
           width: 1200,
           height: 630,
           alt: `Details for ${grant.title}`,
@@ -58,7 +58,7 @@ export async function generateMetadata(
       card: 'summary_large_image',
       title: grant.title,
       description: descriptionSnippet,
-      images: ['/og-image-grant-detail.jpg'], // Placeholder image
+      images: ['/og-image-grant-specific.png'], // New grant specific OG image
     },
   };
 }
