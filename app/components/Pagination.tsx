@@ -7,12 +7,13 @@ interface PaginationProps {
 }
 
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+  // Basic button styling is now in globals.css, so inline styles for buttons can be removed if they match.
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0' }}>
+    <div className="pagination"> {/* Replaced inline styles with className */}
       <button 
         onClick={() => onPageChange(currentPage - 1)} 
         disabled={currentPage === 1}
-        style={{ padding: '8px 16px', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer' }}
+        // style removed, will be covered by globals.css button styling
       >
         Previous
       </button>
@@ -22,7 +23,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
       <button 
         onClick={() => onPageChange(currentPage + 1)} 
         disabled={currentPage === totalPages}
-        style={{ padding: '8px 16px', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer' }}
+        // style removed, will be covered by globals.css button styling
       >
         Next
       </button>

@@ -1,9 +1,15 @@
-import React from 'react'; // Removed useState as it's not used in the current version
-import type { Metadata } from 'next'; // Import Metadata type
-import SearchBar from '@/app/components/SearchBar'; // Using alias from tsconfig.json
-import GrantList from '@/app/components/GrantList';   // Using alias from tsconfig.json
-import type { Grant } from '@/types';              // Using alias from tsconfig.json
+"use client"; // Add "use client" directive
 
+import React, { useState, useEffect } from 'react'; // Import useEffect, useState
+import type { Metadata } from 'next';
+import { useRouter } from 'next/navigation'; // Import useRouter
+import SearchBar from '@/app/components/SearchBar';
+import GrantList from '@/app/components/GrantList';
+import type { Grant } from '@/types'; // Corrected path if types is at root
+import { searchGrants } from '@/app/services/grantsGovService'; // Import searchGrants
+
+// Static metadata can remain as it's suitable for a client component rendering
+// primarily static shell content with dynamic data sections.
 export const metadata: Metadata = {
   title: 'Search Government Grants', // Will use template: "Search Government Grants | Grant Finder"
   description: 'Find and explore a wide directory of government grants for small businesses and non-profits. Start your search today!',
@@ -16,67 +22,32 @@ export const metadata: Metadata = {
   }
 };
 
-const mockGrantsData: Grant[] = [
-  {
-    id: "mock1",
-    title: "Mock Grant Title 1 for Small Businesses",
-    agency: "Mock Agency of Funding (MAF)",
-    description: "This is a detailed mock description for the first grant. It's designed to help small businesses innovate and grow within the mock state. The funds can be used for research, development, and operational improvements.",
-    eligibilityCriteria: "Eligible for registered small businesses in the mock state with fewer than 50 employees.",
-    deadline: "2024-12-31",
-    amount: 50000,
-    linkToApply: "#apply-mock1",
-    sourceAPI: "MockSourceDB",
-    opportunityNumber: "MOCK-OPP-001",
-    opportunityStatus: "posted",
-    postedDate: "2024-01-01",
-    categories: ["mock", "business", "innovation"]
-  },
-  {
-    id: "mock2",
-    title: "Mock Grant for Educational Non-Profits",
-    agency: "Another Mock Agency (AMA)",
-    description: "The second mock grant description is aimed at showcasing the list component with multiple entries. This grant supports non-profit organizations focusing on enhancing mock educational programs for underserved communities.",
-    eligibilityCriteria: "Non-profit organizations with a focus on mock education. Must have 501(c)(3) status.",
-    deadline: "2025-01-15",
-    amount: 75000,
-    linkToApply: "#apply-mock2",
-    sourceAPI: "MockSourceDB",
-    opportunityNumber: "MOCK-OPP-002",
-    opportunityStatus: "forecasted",
-    postedDate: "2024-02-01",
-    categories: ["mock", "education", "non-profit"]
-  },
-  {
-    id: "mock3",
-    title: "Community Health Initiative Grant",
-    agency: "Community Wellness Foundation (CWF)",
-    description: "This grant aims to fund projects that improve community health outcomes, focusing on preventative care and health education. Pilot programs and innovative approaches are encouraged.",
-    eligibilityCriteria: "Local government entities, non-profits, and community groups.",
-    deadline: "2024-11-30",
-    amount: 120000,
-    linkToApply: "#apply-mock3",
-    sourceAPI: "MockSourceDB",
-    opportunityNumber: "MOCK-OPP-003",
-    opportunityStatus: "posted",
-    postedDate: "2024-03-15",
-    categories: ["mock", "health", "community"]
-  }
-];
-
 export default function HomePage() {
-  // For now, the mock grants are directly used.
-  // Later, this could be state managed by useState if grants are fetched/filtered dynamically.
-  // const [grants, setGrants] = useState<Grant[]>(mockGrantsData);
+  const router = useRouter();
+  const [featuredGrants, setFeaturedGrants] = useState<Grant[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        // Fetch a few grants, e.g., 5, with a general keyword or recent status
+        const response = await searchGrants({ keyword: "business", rows: 5, oppStatuses: "posted" });
+        setFeaturedGrants(response.grants);
+      } catch (err) {
+        console.error("Failed to fetch featured grants:", err);
+        setError("Could not load featured grants.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchFeatured();
+  }, []); // Empty dependency array to run once on mount
 
   const handleSearch = (searchTerm: string) => {
-    console.log("Search term:", searchTerm);
-    // In a real application, this would trigger a search/filter operation
-    // and potentially update the 'grants' state.
-    // For now, with mock data, it will just log.
-    // Example: if filtering mockGrantsData:
-    // const filteredGrants = mockGrantsData.filter(g => g.title.toLowerCase().includes(searchTerm.toLowerCase()));
-    // setGrants(filteredGrants);
+    router.push(`/grants?q=${encodeURIComponent(searchTerm)}`);
   };
 
   return (
@@ -92,8 +63,16 @@ export default function HomePage() {
       <SearchBar onSearch={handleSearch} />
       
       <section style={{ marginTop: '30px' }}>
-        <h2>Available Grants</h2>
-        <GrantList grants={mockGrantsData} />
+        <h2>Featured Grants</h2>
+        {isLoading ? (
+          <p>Loading featured grants...</p>
+        ) : error ? (
+          <p style={{ color: 'red' }}>Error: {error}</p>
+        ) : featuredGrants.length === 0 ? (
+          <p>No featured grants available at the moment.</p>
+        ) : (
+          <GrantList grants={featuredGrants} />
+        )}
       </section>
     </main>
   );
