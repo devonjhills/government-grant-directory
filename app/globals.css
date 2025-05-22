@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Reset some default styles */
 body, h1, h2, h3, h4, p, ul, ol, li, figure, figcaption, blockquote, dl, dd {
   margin: 0;
@@ -7,9 +11,9 @@ body, h1, h2, h3, h4, p, ul, ol, li, figure, figcaption, blockquote, dl, dd {
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   line-height: 1.6;
-  color: #333;
-  background-color: #f4f7f6;
-  padding: 20px;
+  /* color: #333; */ /* Will be overridden by Shadcn/UI variables */
+  /* background-color: #f4f7f6; */ /* Will be overridden by Shadcn/UI variables */
+  padding: 20px; /* This might be something to review later if it conflicts with full-page layouts */
 }
 
 .container { /* Optional: A class for centering content */
@@ -31,7 +35,7 @@ header h1 {
 }
 
 main {
-  background-color: #ffffff;
+  background-color: #ffffff; /* This might be overridden or complemented by Shadcn/UI card styles */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -39,7 +43,7 @@ main {
 
 h1, h2, h3, h4 {
   margin-bottom: 0.75em;
-  color: #2c3e50; /* Darker text for headings */
+  /* color: #2c3e50; */ /* Will be overridden by Shadcn/UI variables */
 }
 
 p {
@@ -47,7 +51,7 @@ p {
 }
 
 a {
-  color: #007bff; /* Standard link blue */
+  /* color: #007bff; */ /* Consider using Shadcn/UI primary color for links */
   text-decoration: none;
 }
 
@@ -57,8 +61,8 @@ a:hover {
 
 /* Basic Button Styling */
 button, input[type="submit"] {
-  background-color: #007bff;
-  color: white;
+  /* background-color: #007bff; */ /* Will be handled by Shadcn/UI button component */
+  /* color: white; */
   border: none;
   padding: 10px 15px;
   border-radius: 5px;
@@ -68,18 +72,18 @@ button, input[type="submit"] {
 }
 
 button:hover, input[type="submit"]:hover {
-  background-color: #0056b3;
+  /* background-color: #0056b3; */
 }
 
 button:disabled, input[type="submit"]:disabled {
-  background-color: #cccccc;
+  /* background-color: #cccccc; */
   cursor: not-allowed;
 }
 
 /* Basic Form Input Styling */
 input[type="text"], input[type="search"], textarea {
   padding: 10px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */ /* Will be handled by Shadcn/UI input component */
   border-radius: 5px;
   font-size: 1rem;
   width: calc(100% - 22px); /* Full width minus padding and border */
@@ -88,7 +92,7 @@ input[type="text"], input[type="search"], textarea {
 
 /* Grant Card Basic Styling */
 .grant-card {
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e0e0e0; /* Consider using Shadcn/UI card styles */
   padding: 15px;
   margin-bottom: 15px;
   border-radius: 5px;
@@ -114,4 +118,78 @@ input[type="text"], input[type="search"], textarea {
 
 .pagination span {
   margin: 0 10px;
+}
+
+/* Shadcn/UI CSS Variables and Base Styles */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 215 20.2% 65.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

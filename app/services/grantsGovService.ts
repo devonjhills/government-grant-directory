@@ -1,4 +1,5 @@
 import type { Grant, GrantsGovResponse, GrantsGovGrant } from "../../types";
+import sanitizeHtmlLib from 'sanitize-html';
 
 // Use our own API routes instead of directly calling the external API
 const API_BASE_URL = "/api/grants";
@@ -72,6 +73,15 @@ export async function searchGrants(searchParams: {
   }
 }
 
+// Utility function to sanitize HTML content
+function sanitizeHtmlContent(htmlString: string): string {
+  if (!htmlString) return "";
+  return sanitizeHtmlLib(htmlString, {
+    allowedTags: [], // No tags allowed
+    allowedAttributes: {} // No attributes allowed
+  });
+}
+
 // Private helper function to map fetched opportunity details to our Grant interface
 // Note: The exact structure of detailData needs to be confirmed from fetchOpportunity API documentation
 function _mapFetchedOpportunityToGrant(detailData: any): Grant {
@@ -94,7 +104,7 @@ function _mapFetchedOpportunityToGrant(detailData: any): Grant {
       "N/A", // Ensure ID is a string
     title: detailData.opportunityTitle || synopsis.opportunityTitle || "N/A",
     agency: synopsis.agencyName || detailData.owningAgencyCode || "N/A",
-    description: synopsis.synopsisDesc || "No detailed description available.", // Clean HTML if necessary
+    description: sanitizeHtmlContent(synopsis.synopsisDesc || "No detailed description available."),
     eligibilityCriteria: eligibility,
     deadline:
       synopsis.responseDateDesc ||

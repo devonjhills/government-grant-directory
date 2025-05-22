@@ -1,13 +1,83 @@
-"use client";
-
-import React from "react";
+import type { Metadata, ResolvingMetadata } from 'next'; // Import Metadata types
 import type { Grant } from "@/types";
-import Link from "next/link"; // For "Back to Search" link
-import { getGrantDetails } from "@/app/services/grantsGovService"; // Import the getGrantDetails function
+// Note: `getGrantDetails` is imported below for the client component, 
+// but for generateMetadata, we might need a separate server-side fetcher or use the mock.
+// For this task, `fetchMockGrantById` will be used in `generateMetadata` as it's already defined.
 
+// Moved and enhanced generateMetadata function:
 interface GrantDetailPageProps {
   params: { id: string };
 }
+
+// This function needs to be defined BEFORE the default export of the page component.
+// Also, this `fetchMockGrantById` needs to be accessible here or redefined.
+// For simplicity, let's assume detailedMockGrants is accessible here or passed.
+// The `detailedMockGrants` array is already defined below in the file.
+// The `fetchMockGrantById` function is also already defined below in the file.
+
+export async function generateMetadata(
+  { params }: GrantDetailPageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const grant = fetchMockGrantById(params.id); // Uses the mock fetcher defined in this file
+
+  if (!grant) {
+    return {
+      title: "Grant Not Found",
+      description: "The grant you are looking for could not be found.",
+    };
+  }
+
+  const descriptionSnippet = grant.description ? grant.description.substring(0, 160) + '...' : 'No description available.';
+  const keywords = grant.categories ? [...grant.categories, grant.agency, 'government grant', params.id] : [grant.agency, 'government grant', params.id];
+
+  // Assuming metadataBase is set in app/layout.tsx (e.g., https://www.grantfinder.example.com)
+  // The URL for Open Graph should be absolute.
+  const ogUrl = `/grants/${grant.id}`; // metadataBase will prepend the domain
+
+  return {
+    title: grant.title, // Next.js will automatically use the template from layout.tsx
+    description: descriptionSnippet,
+    keywords: keywords,
+    openGraph: {
+      title: grant.title, // Can be more specific if needed, e.g., `${grant.title} | Grant Details`
+      description: descriptionSnippet,
+      type: 'article',
+      url: ogUrl, 
+      images: [
+        {
+          url: '/og-image-grant-detail.jpg', // Placeholder image, relative to metadataBase
+          width: 1200,
+          height: 630,
+          alt: `Details for ${grant.title}`,
+        },
+      ],
+      siteName: (await parent).openGraph?.siteName || 'Grant Finder', // Inherit siteName
+    },
+    twitter: { // Optional: Add Twitter specific card
+      card: 'summary_large_image',
+      title: grant.title,
+      description: descriptionSnippet,
+      images: ['/og-image-grant-detail.jpg'], // Placeholder image
+    },
+  };
+}
+
+"use client";
+
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { getGrantDetails } from "@/app/services/grantsGovService";
+import { Button } from "@/components/ui/button"; // Shadcn Button
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"; // Shadcn Card
+import { ArrowLeft } from 'lucide-react'; // Icon for back button
 
 // Mock data and fetch function (assuming it's here or imported)
 const detailedMockGrants: Grant[] = [
@@ -71,14 +141,13 @@ const detailedMockGrants: Grant[] = [
   },
 ];
 
-// This function can be used by both generateMetadata and the page component
 function fetchMockGrantById(id: string): Grant | undefined {
   return detailedMockGrants.find((grant) => grant.id === id);
 }
 
-// Metadata is now handled in a separate file since this is a Client Component
-
-import { useState, useEffect } from "react";
+interface GrantDetailPageProps {
+  params: { id: string };
+}
 
 export default function GrantDetailPage({ params }: GrantDetailPageProps) {
   const [grant, setGrant] = useState<Grant | null>(null);
@@ -88,78 +157,60 @@ export default function GrantDetailPage({ params }: GrantDetailPageProps) {
     async function fetchData() {
       setIsLoading(true);
       try {
-        // Try to get real data first
         const grantData = await getGrantDetails(params.id);
-
         if (grantData) {
           setGrant(grantData);
         } else {
-          // Fall back to mock data if API call fails
           const mockGrant = fetchMockGrantById(params.id);
-          if (mockGrant) {
-            setGrant(mockGrant);
-          }
+          if (mockGrant) setGrant(mockGrant);
         }
       } catch (error) {
         console.error("Error fetching grant details:", error);
-        // Try mock data as fallback
         const mockGrant = fetchMockGrantById(params.id);
-        if (mockGrant) {
-          setGrant(mockGrant);
-        }
+        if (mockGrant) setGrant(mockGrant);
       } finally {
         setIsLoading(false);
       }
     }
-
     fetchData();
   }, [params.id]);
 
   if (isLoading) {
     return (
-      <main
-        style={{
-          maxWidth: "800px",
-          margin: "20px auto",
-          padding: "20px",
-          textAlign: "center",
-        }}>
-        <p>Loading grant details...</p>
+      <main className="container mx-auto px-4 py-8 text-center">
+        <p className="text-muted-foreground">Loading grant details...</p>
       </main>
     );
   }
 
   if (!grant) {
     return (
-      <main
-        style={{
-          maxWidth: "800px",
-          margin: "20px auto",
-          padding: "20px",
-          textAlign: "center",
-        }}>
-        <p>Grant not found.</p>
-        <Link href="/grants">Back to Search Results</Link>
+      <main className="container mx-auto px-4 py-8 text-center">
+        <p className="text-destructive mb-4">Grant not found.</p>
+        <Link href="/grants" passHref>
+          <Button variant="outline">
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Search
+          </Button>
+        </Link>
       </main>
     );
   }
 
-  // Simple currency formatting
   const formattedAmount = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD", // Assuming USD, adjust if grant data includes currency
+    currency: "USD",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(grant.amount);
 
   const jsonLdData = {
     "@context": "https://schema.org",
-    "@type": "GovernmentGrant", // Or "WebPage" if GovernmentGrant is too specific/not fitting
+    "@type": "GovernmentGrant",
     name: grant.title,
     description: grant.description,
-    url: `https://www.grantfinder.example.com/grants/${grant.id}`, // Placeholder domain
+    url: typeof window !== 'undefined' ? window.location.href : `/grants/${grant.id}`, // Use actual URL if available
     provider: {
-      "@type": "GovernmentOrganization", // Or "Organization"
+      "@type": "GovernmentOrganization",
       name: grant.agency,
     },
     datePosted: grant.postedDate,
@@ -167,135 +218,71 @@ export default function GrantDetailPage({ params }: GrantDetailPageProps) {
     grantAmount: {
       "@type": "MonetaryAmount",
       value: grant.amount,
-      currency: "USD", // Assuming USD
+      currency: "USD",
     },
     eligibility: grant.eligibilityCriteria,
     keywords: grant.categories.join(", "),
   };
 
   return (
-    <React.Fragment>
+    <> {/* React.Fragment is not needed if you have a single root element like <main> */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }}
       />
-      <main
-        style={{
-          maxWidth: "800px",
-          margin: "20px auto",
-          padding: "20px",
-          border: "1px solid #eee",
-          borderRadius: "8px",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-        }}>
-        <header
-          style={{
-            marginBottom: "30px",
-            borderBottom: "1px solid #eee",
-            paddingBottom: "20px",
-          }}>
-          <h1 style={{ fontSize: "2.5em", marginBottom: "0.5em" }}>
-            {grant.title}
-          </h1>
-          <p style={{ fontSize: "1.1em", color: "#555" }}>
-            <strong>Agency:</strong> {grant.agency}
-          </p>
-          <p style={{ fontSize: "1em", color: "#555" }}>
-            <strong>Opportunity Number:</strong> {grant.opportunityNumber}
-          </p>
-          <p style={{ fontSize: "1em", color: "#555" }}>
-            <strong>Status:</strong> {grant.opportunityStatus}
-          </p>
-        </header>
-
-        <section style={{ marginBottom: "30px" }}>
-          <h2
-            style={{
-              fontSize: "1.8em",
-              borderBottom: "1px solid #eee",
-              paddingBottom: "10px",
-              marginBottom: "15px",
-            }}>
-            Grant Overview
-          </h2>
-          <p style={{ lineHeight: "1.7" }}>{grant.description}</p>
-        </section>
-
-        <section style={{ marginBottom: "30px" }}>
-          <h2
-            style={{
-              fontSize: "1.8em",
-              borderBottom: "1px solid #eee",
-              paddingBottom: "10px",
-              marginBottom: "15px",
-            }}>
-            Eligibility
-          </h2>
-          <p style={{ lineHeight: "1.7" }}>{grant.eligibilityCriteria}</p>
-        </section>
-
-        <section
-          style={{
-            marginBottom: "30px",
-            background: "#f9f9f9",
-            padding: "20px",
-            borderRadius: "8px",
-          }}>
-          <h2
-            style={{
-              fontSize: "1.8em",
-              marginTop: 0,
-              borderBottom: "1px solid #eee",
-              paddingBottom: "10px",
-              marginBottom: "15px",
-            }}>
-            Key Information
-          </h2>
-          <p>
-            <strong>Deadline:</strong> {grant.deadline}
-          </p>
-          <p>
-            <strong>Posted Date:</strong> {grant.postedDate}
-          </p>
-          <p>
-            <strong>Funding Amount:</strong> {formattedAmount}
-          </p>
-          <p>
-            <strong>Categories:</strong> {grant.categories.join(", ")}
-          </p>
-          <p>
-            <strong>Data Source:</strong> {grant.sourceAPI}
-          </p>
-        </section>
-
-        <section
-          style={{
-            textAlign: "center",
-            marginTop: "40px",
-            marginBottom: "20px",
-          }}>
-          <a
-            href={grant.linkToApply}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "inline-block",
-              padding: "12px 25px",
-              backgroundColor: "#0070f3",
-              color: "white",
-              textDecoration: "none",
-              borderRadius: "5px",
-              fontSize: "1.2em",
-              fontWeight: "bold",
-            }}>
-            Apply Here
-          </a>
-        </section>
-
-        <div style={{ marginTop: "30px", textAlign: "center" }}>
-          <Link href="/grants">&larr; Back to Search Results</Link>
+      <main className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Link href="/grants" passHref>
+            <Button variant="outline" size="sm">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Search Results
+            </Button>
+          </Link>
         </div>
+
+        <Card className="w-full">
+          <CardHeader className="border-b">
+            <CardTitle className="text-3xl font-bold mb-2">{grant.title}</CardTitle>
+            <CardDescription className="text-lg text-muted-foreground">
+              <strong>Agency:</strong> {grant.agency}
+            </CardDescription>
+            <div className="text-sm text-muted-foreground space-y-1 pt-2">
+              <p><strong>Opportunity Number:</strong> {grant.opportunityNumber}</p>
+              <p><strong>Status:</strong> <span className={`font-semibold ${grant.opportunityStatus === 'posted' ? 'text-green-600' : 'text-yellow-600'}`}>{grant.opportunityStatus}</span></p>
+            </div>
+          </CardHeader>
+
+          <CardContent className="pt-6">
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold mb-3 border-b pb-2">Grant Overview</h2>
+              <p className="text-base leading-relaxed whitespace-pre-line">{grant.description}</p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold mb-3 border-b pb-2">Eligibility</h2>
+              <p className="text-base leading-relaxed whitespace-pre-line">{grant.eligibilityCriteria}</p>
+            </section>
+
+            <section className="bg-muted/50 p-6 rounded-lg">
+              <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Key Information</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-base">
+                <p><strong>Deadline:</strong> <span className="font-medium">{grant.deadline}</span></p>
+                <p><strong>Posted Date:</strong> <span className="font-medium">{grant.postedDate}</span></p>
+                <p><strong>Funding Amount:</strong> <span className="font-medium text-green-700">{formattedAmount}</span></p>
+                <p className="md:col-span-2"><strong>Categories:</strong> {grant.categories.join(", ")}</p>
+                <p><strong>Data Source:</strong> {grant.sourceAPI}</p>
+              </div>
+            </section>
+          </CardContent>
+
+          <CardFooter className="border-t pt-6 flex justify-center">
+            <Button asChild size="lg">
+              <a href={grant.linkToApply} target="_blank" rel="noopener noreferrer">
+                Apply Here
+              </a>
+            </Button>
+          </CardFooter>
+        </Card>
       </main>
-    </React.Fragment>
+    </>
   );
 }

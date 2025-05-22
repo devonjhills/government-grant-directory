@@ -1,47 +1,31 @@
-"use client";
+"use client"; // Keep this if it uses client-side hooks like useState
 
-import React, { useState, FormEvent } from "react";
+import React, { useState } from 'react';
+import { Input } from '@/components/ui/input'; // Verify path
+import { Button } from '@/components/ui/button'; // Verify path
 
 interface SearchBarProps {
   onSearch: (searchTerm: string) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     onSearch(searchTerm);
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
-      <input
+    <form onSubmit={handleSubmit} className="flex w-full max-w-2xl items-center space-x-2 mx-auto my-8"> {/* Increased max-w and added margin */}
+      <Input
         type="text"
-        placeholder="Enter search keyword..."
+        placeholder="Enter keyword (e.g., research, education, non-profit)" // Updated placeholder
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        style={{
-          padding: "8px",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          flexGrow: 1,
-        }}
+        className="flex-1" // Input takes available space
       />
-      <button
-        type="submit"
-        style={{
-          padding: "8px 16px",
-          border: "none",
-          backgroundColor: "#0070f3",
-          color: "white",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}>
-        Search
-      </button>
+      <Button type="submit">Search Grants</Button> {/* More specific button text */}
     </form>
   );
 };
