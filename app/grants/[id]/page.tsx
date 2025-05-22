@@ -1,4 +1,74 @@
-"use client";
+import type { Metadata, ResolvingMetadata } from "next"; // Import Metadata types
+import type { Grant } from "@/types";
+// Note: `getGrantDetails` is imported below for the client component,
+// but for generateMetadata, we might need a separate server-side fetcher or use the mock.
+// For this task, `fetchMockGrantById` will be used in `generateMetadata` as it's already defined.
+
+// Moved and enhanced generateMetadata function:
+interface GrantDetailPageProps {
+  params: { id: string };
+}
+
+// This function needs to be defined BEFORE the default export of the page component.
+// Also, this `fetchMockGrantById` needs to be accessible here or redefined.
+// For simplicity, let's assume detailedMockGrants is accessible here or passed.
+// The `detailedMockGrants` array is already defined below in the file.
+// The `fetchMockGrantById` function is also already defined below in the file.
+
+export async function generateMetadata(
+  { params }: GrantDetailPageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const grant = fetchMockGrantById(params.id); // Uses the mock fetcher defined in this file
+
+  if (!grant) {
+    return {
+      title: "Grant Not Found",
+      description: "The grant you are looking for could not be found.",
+    };
+  }
+
+  const descriptionSnippet = grant.description
+    ? grant.description.substring(0, 160) + "..."
+    : "No description available.";
+  const keywords = grant.categories
+    ? [...grant.categories, grant.agency, "government grant", params.id]
+    : [grant.agency, "government grant", params.id];
+
+  // Assuming metadataBase is set in app/layout.tsx (e.g., https://www.grantfinder.example.com)
+  // The URL for Open Graph should be absolute.
+  const ogUrl = `/grants/${grant.id}`; // metadataBase will prepend the domain
+
+  return {
+    title: grant.title, // Next.js will automatically use the template from layout.tsx
+    description: descriptionSnippet,
+    keywords: keywords,
+    openGraph: {
+      title: grant.title, // Can be more specific if needed, e.g., `${grant.title} | Grant Details`
+      description: descriptionSnippet,
+      type: "article",
+      url: ogUrl,
+      images: [
+        {
+          url: "/og-image-grant-specific.png", // New grant specific OG image
+          width: 1200,
+          height: 630,
+          alt: `Details for ${grant.title}`,
+        },
+      ],
+      siteName: (await parent).openGraph?.siteName || "Grant Finder", // Inherit siteName
+    },
+    twitter: {
+      // Optional: Add Twitter specific card
+      card: "summary_large_image",
+      title: grant.title,
+      description: descriptionSnippet,
+      images: ["/og-image-grant-specific.png"], // New grant specific OG image
+    },
+  };
+}
+
+("use client");
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";

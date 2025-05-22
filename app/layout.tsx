@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     siteName: "Grant Finder",
     images: [
       {
-        url: "/og-image-default.jpg", // Placeholder for a general site OG image
+        url: "/og-image-main-site.png", // New main site OG image
         width: 1200,
         height: 630,
         alt: "Grant Finder - Funding Opportunities",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     title: "Government Grant Finder - Your Source for Funding Opportunities",
     description:
       "Explore comprehensive listings of government grants to support your projects and initiatives.",
-    images: ["/og-image-default.jpg"], // Placeholder for a general site OG image
+    images: ["/og-image-main-site.png"], // New main site OG image
   },
 };
 
