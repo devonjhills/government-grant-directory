@@ -12,8 +12,8 @@ const GrantCard: React.FC<GrantCardProps> = ({ grant }) => {
     : grant.description;
 
   return (
-    <div style={{ border: '1px solid #ccc', padding: '16px', marginBottom: '16px', borderRadius: '8px' }}>
-      <h3 style={{ marginTop: 0 }}>{grant.title}</h3>
+    <div className="grant-card"> {/* Replaced inline styles with className */}
+      <h3>{grant.title}</h3> {/* Removed inline style for h3, will be covered by globals.css or specific .grant-card h3 rules */}
       <p><strong>Agency:</strong> {grant.agency}</p>
       <p><strong>Deadline:</strong> {grant.deadline}</p>
       <p>{descriptionSnippet}</p>

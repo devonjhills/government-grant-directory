@@ -1,68 +1,18 @@
 import React from 'react';
-import type { Metadata } from 'next'; // Import Metadata type
+import type { Metadata } from 'next';
 import type { Grant } from '@/types';
-import Link from 'next/link'; // For "Back to Search" link
+import Link from 'next/link';
+import { getGrantDetails } from '@/app/services/grantsGovService'; // Import getGrantDetails
 
 interface GrantDetailPageProps {
   params: { id: string };
 }
 
-// Mock data and fetch function (assuming it's here or imported)
-const detailedMockGrants: Grant[] = [
-  {
-    id: "srch-mock1", // Should match an ID from a list item
-    title: "Search Result Grant Alpha - Detailed View",
-    agency: "Search Results Agency (SRA) - Department of Mock Initiatives",
-    description: "This is the full, detailed description for Search Result Grant Alpha. It elaborates on the project's goals to foster innovation in renewable energy through comprehensive research grants. We are looking for proposals that outline clear methodologies, potential impacts, and a strong team. Successful applicants will contribute to a greener future.",
-    eligibilityCriteria: "Eligible applicants include accredited universities, non-profit research institutions, and private sector companies with a proven track record in renewable energy research. Joint proposals are welcome. Applicants must be based in the mock country.",
-    deadline: "2024-10-31",
-    amount: 150000,
-    linkToApply: "https://www.example.com/apply/srch-mock1",
-    sourceAPI: "MockSearchResultsDB",
-    opportunityNumber: "SRCH-MOCK-OPP-00A-DETAILED",
-    opportunityStatus: "posted",
-    postedDate: "2024-03-01",
-    categories: ["mock", "search", "energy", "research", "sustainability"]
-  },
-  {
-    id: "srch-mock2", // Should match an ID from a list item
-    title: "Search Result Grant Beta - In-Depth Information",
-    agency: "Search Results Agency (SRA) - Urban Development Office",
-    description: "Grant Beta provides funding for community-led projects aimed at revitalizing urban areas. This detailed description outlines the types of projects we fund, including public space improvements, community center development, and local economic initiatives. We prioritize projects with strong community engagement and measurable outcomes.",
-    eligibilityCriteria: "Eligible entities are non-profit community organizations with at least 3 years of operation, local government bodies, and community development corporations. Must serve designated urban renewal zones.",
-    deadline: "2024-11-15",
-    amount: 90000,
-    linkToApply: "https://www.example.com/apply/srch-mock2",
-    sourceAPI: "MockSearchResultsDB",
-    opportunityNumber: "SRCH-MOCK-OPP-00B-DETAILED",
-    opportunityStatus: "posted",
-    postedDate: "2024-03-05",
-    categories: ["mock", "search", "community", "urban", "development", "non-profit"]
-  },
-  {
-    id: "mock-detail-only",
-    title: "Special Grant - Not in General Search",
-    agency: "Secret Mock Agency (SMA)",
-    description: "This is a special grant available only via direct link for testing purposes. It focuses on advanced theoretical mock physics.",
-    eligibilityCriteria: "Post-doctoral researchers with a PhD in mock physics.",
-    deadline: "2025-03-01",
-    amount: 250000,
-    linkToApply: "https://www.example.com/apply/mock-detail-only",
-    sourceAPI: "MockSecretDB",
-    opportunityNumber: "SECRET-MOCK-OPP-00X",
-    opportunityStatus: "forecasted",
-    postedDate: "2024-04-01",
-    categories: ["mock", "secret", "physics", "research"]
-  }
-];
-
-// This function can be used by both generateMetadata and the page component
-function fetchMockGrantById(id: string): Grant | undefined {
-  return detailedMockGrants.find(grant => grant.id === id);
-}
+// Base URL for constructing absolute URLs for SEO
+const BASE_URL = "https://www.grantfinder.example.com"; // Replace with actual domain in production
 
 export async function generateMetadata({ params }: GrantDetailPageProps): Promise<Metadata> {
-  const grant = fetchMockGrantById(params.id);
+  const grant = await getGrantDetails(params.id); // Use real data fetching
 
   if (!grant) {
     return {
@@ -71,25 +21,25 @@ export async function generateMetadata({ params }: GrantDetailPageProps): Promis
     };
   }
 
-  const descriptionSnippet = grant.description.substring(0, 160);
+  const descriptionSnippet = grant.description.substring(0, 160); // Ensure description is not too long
   const keywords = [...grant.categories, grant.agency, 'government grant', params.id];
 
   return {
-    title: grant.title, // Uses template from layout.tsx: `${grant.title} | Grant Finder`
+    title: grant.title, // Uses template from layout.tsx
     description: descriptionSnippet,
     keywords: keywords,
     openGraph: {
       title: grant.title,
       description: descriptionSnippet,
       type: 'article',
-      url: `/grants/${grant.id}`, // In a real app, this should be an absolute URL
-      // images: [ { url: 'some-image-url.jpg' } ] // Optional: add an image for social sharing
+      url: `${BASE_URL}/grants/${grant.id}`, // Absolute URL
+      // images: [ { url: 'some-image-url.jpg' } ] // Optional
     },
   };
 }
 
-const GrantDetailPage = ({ params }: GrantDetailPageProps) => {
-  const grant = fetchMockGrantById(params.id);
+export default async function GrantDetailPage({ params }: GrantDetailPageProps) {
+  const grant = await getGrantDetails(params.id); // Use real data fetching
 
   if (!grant) {
     return (
@@ -102,27 +52,25 @@ const GrantDetailPage = ({ params }: GrantDetailPageProps) => {
     );
   }
 
-  // Simple currency formatting
   const formattedAmount = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD', // Assuming USD, adjust if grant data includes currency
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0, // Show whole dollars for simplicity
+    maximumFractionDigits: 0,
   }).format(grant.amount);
 
-  // Construct JSON-LD data
   const jsonLdData = {
     "@context": "https://schema.org",
-    "@type": "GovernmentGrant", // Or "WebPage" if GovernmentGrant is too specific/not fitting
+    "@type": "GovernmentGrant",
     "name": grant.title,
     "description": grant.description,
-    "url": `https://www.grantfinder.example.com/grants/${grant.id}`, // Placeholder domain
+    "url": `${BASE_URL}/grants/${grant.id}`, // Absolute URL
     "provider": {
-      "@type": "GovernmentOrganization", // Or "Organization"
+      "@type": "GovernmentOrganization",
       "name": grant.agency
     },
-    "datePosted": grant.postedDate,
-    "applicationDeadline": grant.deadline,
+    "datePosted": grant.postedDate, // Ensure these are ISO 8601 format
+    "applicationDeadline": grant.deadline, // Ensure these are ISO 8601 format
     "grantAmount": {
       "@type": "MonetaryAmount",
       "value": grant.amount,
@@ -133,7 +81,7 @@ const GrantDetailPage = ({ params }: GrantDetailPageProps) => {
   };
 
   return (
-    <> {/* Using a Fragment to include the script tag alongside the main content */}
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }}
@@ -142,56 +90,55 @@ const GrantDetailPage = ({ params }: GrantDetailPageProps) => {
         <header style={{ marginBottom: '30px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
           <h1 style={{ fontSize: '2.5em', marginBottom: '0.5em' }}>{grant.title}</h1>
           <p style={{ fontSize: '1.1em', color: '#555' }}><strong>Agency:</strong> {grant.agency}</p>
-        <p style={{ fontSize: '1em', color: '#555' }}><strong>Opportunity Number:</strong> {grant.opportunityNumber}</p>
-        <p style={{ fontSize: '1em', color: '#555' }}><strong>Status:</strong> {grant.opportunityStatus}</p>
-      </header>
+          <p style={{ fontSize: '1em', color: '#555' }}><strong>Opportunity Number:</strong> {grant.opportunityNumber}</p>
+          <p style={{ fontSize: '1em', color: '#555' }}><strong>Status:</strong> {grant.opportunityStatus}</p>
+        </header>
 
-      <section style={{ marginBottom: '30px' }}>
-        <h2 style={{ fontSize: '1.8em', borderBottom: '1px solid #eee', paddingBottom: '10px', marginBottom: '15px' }}>Grant Overview</h2>
-        <p style={{ lineHeight: '1.7' }}>{grant.description}</p>
-      </section>
+        <section style={{ marginBottom: '30px' }}>
+          <h2 style={{ fontSize: '1.8em', borderBottom: '1px solid #eee', paddingBottom: '10px', marginBottom: '15px' }}>Grant Overview</h2>
+          <p style={{ lineHeight: '1.7' }}>{grant.description}</p>
+        </section>
 
-      <section style={{ marginBottom: '30px' }}>
-        <h2 style={{ fontSize: '1.8em', borderBottom: '1px solid #eee', paddingBottom: '10px', marginBottom: '15px' }}>Eligibility</h2>
-        <p style={{ lineHeight: '1.7' }}>{grant.eligibilityCriteria}</p>
-      </section>
+        <section style={{ marginBottom: '30px' }}>
+          <h2 style={{ fontSize: '1.8em', borderBottom: '1px solid #eee', paddingBottom: '10px', marginBottom: '15px' }}>Eligibility</h2>
+          <p style={{ lineHeight: '1.7' }}>{grant.eligibilityCriteria}</p>
+        </section>
 
-      <section style={{ marginBottom: '30px', background: '#f9f9f9', padding: '20px', borderRadius: '8px' }}>
-        <h2 style={{ fontSize: '1.8em', marginTop: 0, borderBottom: '1px solid #eee', paddingBottom: '10px', marginBottom: '15px' }}>Key Information</h2>
-        <p><strong>Deadline:</strong> {grant.deadline}</p>
-        <p><strong>Posted Date:</strong> {grant.postedDate}</p>
-        <p><strong>Funding Amount:</strong> {formattedAmount}</p>
-        <p><strong>Categories:</strong> {grant.categories.join(', ')}</p>
-        <p><strong>Data Source:</strong> {grant.sourceAPI}</p>
-      </section>
+        <section style={{ marginBottom: '30px', background: '#f9f9f9', padding: '20px', borderRadius: '8px' }}>
+          <h2 style={{ fontSize: '1.8em', marginTop: 0, borderBottom: '1px solid #eee', paddingBottom: '10px', marginBottom: '15px' }}>Key Information</h2>
+          <p><strong>Deadline:</strong> {grant.deadline}</p>
+          <p><strong>Posted Date:</strong> {grant.postedDate}</p>
+          <p><strong>Funding Amount:</strong> {formattedAmount}</p>
+          <p><strong>Categories:</strong> {grant.categories.join(', ')}</p>
+          <p><strong>Data Source:</strong> {grant.sourceAPI}</p>
+        </section>
 
-      <section style={{ textAlign: 'center', marginTop: '40px', marginBottom: '20px' }}>
-        <a 
-          href={grant.linkToApply} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          style={{ 
-            display: 'inline-block', 
-            padding: '12px 25px', 
-            backgroundColor: '#0070f3', 
-            color: 'white', 
-            textDecoration: 'none', 
-            borderRadius: '5px', 
-            fontSize: '1.2em',
-            fontWeight: 'bold'
-          }}
-        >
-          Apply Here
-        </a>
-      </section>
+        <section style={{ textAlign: 'center', marginTop: '40px', marginBottom: '20px' }}>
+          <a 
+            href={grant.linkToApply} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ 
+              display: 'inline-block', 
+              padding: '12px 25px', 
+              backgroundColor: '#0070f3', 
+              color: 'white', 
+              textDecoration: 'none', 
+              borderRadius: '5px', 
+              fontSize: '1.2em',
+              fontWeight: 'bold'
+            }}
+          >
+            Apply Here
+          </a>
+        </section>
 
-      <div style={{ marginTop: '30px', textAlign: 'center' }}>
-        <Link href="/grants">
-          &larr; Back to Search Results
-        </Link>
-      </div>
-    </main>
+        <div style={{ marginTop: '30px', textAlign: 'center' }}>
+          <Link href="/grants">
+            &larr; Back to Search Results
+          </Link>
+        </div>
+      </main>
+    </>
   );
-};
-
-export default GrantDetailPage;
+}
