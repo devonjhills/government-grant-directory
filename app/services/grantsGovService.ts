@@ -102,6 +102,32 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
     categories = ["N/A"];
   }
 
+  // Amount parsing
+  let parsedAmount = 0; // Default to 0
+  const ceilingStr = synopsis?.awardCeiling?.toString();
+  if (ceilingStr) {
+    const cleanedCeilingStr = ceilingStr.replace(/,/g, ''); // Remove commas
+    const num = parseInt(cleanedCeilingStr, 10);
+    if (!isNaN(num)) {
+      parsedAmount = num;
+    }
+  }
+
+  // LinkToApply generation
+  let applyLink = 'https://www.grants.gov'; // Default fallback if no valid ID
+  const oppId = grantData?.opportunityId?.toString();
+
+  // Check if a direct link is provided in synopsis (based on old mapping, though new sample didn't show it for details page)
+  // If synopsis.link is a field that can appear in fetchOpportunity details, prioritize it.
+  // For now, assuming it's not typically there for the main apply/view link based on the latest 'fetchOpportunity' sample.
+  // If it were:
+  // if (synopsis?.link) {
+  //   applyLink = synopsis.link;
+  // } else 
+  if (oppId && oppId.toLowerCase() !== 'n/a' && oppId.toLowerCase() !== 'undefined') {
+    applyLink = `https://www.grants.gov/search-results-detail/${oppId}`;
+  }
+
   return {
     id: grantData?.opportunityId?.toString() || "N/A",
     title: grantData?.opportunityTitle || "N/A",
@@ -109,9 +135,8 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
     description: sanitizeHtmlContent(synopsis?.synopsisDesc || "No detailed description available."),
     eligibilityCriteria: eligibilityCriteria,
     deadline: synopsis?.closeDate || synopsis?.responseDateDesc || "N/A", // Prioritize closeDate as per sample
-    amount: synopsis?.awardCeiling ? parseInt(synopsis.awardCeiling, 10) : 0,
-    // Assuming no direct synopsis.link for now, using constructed URL
-    linkToApply: `https://www.grants.gov/search-results-detail/${grantData?.opportunityId}`,
+    amount: parsedAmount,
+    linkToApply: applyLink,
     sourceAPI: "Grants.gov",
     opportunityNumber: grantData?.opportunityNumber || "N/A",
     opportunityStatus: grantData?.opportunityCategory?.description || "N/A",
