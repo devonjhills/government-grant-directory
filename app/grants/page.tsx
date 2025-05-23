@@ -1,3 +1,4 @@
+import type { Metadata, ResolvingMetadata } from 'next';
 import GrantsPageClient from "./GrantsPageClient";
 import { searchGrants } from "@/app/services/grantsGovService"; // Using alias
 import type { Grant } from "@/types"; // Using alias
@@ -25,6 +26,7 @@ export async function generateMetadata(
       url: `/grants${searchTerm ? `?q=${encodeURIComponent(searchTerm)}` : ''}`,
       description: `Search results for ${searchTerm || 'all available grants'}.`,
     },
+    // Twitter card can also be customized or inherited
   };
 }
 

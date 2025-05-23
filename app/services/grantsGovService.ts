@@ -6,24 +6,20 @@ const API_BASE_URL = "/api/grants";
 
 // Private helper function to map Grants.gov oppHit to our Grant interface
 function _mapOppHitToGrant(apiGrant: GrantsGovGrant): Grant {
-  const categories = (apiGrant.keywords && apiGrant.keywords.length > 0) 
-    ? apiGrant.keywords 
-    : (apiGrant.cfdaNumbers || []);
-
   return {
-    id: apiGrant.opportunityId,
-    title: apiGrant.opportunityTitle,
+    id: apiGrant.id,
+    title: apiGrant.title,
     agency: apiGrant.agencyName,
-    description: sanitizeHtmlContent(apiGrant.description || `Synopsis for ${apiGrant.opportunityTitle}. More details available.`),
-    eligibilityCriteria: apiGrant.eligibleApplicants?.join(", ") || "Varies; see full announcement.",
+    description: `Synopsis for ${apiGrant.title}. More details available.`,
+    eligibilityCriteria: "Varies; see full announcement.",
     deadline: apiGrant.closeDate || "N/A",
-    amount: apiGrant.awardCeiling ? parseInt(apiGrant.awardCeiling, 10) : 0,
-    linkToApply: apiGrant.link || `https://www.grants.gov/search-results-detail/${apiGrant.opportunityId}`,
+    amount: 0, 
+    linkToApply: `https://www.grants.gov/search-results-detail/${apiGrant.id}`,
     sourceAPI: "Grants.gov",
-    opportunityNumber: apiGrant.opportunityNumber,
-    opportunityStatus: apiGrant.oppStatus || "N/A",
-    postedDate: apiGrant.postDate || "N/A",
-    categories: categories,
+    opportunityNumber: apiGrant.number,
+    opportunityStatus: apiGrant.oppStatus,
+    postedDate: apiGrant.openDate || "N/A",
+    categories: apiGrant.alnist || [],
   };
 }
 
@@ -87,38 +83,38 @@ function sanitizeHtmlContent(htmlString: string): string {
 }
 
 // Private helper function to map fetched opportunity details to our Grant interface
-function _mapFetchedOpportunityToGrant(detailData: any): Grant {
-  // detailData is assumed to be the `data` object from the API response,
-  // as prepared by getGrantDetails (apiResponse.data || apiResponse)
-  const grantData = detailData; 
-  const synopsisData = grantData?.synopsis;
+function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
+  const grantData = apiDetailResponse?.data;
+  const synopsis = grantData?.synopsis;
 
-  const eligibilityCriteria = Array.isArray(synopsisData?.eligibleApplicants)
-    ? synopsisData.eligibleApplicants.join(", ")
-    : "Not specified";
-
-  let categories: string[] = ["N/A"];
-  if (Array.isArray(synopsisData?.keywords) && synopsisData.keywords.length > 0) {
-    categories = synopsisData.keywords;
-  } else if (grantData?.fundingInstrumentType?.[0]?.description) {
-    categories = [grantData.fundingInstrumentType[0].description];
-  }
+  // If !grantData, it implies an issue with the API response structure or an error code.
+  // getGrantDetails should ideally handle cases where grantData is not present based on error codes.
+  // For now, we proceed assuming grantData might be null/undefined and rely on optional chaining and defaults.
   
-  const opportunityStatus = grantData?.opportunityCategory?.description || synopsisData?.instrumentType || "N/A";
+  const eligibilityCriteria = 
+    synopsis?.applicantTypes?.map((at: any) => at.description).join(", ") || "Not specified";
+
+  const fundingActivityCategories = synopsis?.fundingActivityCategories?.map((fc: any) => fc.description) || [];
+  const fundingInstruments = synopsis?.fundingInstruments?.map((fi: any) => fi.description) || [];
+  let categories = [...fundingActivityCategories, ...fundingInstruments];
+  if (categories.length === 0) {
+    categories = ["N/A"];
+  }
 
   return {
     id: grantData?.opportunityId?.toString() || "N/A",
     title: grantData?.opportunityTitle || "N/A",
-    agency: grantData?.owningAgencyName || synopsisData?.agencyName || "N/A",
-    description: sanitizeHtmlContent(synopsisData?.description || "No detailed description available."),
+    agency: synopsis?.agencyName || grantData?.owningAgencyCode || "N/A",
+    description: sanitizeHtmlContent(synopsis?.synopsisDesc || "No detailed description available."),
     eligibilityCriteria: eligibilityCriteria,
-    deadline: synopsisData?.closeDate || "N/A",
-    amount: synopsisData?.awardCeiling ? parseInt(synopsisData.awardCeiling, 10) : 0,
-    linkToApply: synopsisData?.link || `https://www.grants.gov/search-results-detail/${grantData?.opportunityId}`,
-    sourceAPI: "Grants.gov", // This field is constant for this service
+    deadline: synopsis?.closeDate || synopsis?.responseDateDesc || "N/A", // Prioritize closeDate as per sample
+    amount: synopsis?.awardCeiling ? parseInt(synopsis.awardCeiling, 10) : 0,
+    // Assuming no direct synopsis.link for now, using constructed URL
+    linkToApply: `https://www.grants.gov/search-results-detail/${grantData?.opportunityId}`,
+    sourceAPI: "Grants.gov",
     opportunityNumber: grantData?.opportunityNumber || "N/A",
-    opportunityStatus: opportunityStatus,
-    postedDate: synopsisData?.postDate || "N/A",
+    opportunityStatus: grantData?.opportunityCategory?.description || "N/A",
+    postedDate: synopsis?.postingDate || "N/A",
     categories: categories,
   };
 }
@@ -133,7 +129,7 @@ export async function getGrantDetails(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ opportunityId: opportunityId }), // Ensure this is the correct ID format
+      body: JSON.stringify({ opportunityId: opportunityId }), 
     });
 
     if (!response.ok) {
@@ -148,21 +144,18 @@ export async function getGrantDetails(
       );
     }
 
-    const apiResponse = await response.json(); // Assuming this also has a structure like { data: {...} } or similar
+    const apiResponse = await response.json(); 
 
-    // The actual structure of apiResponse.data for fetchOpportunity needs to be known.
-    // For now, assuming apiResponse directly contains the grant details or apiResponse.data does.
-    // If fetchOpportunity returns an array or a different structure, this needs adjustment.
-    if (apiResponse && (apiResponse.data || apiResponse.opportunityId)) {
-      // Check if there's data
-      const grantData = apiResponse.data || apiResponse; // Adjust based on actual response
-      return _mapFetchedOpportunityToGrant(grantData);
+    // Check specifically for the 'data' object within the apiResponse
+    if (apiResponse && apiResponse.data) {
+      return _mapFetchedOpportunityToGrant(apiResponse); // Pass the whole response
     } else {
-      console.warn(`No data found for opportunity ID: ${opportunityId}`);
+      // Handle cases where apiResponse.data is not present, or if there's an error code in apiResponse
+      console.warn(`No data found or error in API response for opportunity ID: ${opportunityId}`, apiResponse);
       return null;
     }
   } catch (error) {
     console.error(`Error in getGrantDetails for ID ${opportunityId}:`, error);
-    return null; // Return null on error
+    return null; 
   }
 }
