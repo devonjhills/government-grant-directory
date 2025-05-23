@@ -46,8 +46,8 @@ export const metadata: Metadata = {
   },
 };
 
-import Header from "@/components/Header"; // Adjust path if needed
-import Footer from "@/components/Footer"; // Adjust path if needed
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 
 export default function RootLayout({
   children,

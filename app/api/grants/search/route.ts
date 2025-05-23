@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const STAGING_API_URL = "https://api.staging.grants.gov/v1/api";
+const STAGING_API_URL = "https://api.grants.gov/v1/api";
 
 export async function POST(request: Request) {
   try {
