@@ -6,20 +6,24 @@ const API_BASE_URL = "/api/grants";
 
 // Private helper function to map Grants.gov oppHit to our Grant interface
 function _mapOppHitToGrant(apiGrant: GrantsGovGrant): Grant {
+  const categories = (apiGrant.keywords && apiGrant.keywords.length > 0) 
+    ? apiGrant.keywords 
+    : (apiGrant.cfdaNumbers || []);
+
   return {
-    id: apiGrant.id,
-    title: apiGrant.title,
+    id: apiGrant.opportunityId,
+    title: apiGrant.opportunityTitle,
     agency: apiGrant.agencyName,
-    description: `Synopsis for ${apiGrant.title}. More details available.`, // search2 has no description field
-    eligibilityCriteria: "Varies; see full announcement.", // search2 has no direct eligibility field
-    deadline: apiGrant.closeDate || "N/A", // Use closeDate from oppHits
-    amount: 0, // search2 does not provide amount, default to 0 or fetch in details
-    linkToApply: `https://www.grants.gov/search-results-detail/${apiGrant.id}`,
+    description: sanitizeHtmlContent(apiGrant.description || `Synopsis for ${apiGrant.opportunityTitle}. More details available.`),
+    eligibilityCriteria: apiGrant.eligibleApplicants?.join(", ") || "Varies; see full announcement.",
+    deadline: apiGrant.closeDate || "N/A",
+    amount: apiGrant.awardCeiling ? parseInt(apiGrant.awardCeiling, 10) : 0,
+    linkToApply: apiGrant.link || `https://www.grants.gov/search-results-detail/${apiGrant.opportunityId}`,
     sourceAPI: "Grants.gov",
-    opportunityNumber: apiGrant.number,
-    opportunityStatus: apiGrant.oppStatus,
-    postedDate: apiGrant.openDate || "N/A", // Use openDate from oppHits
-    categories: apiGrant.alnist || [], // Assuming alnist can serve as categories for search results
+    opportunityNumber: apiGrant.opportunityNumber,
+    opportunityStatus: apiGrant.oppStatus || "N/A",
+    postedDate: apiGrant.postDate || "N/A",
+    categories: categories,
   };
 }
 
@@ -77,52 +81,45 @@ export async function searchGrants(searchParams: {
 function sanitizeHtmlContent(htmlString: string): string {
   if (!htmlString) return "";
   return sanitizeHtmlLib(htmlString, {
-    allowedTags: [], // No tags allowed
+    allowedTags: ['p', 'ul', 'ol', 'li', 'strong', 'em', 'br'], 
     allowedAttributes: {} // No attributes allowed
   });
 }
 
 // Private helper function to map fetched opportunity details to our Grant interface
-// Note: The exact structure of detailData needs to be confirmed from fetchOpportunity API documentation
 function _mapFetchedOpportunityToGrant(detailData: any): Grant {
-  // Assuming detailData is the 'data' object from fetchOpportunity response
-  // This mapping is speculative and needs to be verified with actual API response structure
-  const synopsis = detailData.synopsis || {};
-  const eligibility =
-    synopsis.applicantTypes?.map((at: any) => at.description).join(", ") ||
-    "Not specified";
-  const categories = [
-    ...(synopsis.fundingInstruments?.map((fi: any) => fi.description) || []),
-    ...(synopsis.fundingActivityCategories?.map((fc: any) => fc.description) ||
-      []),
-  ];
+  // detailData is assumed to be the `data` object from the API response,
+  // as prepared by getGrantDetails (apiResponse.data || apiResponse)
+  const grantData = detailData; 
+  const synopsisData = grantData?.synopsis;
+
+  const eligibilityCriteria = Array.isArray(synopsisData?.eligibleApplicants)
+    ? synopsisData.eligibleApplicants.join(", ")
+    : "Not specified";
+
+  let categories: string[] = ["N/A"];
+  if (Array.isArray(synopsisData?.keywords) && synopsisData.keywords.length > 0) {
+    categories = synopsisData.keywords;
+  } else if (grantData?.fundingInstrumentType?.[0]?.description) {
+    categories = [grantData.fundingInstrumentType[0].description];
+  }
+  
+  const opportunityStatus = grantData?.opportunityCategory?.description || synopsisData?.instrumentType || "N/A";
 
   return {
-    id:
-      detailData.opportunityId?.toString() ||
-      detailData.id?.toString() ||
-      "N/A", // Ensure ID is a string
-    title: detailData.opportunityTitle || synopsis.opportunityTitle || "N/A",
-    agency: synopsis.agencyName || detailData.owningAgencyCode || "N/A",
-    description: sanitizeHtmlContent(synopsis.synopsisDesc || "No detailed description available."),
-    eligibilityCriteria: eligibility,
-    deadline:
-      synopsis.responseDateDesc ||
-      synopsis.estResponseDate ||
-      detailData.closeDate ||
-      "N/A",
-    amount: synopsis.awardCeiling
-      ? parseInt(synopsis.awardCeiling, 10)
-      : detailData.awardAmount || 0,
-    linkToApply: `https://www.grants.gov/search-results-detail/${
-      detailData.opportunityId || detailData.id
-    }`,
-    sourceAPI: "Grants.gov",
-    opportunityNumber: detailData.opportunityNumber || "N/A",
-    opportunityStatus:
-      detailData.opportunityStatus || synopsis.opportunityStatus || "N/A",
-    postedDate: synopsis.postingDate || detailData.postDate || "N/A",
-    categories: categories.length > 0 ? categories : ["N/A"],
+    id: grantData?.opportunityId?.toString() || "N/A",
+    title: grantData?.opportunityTitle || "N/A",
+    agency: grantData?.owningAgencyName || synopsisData?.agencyName || "N/A",
+    description: sanitizeHtmlContent(synopsisData?.description || "No detailed description available."),
+    eligibilityCriteria: eligibilityCriteria,
+    deadline: synopsisData?.closeDate || "N/A",
+    amount: synopsisData?.awardCeiling ? parseInt(synopsisData.awardCeiling, 10) : 0,
+    linkToApply: synopsisData?.link || `https://www.grants.gov/search-results-detail/${grantData?.opportunityId}`,
+    sourceAPI: "Grants.gov", // This field is constant for this service
+    opportunityNumber: grantData?.opportunityNumber || "N/A",
+    opportunityStatus: opportunityStatus,
+    postedDate: synopsisData?.postDate || "N/A",
+    categories: categories,
   };
 }
 
