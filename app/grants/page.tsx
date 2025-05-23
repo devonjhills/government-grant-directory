@@ -1,125 +1,97 @@
-"use client";
+import type { Metadata, ResolvingMetadata } from 'next';
+import GrantsPageClient from "./GrantsPageClient";
+import { searchGrants } from "@/app/services/grantsGovService"; // Using alias
+import type { Grant } from "@/types"; // Using alias
 
-import React, { useState } from "react";
-import SearchBar from "@/app/components/SearchBar";
-import FilterControls from "@/app/components/FilterControls";
-import GrantList from "@/app/components/GrantList";
-import Pagination from "@/app/components/Pagination";
-import type { Grant } from "@/types";
+const ITEMS_PER_PAGE = 10;
 
-// Metadata is now handled in a separate file since this is a Client Component
+export async function generateMetadata(
+  { searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const searchTerm = searchParams?.q?.toString() || '';
+  const parentMetadata = await parent; // Get metadata from parent (layout)
 
-// Remove mock data
+  let pageTitle = 'Search Grants';
+  if (searchTerm) {
+    pageTitle = `Search Results for "${searchTerm}"`;
+  }
 
-const itemsPerPage = 10; // Number of grants to display per page
+  return {
+    title: pageTitle, // This will use the template from layout e.g., "Search Results for "X" | Grant Finder"
+    description: `Find and filter grants. Search results for ${searchTerm || 'all available grants'}.`,
+    openGraph: {
+      ...parentMetadata.openGraph, // Inherit OpenGraph from layout
+      title: `${pageTitle} | Grant Finder`, // Explicitly set full OG title
+      url: `/grants${searchTerm ? `?q=${encodeURIComponent(searchTerm)}` : ''}`,
+      description: `Search results for ${searchTerm || 'all available grants'}.`,
+    },
+    // Twitter card can also be customized or inherited
+  };
+}
 
-export default function GrantsPage() {
-  const [searchResults, setSearchResults] = useState<Grant[]>([]); // Initialize with empty array
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+export default async function GrantsPage({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
+  const searchTerm = searchParams?.q?.toString() || "";
+  const currentPage = parseInt(searchParams?.page?.toString() || "1", 10);
+  
+  // Extract other filter params - example for oppStatuses
+  // In a real app, you'd extract all relevant filter keys you expect
+  const oppStatuses = searchParams?.oppStatuses?.toString() || undefined; 
+  // Add other filter extractions here, e.g., agency, eligibility, etc.
+  // For simplicity, we'll make a basic filter object for now
+  const otherFilterParams: any = {};
+  if (oppStatuses) {
+    otherFilterParams.oppStatuses = oppStatuses;
+  }
+  // ... add more filters to otherFilterParams as they are defined and extracted
 
-  const handleSearch = async (searchTerm: string) => {
-    setIsLoading(true);
-    setError(null);
+  const searchPayload: any = {
+    keyword: searchTerm,
+    rows: ITEMS_PER_PAGE,
+    startRecordNum: (currentPage - 1) * ITEMS_PER_PAGE,
+    ...otherFilterParams, // Spread the extracted filter parameters
+  };
+
+  let grants: Grant[] = [];
+  let totalPages = 1;
+  let pageError: string | null = null;
+
+  // Only fetch if there's a search term or active filters
+  // Modify this condition if you want to load initial grants even without search/filters
+  const hasSearchParams = searchTerm || Object.keys(otherFilterParams).length > 0;
+
+  if (hasSearchParams) {
     try {
-      const response = await fetch("/api/grants/search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ keyword: searchTerm }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch grants");
+      const response = await searchGrants(searchPayload);
+      grants = response.grants || []; // Ensure grants is always an array
+      totalPages = Math.ceil((response.totalRecords || 0) / ITEMS_PER_PAGE);
+      if (totalPages === 0 && grants.length === 0 && searchTerm) { // No results for a specific search
+        pageError = `No grants found for "${searchTerm}". Try a different search.`;
       }
-
-      const data = await response.json();
-      setSearchResults(data.grants);
-      setTotalPages(Math.ceil(data.totalRecords / itemsPerPage));
-      setCurrentPage(1);
     } catch (err) {
-      setError("Failed to fetch grants. Please try again later.");
-    } finally {
-      setIsLoading(false);
+      console.error("Failed to fetch grants for server page:", err);
+      pageError = "Could not load grants due to a server error. Please try again later.";
+      grants = []; // Ensure grants is empty on error
+      totalPages = 1; // Reset total pages on error
     }
-  };
+  } else {
+    // Optional: Could set a message like "Please enter a search term or apply filters to see grants."
+    // For now, it will just render with empty grants if no search params.
+  }
 
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-    // useEffect will trigger fetchData
-  };
-
-  // Simple pagination logic for display
-  const paginatedGrants = searchResults.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  // Placeholder for applying filters - in a real app, this would trigger API calls
-  const handleApplyFilters = async (filters: any) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch("/api/grants/search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(filters),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch grants");
-      }
-
-      const data = await response.json();
-      setSearchResults(data.grants);
-      setTotalPages(Math.ceil(data.totalRecords / itemsPerPage));
-      setCurrentPage(1);
-    } catch (err) {
-      setError("Failed to fetch grants. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
-    // Main container: Replaced inline styles with Tailwind classes
-    <main className="container mx-auto px-4 py-8">
-      {/* Header section: Styled using Tailwind typography */}
-      <header className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-primary mb-4">
-          Grant Search Results
-        </h1>
-      </header>
-
-      {/* SearchBar: Already refactored */}
-      <SearchBar onSearch={handleSearch} />
-
-      {/* FilterControls: Now refactored, pass the onApplyFilters prop */}
-      {/* Consider wrapping SearchBar and FilterControls in a Card or a div for better grouping if desired */}
-      <FilterControls onApplyFilters={handleApplyFilters} />
-
-      {/* Results Section: Styled with Tailwind */}
-      <section className="mt-8">
-        {isLoading ? (
-          <p className="text-center text-muted-foreground">Loading grants...</p>
-        ) : error ? (
-          <p className="text-center text-destructive">{error}</p>
-        ) : (
-          <GrantList grants={paginatedGrants} />
-        )}
-      </section>
-
-      {/* Pagination: Already refactored */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-    </main>
+    <GrantsPageClient
+      initialGrants={grants}
+      initialTotalPages={totalPages}
+      initialCurrentPage={currentPage}
+      initialSearchTerm={searchTerm}
+      initialFilters={otherFilterParams} // Pass the extracted filters
+      error={pageError}
+    />
   );
 }

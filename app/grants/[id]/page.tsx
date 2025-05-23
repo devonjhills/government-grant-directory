@@ -1,6 +1,6 @@
 import type { Metadata, ResolvingMetadata } from "next"; // Import Metadata types
 import type { Grant } from "@/types";
-import { fetchMockGrantById } from "./metadata";
+import { getGrantDetails } from "@/app/services/grantsGovService"; // Updated import
 import GrantDetailClient from "./GrantDetailClient";
 
 interface GrantDetailPageProps {
@@ -11,7 +11,7 @@ export async function generateMetadata(
   { params }: GrantDetailPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const grant = fetchMockGrantById(params.id); // Uses the mock fetcher defined in this file
+  const grant = await getGrantDetails(params.id); // Uses the actual service
 
   if (!grant) {
     return {

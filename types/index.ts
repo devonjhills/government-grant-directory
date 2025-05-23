@@ -15,22 +15,22 @@ export interface Grant {
 }
 
 export interface GrantsGovGrant {
-  id: string; // Matches 'id' from oppHits
-  number: string; // Matches 'number' (opportunity number) from oppHits
-  title: string; // Matches 'title' from oppHits
-  agencyCode: string; // Matches 'agencyCode' from oppHits
-  agencyName: string; // Matches 'agencyName' from oppHits
-  openDate: string | null; // Matches 'openDate' from oppHits
-  closeDate: string | null; // Matches 'closeDate' from oppHits (was 'dueDate' previously)
-  oppStatus: string; // Matches 'oppStatus' from oppHits
-  docType: string; // Matches 'docType' from oppHits
-  alnist: string[]; // Matches 'alnist' (Array of ALN strings) from oppHits, assuming it's an array of strings.
-  // Removed fields not directly in search2 oppHits:
-  // description (will be minimal, fetched by getGrantDetails)
-  // eligibilityCodes (not directly in oppHits, detailed in full record)
-  // awardAmount (not in oppHits)
-  // postDate (use openDate)
-  // opportunityCategory (not directly in oppHits)
+  opportunityId: string; 
+  opportunityNumber: string; 
+  opportunityTitle: string; 
+  agencyName: string; 
+  postDate: string | null; 
+  closeDate: string | null; 
+  oppStatus?: string; 
+  cfdaNumbers: string[]; 
+  description?: string;
+  awardCeiling?: string; 
+  eligibleApplicants?: string[];
+  link?: string;
+  keywords?: string[];
+  fundingInstrumentType?: string;
+  opportunityCategory?: string;
+  // Removed agencyCode and docType as per instructions
 }
 
 export interface GrantsGovResponseData {
