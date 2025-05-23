@@ -1,6 +1,13 @@
+import type { Metadata } from 'next';
 import HomePageClient from "./HomePageClient";
 import { searchGrants } from "@/app/services/grantsGovService"; // Corrected alias path
 import type { Grant } from "@/types"; // Using alias
+
+export const metadata: Metadata = {
+  title: 'Find Government Grants | Grant Finder',
+  description: 'Your central hub for discovering government grants. Search and find funding opportunities for your projects.',
+  // OpenGraph and Twitter cards will be inherited from app/layout.tsx or can be overridden here.
+};
 
 // Mock data for grants - kept here for fallback as per instructions
 const mockGrantsData: Grant[] = [

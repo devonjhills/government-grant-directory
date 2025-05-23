@@ -4,6 +4,30 @@ import type { Grant } from "@/types"; // Using alias
 
 const ITEMS_PER_PAGE = 10;
 
+export async function generateMetadata(
+  { searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const searchTerm = searchParams?.q?.toString() || '';
+  const parentMetadata = await parent; // Get metadata from parent (layout)
+
+  let pageTitle = 'Search Grants';
+  if (searchTerm) {
+    pageTitle = `Search Results for "${searchTerm}"`;
+  }
+
+  return {
+    title: pageTitle, // This will use the template from layout e.g., "Search Results for "X" | Grant Finder"
+    description: `Find and filter grants. Search results for ${searchTerm || 'all available grants'}.`,
+    openGraph: {
+      ...parentMetadata.openGraph, // Inherit OpenGraph from layout
+      title: `${pageTitle} | Grant Finder`, // Explicitly set full OG title
+      url: `/grants${searchTerm ? `?q=${encodeURIComponent(searchTerm)}` : ''}`,
+      description: `Search results for ${searchTerm || 'all available grants'}.`,
+    },
+  };
+}
+
 export default async function GrantsPage({
   searchParams,
 }: {
