@@ -15,22 +15,16 @@ export interface Grant {
 }
 
 export interface GrantsGovGrant {
-  opportunityId: string; 
-  opportunityNumber: string; 
-  opportunityTitle: string; 
-  agencyName: string; 
-  postDate: string | null; 
-  closeDate: string | null; 
-  oppStatus?: string; 
-  cfdaNumbers: string[]; 
-  description?: string;
-  awardCeiling?: string; 
-  eligibleApplicants?: string[];
-  link?: string;
-  keywords?: string[];
-  fundingInstrumentType?: string;
-  opportunityCategory?: string;
-  // Removed agencyCode and docType as per instructions
+  id: string; // e.g., "219999"
+  number: string; // e.g., "TEST-ABC-20231011-OPP1"
+  title: string;
+  agencyCode: string;
+  agencyName: string;
+  openDate: string | null; // e.g., "10/11/2023"
+  closeDate: string | null;
+  oppStatus: string; // e.g., "posted"
+  docType: string; // e.g., "synopsis"
+  alnist: string[]; // e.g., ["93.223"]
 }
 
 export interface GrantsGovResponseData {
