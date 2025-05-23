@@ -114,18 +114,15 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
   }
 
   // LinkToApply generation
-  let applyLink = 'https://www.grants.gov'; // Default fallback if no valid ID
+  let applyLink = 'https://www.grants.gov'; // Default fallback
+  const directLinkFromApi = synopsis?.link; // From fetchOpportunity sample: data.synopsis.link
   const oppId = grantData?.opportunityId?.toString();
 
-  // Check if a direct link is provided in synopsis (based on old mapping, though new sample didn't show it for details page)
-  // If synopsis.link is a field that can appear in fetchOpportunity details, prioritize it.
-  // For now, assuming it's not typically there for the main apply/view link based on the latest 'fetchOpportunity' sample.
-  // If it were:
-  // if (synopsis?.link) {
-  //   applyLink = synopsis.link;
-  // } else 
-  if (oppId && oppId.toLowerCase() !== 'n/a' && oppId.toLowerCase() !== 'undefined') {
-    applyLink = `https://www.grants.gov/search-results-detail/${oppId}`;
+  if (directLinkFromApi && (directLinkFromApi.startsWith('http://') || directLinkFromApi.startsWith('https://'))) {
+    applyLink = directLinkFromApi;
+  } else if (oppId && oppId.toLowerCase() !== 'n/a' && oppId.toLowerCase() !== 'undefined') {
+    // Fallback to a common Grants.gov opportunity view URL structure
+    applyLink = `https://www.grants.gov/web/grants/view-opportunity.html?oppId=${oppId}`;
   }
 
   return {
