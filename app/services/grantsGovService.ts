@@ -1,8 +1,9 @@
 import type { Grant, GrantsGovResponse, GrantsGovGrant } from "../../types";
 import sanitizeHtmlLib from 'sanitize-html';
 
+const ABSOLUTE_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 // Use our own API routes instead of directly calling the external API
-const API_BASE_URL = "/api/grants";
+const API_BASE_URL = "/api/grants"; // This might become redundant or used differently
 
 // Private helper function to map Grants.gov oppHit to our Grant interface
 function _mapOppHitToGrant(apiGrant: GrantsGovGrant): Grant {
@@ -32,7 +33,7 @@ export async function searchGrants(searchParams: {
   // Add other params like eligibilities, agencies, fundingCategories, aln as needed
 }): Promise<{ grants: Grant[]; totalRecords: number }> {
   try {
-    const response = await fetch(`${API_BASE_URL}/search`, {
+    const response = await fetch(`${ABSOLUTE_APP_URL}/api/grants/search`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -124,7 +125,7 @@ export async function getGrantDetails(
   opportunityId: string
 ): Promise<Grant | null> {
   try {
-    const response = await fetch(`${API_BASE_URL}/details`, {
+    const response = await fetch(`${ABSOLUTE_APP_URL}/api/grants/details`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
