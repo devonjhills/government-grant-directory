@@ -43,13 +43,13 @@ const Pagination: React.FC<PaginationProps> = ({
   }
 
   return (
-    <div className="flex items-center justify-center space-x-2 sm:space-x-3 mt-8 flex-wrap">
+    <div className="flex items-center justify-center space-x-3 sm:space-x-4 mt-10 flex-wrap">
       <Button
         variant="outline"
         size="sm"
         onClick={handlePrevious}
         disabled={currentPage === 1}
-        className="text-xs sm:text-sm">
+        className="text-xs sm:text-sm px-3 py-1 rounded-md">
         Previous
       </Button>
 
@@ -59,7 +59,7 @@ const Pagination: React.FC<PaginationProps> = ({
             variant={currentPage === 1 ? "default" : "outline"}
             size="sm"
             onClick={() => onPageChange(1)}
-            className="text-xs sm:text-sm">
+            className="text-xs sm:text-sm px-3 py-1 rounded-md">
             1
           </Button>
           {startPage > 2 && <span className="text-muted-foreground">...</span>}
@@ -72,7 +72,7 @@ const Pagination: React.FC<PaginationProps> = ({
           variant={currentPage === number ? "default" : "outline"}
           size="sm"
           onClick={() => onPageChange(number)}
-          className="text-xs sm:text-sm">
+          className="text-xs sm:text-sm px-3 py-1 rounded-md">
           {number}
         </Button>
       ))}

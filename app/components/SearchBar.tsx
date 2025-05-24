@@ -20,17 +20,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, initialValue }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex w-full max-w-3xl items-center space-x-3 mx-auto my-8">
+      className="flex w-full max-w-3xl items-center space-x-4 mx-auto my-10 px-4 sm:px-0">
       <Input
         type="text"
         placeholder="Enter keyword (e.g., research, education, non-profit)"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="flex-1 rounded-l-md border-r-0"
+        className="flex-1 rounded-l-md border-r-0 px-4 py-2 text-base"
       />
       <Button
         type="submit"
-        className="rounded-r-md">
+        className="rounded-r-md px-6 py-2 text-base font-semibold hover:bg-primary/90 transition-colors">
         Search Grants
       </Button>
     </form>

@@ -44,21 +44,21 @@ const FilterControls: React.FC<FilterControlsProps> = ({ onApplyFilters }) => {
   };
 
   return (
-    <div className="bg-card text-card-foreground p-6 rounded-xl shadow-lg mb-10 border border-border">
-      <h3 className="text-2xl font-semibold mb-6 text-card-foreground">
+    <div className="bg-card text-card-foreground p-8 rounded-xl shadow-lg mb-12 border border-border max-w-7xl mx-auto">
+      <h3 className="text-2xl font-semibold mb-8 text-card-foreground tracking-wide">
         Filter Grants
       </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div className="space-y-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="space-y-4">
           <Label
             htmlFor="status-filter"
-            className="font-medium text-foreground">
+            className="font-semibold text-foreground">
             Opportunity Status
           </Label>
           <Select value={status} onValueChange={setStatus}>
             <SelectTrigger
               id="status-filter"
-              className="">
+              className="px-4 py-2 rounded-md border border-input">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
@@ -70,8 +70,12 @@ const FilterControls: React.FC<FilterControlsProps> = ({ onApplyFilters }) => {
         </div>
 
         {/* Min Amount Filter */}
-        <div className="space-y-2">
-          <Label htmlFor="min-amount-filter" className="font-medium text-foreground">Min. Amount</Label>
+        <div className="space-y-3">
+          <Label
+            htmlFor="min-amount-filter"
+            className="font-semibold text-foreground">
+            Min. Amount
+          </Label>
           <Input
             id="min-amount-filter"
             type="number"
@@ -83,7 +87,11 @@ const FilterControls: React.FC<FilterControlsProps> = ({ onApplyFilters }) => {
 
         {/* Max Amount Filter */}
         <div className="space-y-2">
-          <Label htmlFor="max-amount-filter" className="font-medium text-foreground">Max. Amount</Label>
+          <Label
+            htmlFor="max-amount-filter"
+            className="font-medium text-foreground">
+            Max. Amount
+          </Label>
           <Input
             id="max-amount-filter"
             type="number"

@@ -126,8 +126,8 @@ export default function GrantDetailClient({ params }: GrantDetailPageProps) {
         </div>
 
         <Card className="w-full">
-          <CardHeader className="border-b">
-            <CardTitle className="text-3xl font-bold mb-2">
+          <CardHeader className="border-b bg-gray-50 dark:bg-gray-800 p-6 rounded-t-lg">
+            <CardTitle className="text-4xl font-extrabold mb-3 text-gray-900 dark:text-gray-100 leading-tight">
               {(() => {
                 // Helper function to determine if a title is meaningful
                 function isMeaningfulTitle(title: string): boolean {
@@ -150,12 +150,17 @@ export default function GrantDetailClient({ params }: GrantDetailPageProps) {
                 return getMeaningfulTitle(grantData);
               })()}
             </CardTitle>
-            <CardDescription className="text-lg text-muted-foreground">
-              <strong>Agency:</strong> {grantData.agency}
+            <CardDescription className="text-lg text-gray-700 dark:text-gray-300 mb-4">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">
+                Agency:
+              </span>{" "}
+              {grantData.agency}
             </CardDescription>
-            <div className="text-sm text-muted-foreground space-y-1 pt-2">
+            <div className="text-base text-gray-700 dark:text-gray-300 space-y-3">
               <p>
-                <strong>Opportunity Number:</strong>{" "}
+                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                  Opportunity Number:
+                </span>{" "}
                 {grantData.opportunityNumber}
               </p>
               {(() => {
@@ -166,20 +171,25 @@ export default function GrantDetailClient({ params }: GrantDetailPageProps) {
                 }
                 if (grantData.title && !isMeaningfulTitle(grantData.title)) {
                   return (
-                    <p className="text-sm text-muted-foreground italic mt-1">
-                      <strong>Code:</strong> {grantData.title}
+                    <p className="italic mt-1 text-gray-600 dark:text-gray-400">
+                      <span className="font-semibold text-gray-900 dark:text-gray-100">
+                        Code:
+                      </span>{" "}
+                      {grantData.title}
                     </p>
                   );
                 }
                 return null;
               })()}
-              <p>
-                <strong>Status:</strong>{" "}
+              <p className="flex items-center">
+                <span className="font-semibold text-gray-900 dark:text-gray-100 mr-2">
+                  Status:
+                </span>{" "}
                 <span
-                  className={`font-semibold ${
+                  className={`font-semibold px-2 py-1 rounded-full ${
                     grantData.opportunityStatus === "posted"
-                      ? "text-emerald-600"
-                      : "text-sky-600"
+                      ? "bg-emerald-100 text-emerald-800"
+                      : "bg-sky-100 text-sky-800"
                   }`}>
                   {grantData.opportunityStatus}
                 </span>
@@ -192,14 +202,22 @@ export default function GrantDetailClient({ params }: GrantDetailPageProps) {
               <h2 className="text-2xl font-semibold mb-3 border-b pb-2">
                 Grant Overview
               </h2>
-              <div className="prose dark:prose-invert max-w-none text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: grantData.description }} />
+              <div
+                className="prose dark:prose-invert max-w-none text-base leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: grantData.description }}
+              />
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-3 border-b pb-2">
                 Eligibility
               </h2>
-              <div className="prose dark:prose-invert max-w-none text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: grantData.eligibilityCriteria }} />
+              <div
+                className="prose dark:prose-invert max-w-none text-base leading-relaxed"
+                dangerouslySetInnerHTML={{
+                  __html: grantData.eligibilityCriteria,
+                }}
+              />
             </section>
 
             <section className="bg-muted/50 p-6 rounded-lg">

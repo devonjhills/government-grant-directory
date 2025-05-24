@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import GrantList from "@/app/components/GrantList";
+import FeaturedGrantsCard from "../../components/FeaturedGrantsCard";
 import type { Grant } from "@/types";
 
 interface NonprofitFundingClientProps {
@@ -94,30 +95,12 @@ export default function NonprofitFundingClient({
         </p>
       </header>
 
-      <section className="mb-16 shadow-lg border border-border rounded-xl">
-        <CardHeader>
-          <CardTitle className="text-3xl font-semibold">
-            Featured Grants for Nonprofits
-          </CardTitle>
-          <CardDescription className="text-lg text-muted-foreground">
-            Key opportunities that can help support your nonprofit's initiatives
-            and programs.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {featuredGrants.length === 0 && !featuredError && (
-            <p className="text-center text-muted-foreground py-12 text-lg">
-              Loading featured grants...
-            </p>
-          )}
-          {featuredError && (
-            <p className="text-center text-destructive py-12 text-lg">
-              {featuredError}
-            </p>
-          )}
-          {featuredGrants.length > 0 && <GrantList grants={featuredGrants} />}
-        </CardContent>
-      </section>
+      <FeaturedGrantsCard
+        title="Featured Grants for Nonprofits"
+        description="Key opportunities that can help support your nonprofit's initiatives and programs."
+        featuredGrants={featuredGrants}
+        featuredError={featuredError}
+      />
 
       <GrantList grants={grants} />
     </div>

@@ -13,7 +13,7 @@ const GrantList: React.FC<GrantListProps> = ({ grants }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4 sm:px-0">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-6 sm:px-0 max-w-7xl mx-auto">
       {grants.map((grant) => (
         <GrantCard key={grant.id} grant={grant} />
       ))}
