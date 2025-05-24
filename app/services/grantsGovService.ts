@@ -113,20 +113,18 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
     }
   }
 
-  // LinkToApply generation
+  // LinkToApply generation - Standardized based on user feedback
   let applyLink = 'https://www.grants.gov'; // Default fallback
-  const directLinkFromApi = synopsis?.link; // From fetchOpportunity sample: data.synopsis.link
-  const oppId = grantData?.opportunityId?.toString();
+  // grantData is apiDetailResponse.data. The numeric ID is grantData.id as per fetchOpportunity sample.
+  const numericIdFromApi = grantData?.id?.toString(); 
 
-  if (directLinkFromApi && (directLinkFromApi.startsWith('http://') || directLinkFromApi.startsWith('https://'))) {
-    applyLink = directLinkFromApi;
-  } else if (oppId && oppId.toLowerCase() !== 'n/a' && oppId.toLowerCase() !== 'undefined') {
-    // Fallback to a common Grants.gov opportunity view URL structure
-    applyLink = `https://www.grants.gov/web/grants/view-opportunity.html?oppId=${oppId}`;
+  if (numericIdFromApi && numericIdFromApi.toLowerCase() !== 'n/a' && numericIdFromApi.toLowerCase() !== 'undefined' && /^[0-9]+$/.test(numericIdFromApi)) {
+    // Ensure it's purely numeric, as it's used in the URL path segment
+    applyLink = `https://www.grants.gov/search-results-detail/${numericIdFromApi}`;
   }
 
   return {
-    id: grantData?.opportunityId?.toString() || "N/A",
+    id: grantData?.opportunityId?.toString() || "N/A", // This is the main alphanumeric Opportunity ID
     title: grantData?.opportunityTitle || "N/A",
     agency: synopsis?.agencyName || grantData?.owningAgencyCode || "N/A",
     description: sanitizeHtmlContent(synopsis?.synopsisDesc || "No detailed description available."),
