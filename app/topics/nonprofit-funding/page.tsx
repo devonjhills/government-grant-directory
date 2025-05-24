@@ -41,6 +41,9 @@ export default async function NonprofitFundingPage() {
   let grantsData: Grant[] = [];
   let pageError: string | null = null;
 
+  let featuredGrantsData: Grant[] = [];
+  let featuredError: string | null = null;
+
   try {
     const response = await searchGrants({
       keyword: "nonprofit OR community",
@@ -58,10 +61,32 @@ export default async function NonprofitFundingPage() {
     // grantsData will remain empty
   }
 
+  try {
+    const featuredResponse = await searchGrants({
+      keyword: "business",
+      oppStatuses: "posted",
+      rows: 5,
+    });
+    featuredGrantsData = Array.isArray(featuredResponse.grants)
+      ? featuredResponse.grants
+      : [];
+    if (featuredGrantsData.length === 0) {
+      featuredError = "No featured grants found from API.";
+    }
+  } catch (err) {
+    console.error(
+      "Failed to fetch featured grants for nonprofit funding page:",
+      err
+    );
+    featuredError = "Could not load featured grants.";
+  }
+
   return (
     <NonprofitFundingClient
       initialGrants={grantsData}
       initialError={pageError}
+      initialFeaturedGrants={featuredGrantsData}
+      initialFeaturedError={featuredError}
     />
   );
 }

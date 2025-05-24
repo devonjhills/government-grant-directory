@@ -41,6 +41,9 @@ export default async function SmallBusinessGrantsPage() {
   let grantsData: Grant[] = [];
   let pageError: string | null = null;
 
+  let featuredGrantsData: Grant[] = [];
+  let featuredError: string | null = null;
+
   try {
     const response = await searchGrants({
       keyword: "small business",
@@ -60,10 +63,32 @@ export default async function SmallBusinessGrantsPage() {
     // grantsData will remain empty
   }
 
+  try {
+    const featuredResponse = await searchGrants({
+      keyword: "business",
+      oppStatuses: "posted",
+      rows: 5,
+    });
+    featuredGrantsData = Array.isArray(featuredResponse.grants)
+      ? featuredResponse.grants
+      : [];
+    if (featuredGrantsData.length === 0) {
+      featuredError = "No featured grants found from API.";
+    }
+  } catch (err) {
+    console.error(
+      "Failed to fetch featured grants for small business page:",
+      err
+    );
+    featuredError = "Could not load featured grants.";
+  }
+
   return (
     <SmallBusinessGrantsClient
       initialGrants={grantsData}
       initialError={pageError}
+      initialFeaturedGrants={featuredGrantsData}
+      initialFeaturedError={featuredError}
     />
   );
 }
