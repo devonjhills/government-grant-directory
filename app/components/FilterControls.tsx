@@ -44,21 +44,21 @@ const FilterControls: React.FC<FilterControlsProps> = ({ onApplyFilters }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-lg mb-10 border border-gray-200 dark:border-gray-700">
-      <h3 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
+    <div className="bg-card text-card-foreground p-6 rounded-xl shadow-lg mb-10 border border-border">
+      <h3 className="text-2xl font-semibold mb-6 text-card-foreground">
         Filter Grants
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <div className="space-y-3">
           <Label
             htmlFor="status-filter"
-            className="text-gray-700 dark:text-gray-300 font-medium">
+            className="font-medium text-foreground">
             Opportunity Status
           </Label>
           <Select value={status} onValueChange={setStatus}>
             <SelectTrigger
               id="status-filter"
-              className="border-gray-300 dark:border-gray-600 focus:ring-pink-400">
+              className="">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
@@ -71,7 +71,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({ onApplyFilters }) => {
 
         {/* Min Amount Filter */}
         <div className="space-y-2">
-          <Label htmlFor="min-amount-filter">Min. Amount</Label>
+          <Label htmlFor="min-amount-filter" className="font-medium text-foreground">Min. Amount</Label>
           <Input
             id="min-amount-filter"
             type="number"
@@ -83,7 +83,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({ onApplyFilters }) => {
 
         {/* Max Amount Filter */}
         <div className="space-y-2">
-          <Label htmlFor="max-amount-filter">Max. Amount</Label>
+          <Label htmlFor="max-amount-filter" className="font-medium text-foreground">Max. Amount</Label>
           <Input
             id="max-amount-filter"
             type="number"

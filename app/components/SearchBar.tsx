@@ -25,11 +25,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         placeholder="Enter keyword (e.g., research, education, non-profit)"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="flex-1 rounded-l-md border-r-0 focus:ring-2 focus:ring-pink-400"
+        className="flex-1 rounded-l-md border-r-0"
       />
       <Button
         type="submit"
-        className="rounded-r-md bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-300 text-white">
+        className="rounded-r-md">
         Search Grants
       </Button>
     </form>
