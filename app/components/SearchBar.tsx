@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button"; // Verify path
 
 interface SearchBarProps {
   onSearch: (searchTerm: string) => void;
+  initialValue?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, initialValue }) => {
+  const [searchTerm, setSearchTerm] = useState(initialValue || "");
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
