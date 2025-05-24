@@ -27,25 +27,31 @@ export async function POST(request: Request) {
 
     const data: GrantsGovResponse = await response.json();
 
-    // Error Handling (Grants.gov specific)
-    if (data.errorcode !== 0 || !data.data || !data.data.oppHits) {
-      console.error('Grants.gov API Logic Error:', data.msg, data.errorcode);
-      return NextResponse.json(
-        { error: `Grants.gov API Error: ${data.msg || 'Unknown error'} (code: ${data.errorcode})` },
-        { status: 400 } // Bad Request, as the API itself reported an issue with the request or data.
-      );
+    if (data.errorcode !== 0) {
+        // Log the specific error message from Grants.gov for server-side debugging
+        console.error(`Grants.gov API Error (code: ${data.errorcode}): ${data.msg}`);
+        return NextResponse.json({ error: `Grants.gov API Error: ${data.msg} (code: ${data.errorcode})` }, { status: 400 });
     }
 
-    // Data Mapping
-    const oppHits: GrantsGovGrant[] = data.data.oppHits;
-    const mappedGrants: Grant[] = oppHits.map(mapGrantsGovGrantToGrant);
-    const totalRecords: number = data.data.hitCount;
+    // Handle cases where 'data' field itself might be missing in a non-error response (defensive check)
+    if (!data.data) {
+        console.warn("Grants.gov response had errorcode 0 but no 'data' field. Treating as no results.", data);
+        return NextResponse.json({ grants: [], totalRecords: 0 });
+    }
 
-    // Return Mapped Data
+    // If data.data.oppHits is null/undefined, treat it as an empty array.
+    // This is crucial for correctly handling 'no results' scenarios from Grants.gov where hitCount might be 0.
+    const oppHits = data.data.oppHits || []; 
+    const totalRecords = data.data.hitCount || 0; // Default hitCount to 0 if missing
+
+    // The mapGrantsGovGrantToGrant function should be robust enough to handle an empty oppHits array.
+    const mappedGrants: Grant[] = oppHits.map(mapGrantsGovGrantToGrant);
+
     return NextResponse.json({ grants: mappedGrants, totalRecords: totalRecords });
 
   } catch (error) {
     console.error('Error in search API route:', error);
+    // Check if error is an instance of Error to safely access message property
     // Check if error is an instance of Error to safely access message property
     const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
     return NextResponse.json(
