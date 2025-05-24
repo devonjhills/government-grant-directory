@@ -136,7 +136,7 @@ export default function GrantsPageClient({
   // should fetch the correct slice of data.
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="">
       <header className="text-center mb-10">
         <h1 className="text-4xl font-bold text-primary mb-4">
           Grant Search Results

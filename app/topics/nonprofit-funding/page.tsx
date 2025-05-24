@@ -59,11 +59,9 @@ export default async function NonprofitFundingPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12 sm:px-8 lg:px-12">
-      <NonprofitFundingClient
-        initialGrants={grantsData}
-        initialError={pageError}
-      />
-    </div>
+    <NonprofitFundingClient
+      initialGrants={grantsData}
+      initialError={pageError}
+    />
   );
 }

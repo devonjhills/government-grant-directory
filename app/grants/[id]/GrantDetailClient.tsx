@@ -42,7 +42,7 @@ export default function GrantDetailClient({ params }: GrantDetailPageProps) {
 
   if (isLoading) {
     return (
-      <main className="container mx-auto px-4 py-8 text-center">
+      <main className="text-center">
         <p className="text-muted-foreground">Loading grant details...</p>
       </main>
     );
@@ -50,7 +50,7 @@ export default function GrantDetailClient({ params }: GrantDetailPageProps) {
 
   if (!grantData) {
     return (
-      <main className="container mx-auto px-4 py-8 text-center">
+      <main className="text-center">
         <p className="text-destructive mb-4">Grant not found.</p>
         <Link href="/grants" passHref>
           <Button variant="outline">
@@ -116,7 +116,7 @@ export default function GrantDetailClient({ params }: GrantDetailPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }}
       />
-      <main className="container mx-auto px-4 py-8">
+      <main className="">
         <div className="mb-6">
           <Button asChild variant="outline" size="sm">
             <Link href="/grants">
@@ -178,8 +178,8 @@ export default function GrantDetailClient({ params }: GrantDetailPageProps) {
                 <span
                   className={`font-semibold ${
                     grantData.opportunityStatus === "posted"
-                      ? "text-green-600"
-                      : "text-yellow-600"
+                      ? "text-emerald-600"
+                      : "text-sky-600"
                   }`}>
                   {grantData.opportunityStatus}
                 </span>
@@ -192,18 +192,14 @@ export default function GrantDetailClient({ params }: GrantDetailPageProps) {
               <h2 className="text-2xl font-semibold mb-3 border-b pb-2">
                 Grant Overview
               </h2>
-              <p className="text-base leading-relaxed whitespace-pre-line">
-                {grantData.description}
-              </p>
+              <div className="prose dark:prose-invert max-w-none text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: grantData.description }} />
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-3 border-b pb-2">
                 Eligibility
               </h2>
-              <p className="text-base leading-relaxed whitespace-pre-line">
-                {grantData.eligibilityCriteria}
-              </p>
+              <div className="prose dark:prose-invert max-w-none text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: grantData.eligibilityCriteria }} />
             </section>
 
             <section className="bg-muted/50 p-6 rounded-lg">
@@ -221,7 +217,7 @@ export default function GrantDetailClient({ params }: GrantDetailPageProps) {
                 </p>
                 <p>
                   <strong>Funding Amount:</strong>{" "}
-                  <span className="font-medium text-green-700">
+                  <span className="font-medium text-emerald-700">
                     {formattedAmount}
                   </span>
                 </p>

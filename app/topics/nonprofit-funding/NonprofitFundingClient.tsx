@@ -81,7 +81,7 @@ export default function NonprofitFundingClient({
             }}
           />
         )}
-      <div className="max-w-7xl mx-auto px-6 py-12 sm:px-8 lg:px-12">
+      <div className="">
         <header className="mb-12 text-center">
           <h1 className="text-5xl font-extrabold text-primary mb-6 leading-tight">
             Funding Opportunities for Nonprofits
@@ -94,7 +94,7 @@ export default function NonprofitFundingClient({
           </p>
         </header>
 
-        <Card className="mb-16 shadow-lg border border-gray-200 dark:border-gray-700 rounded-xl">
+        <Card className="mb-16 shadow-lg border border-border rounded-xl">
           <CardHeader>
             <CardTitle className="text-3xl font-semibold">
               Featured Grants for Nonprofits
@@ -136,9 +136,9 @@ export default function NonprofitFundingClient({
             </p>
           </div>
 
-          <article className="p-8 bg-card border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm">
+          <article className="p-8 bg-card border border-border rounded-2xl shadow-sm">
             <h3 className="text-2xl font-semibold mb-3">Foundation Grants</h3>
-            <p className="text-secondary-foreground leading-relaxed text-lg">
+            <p className="text-card-foreground leading-relaxed text-lg">
               Private and community foundations are a major source of funding
               for nonprofits. They often support specific causes like education,
               health, arts, or community development. Researching foundations
@@ -146,11 +146,11 @@ export default function NonprofitFundingClient({
             </p>
           </article>
 
-          <article className="p-8 bg-card border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm">
+          <article className="p-8 bg-card border border-border rounded-2xl shadow-sm">
             <h3 className="text-2xl font-semibold mb-3">
               Government Grants for Nonprofits
             </h3>
-            <p className="text-secondary-foreground leading-relaxed text-lg">
+            <p className="text-card-foreground leading-relaxed text-lg">
               Federal, state, and local governments offer grants for nonprofits
               providing public services or addressing specific societal needs.
               These can range from operational support to funding for specific
@@ -159,11 +159,11 @@ export default function NonprofitFundingClient({
             </p>
           </article>
 
-          <article className="p-8 bg-card border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm">
+          <article className="p-8 bg-card border border-border rounded-2xl shadow-sm">
             <h3 className="text-2xl font-semibold mb-3">
               Corporate Giving Programs
             </h3>
-            <p className="text-secondary-foreground leading-relaxed text-lg">
+            <p className="text-card-foreground leading-relaxed text-lg">
               Many corporations have philanthropic arms or programs that provide
               grants to nonprofits, often focusing on communities where they
               operate or causes that align with their corporate values. These
@@ -171,11 +171,11 @@ export default function NonprofitFundingClient({
             </p>
           </article>
 
-          <article className="p-8 bg-card border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm">
+          <article className="p-8 bg-card border border-border rounded-2xl shadow-sm">
             <h3 className="text-2xl font-semibold mb-3">
               Capacity Building Grants
             </h3>
-            <p className="text-secondary-foreground leading-relaxed text-lg">
+            <p className="text-card-foreground leading-relaxed text-lg">
               Some funders offer grants specifically designed to help nonprofits
               strengthen their organizational capacity. This can include funding
               for strategic planning, staff training, technology upgrades, or

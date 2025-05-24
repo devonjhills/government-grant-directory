@@ -80,7 +80,7 @@ export default function SmallBusinessGrantsClient({
             }}
           />
         )}
-      <div className="max-w-7xl mx-auto px-6 py-12 sm:px-8 lg:px-12">
+      <div className="">
         <header className="mb-12 text-center">
           <h1 className="text-5xl font-extrabold text-primary mb-6 leading-tight">
             Grants for Small Businesses
@@ -93,7 +93,7 @@ export default function SmallBusinessGrantsClient({
           </p>
         </header>
 
-        <Card className="mb-16 shadow-lg border border-gray-200 dark:border-gray-700 rounded-xl">
+        <Card className="mb-16 shadow-lg border border-border rounded-xl">
           <CardHeader>
             <CardTitle className="text-3xl font-semibold">
               Featured Grants for Small Businesses
@@ -135,11 +135,11 @@ export default function SmallBusinessGrantsClient({
             </p>
           </div>
 
-          <article className="p-8 bg-card border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm">
+          <article className="p-8 bg-card border border-border rounded-2xl shadow-sm">
             <h3 className="text-2xl font-semibold mb-3">
               Innovation and R&D Grants
             </h3>
-            <p className="text-secondary-foreground leading-relaxed text-lg">
+            <p className="text-card-foreground leading-relaxed text-lg">
               These grants are aimed at businesses involved in research and
               development of new products, services, or technologies. Often
               provided by federal agencies like the Small Business
@@ -149,11 +149,11 @@ export default function SmallBusinessGrantsClient({
             </p>
           </article>
 
-          <article className="p-8 bg-card border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm">
+          <article className="p-8 bg-card border border-border rounded-2xl shadow-sm">
             <h3 className="text-2xl font-semibold mb-3">
               Grants for Women-Owned Businesses
             </h3>
-            <p className="text-secondary-foreground leading-relaxed text-lg">
+            <p className="text-card-foreground leading-relaxed text-lg">
               Various programs at federal, state, and private levels are
               dedicated to supporting women entrepreneurs. These grants aim to
               level the playing field and provide resources for women to start,
@@ -162,11 +162,11 @@ export default function SmallBusinessGrantsClient({
             </p>
           </article>
 
-          <article className="p-8 bg-card border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm">
+          <article className="p-8 bg-card border border-border rounded-2xl shadow-sm">
             <h3 className="text-2xl font-semibold mb-3">
               Grants for Veteran-Owned Businesses
             </h3>
-            <p className="text-secondary-foreground leading-relaxed text-lg">
+            <p className="text-card-foreground leading-relaxed text-lg">
               To honor their service, specific grant and loan programs are
               available to veterans starting or expanding their businesses. The
               Office of Veterans Business Development (OVBD) within the SBA is a
@@ -175,11 +175,11 @@ export default function SmallBusinessGrantsClient({
             </p>
           </article>
 
-          <article className="p-8 bg-card border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm">
+          <article className="p-8 bg-card border border-border rounded-2xl shadow-sm">
             <h3 className="text-2xl font-semibold mb-3">
               Rural Business Development Grants
             </h3>
-            <p className="text-secondary-foreground leading-relaxed text-lg">
+            <p className="text-card-foreground leading-relaxed text-lg">
               The U.S. Department of Agriculture (USDA) and other entities offer
               grants to promote economic development and job creation in rural
               communities. These can support a wide range of projects, from
