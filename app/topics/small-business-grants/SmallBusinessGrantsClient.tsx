@@ -82,7 +82,6 @@ export default function SmallBusinessGrantsClient({ initialGrants, initialError 
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* 
             {isLoading ? (
               <p className="text-center text-muted-foreground py-10">Loading grants...</p>
             ) : error ? (
