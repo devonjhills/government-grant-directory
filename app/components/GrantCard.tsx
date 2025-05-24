@@ -39,20 +39,20 @@ const GrantCard: React.FC<GrantCardProps> = ({ grant }) => {
       : grant.description || "No description available."; // Handle null/undefined description
 
   return (
-    <Card className="w-full flex flex-col h-full border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-shadow rounded-lg">
+    <Card className="w-full flex flex-col h-full shadow-md hover:shadow-lg transition-shadow rounded-lg">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <CardTitle className="text-lg font-semibold">
           {displayTitle}
         </CardTitle>
-        <CardDescription className="text-sm text-gray-600 dark:text-gray-400">
+        <CardDescription className="text-sm">
           Agency: {grant.agency}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow px-6">
-        <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
+        <p className="text-sm text-muted-foreground mb-3">
           Deadline: {grant.deadline}
         </p>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-card-foreground">
           {descriptionSnippet}
         </p>
       </CardContent>
@@ -60,7 +60,7 @@ const GrantCard: React.FC<GrantCardProps> = ({ grant }) => {
         <Button
           asChild
           variant="outline"
-          className="w-full text-gray-700 dark:text-gray-300 hover:text-pink-500 dark:hover:text-pink-400 border-gray-300 dark:border-gray-600 hover:border-pink-500 dark:hover:border-pink-400 transition-colors">
+          className="w-full transition-colors">
           <Link href={`/grants/${grant.id}`}>View Details</Link>
         </Button>
       </CardFooter>

@@ -38,13 +38,13 @@ export default function HomePageClient({
 
   return (
     // Main container: Replaced inline styles with Tailwind classes
-    <main className="container mx-auto px-6 py-12 max-w-5xl">
+    <main className="max-w-5xl mx-auto">
       {/* Header section: Styled using Tailwind typography and spacing */}
       <header className="text-center mb-12">
-        <h1 className="text-5xl font-extrabold text-indigo-700 mb-4 leading-tight">
+        <h1 className="text-5xl font-extrabold text-primary mb-4 leading-tight">
           Welcome to the Government Grant Finder
         </h1>
-        <p className="text-lg text-gray-600 max-w-xl mx-auto">
+        <p className="text-lg text-muted-foreground max-w-xl mx-auto">
           Your one-stop portal to discover and apply for government grants. Use
           the search below to find opportunities relevant to your needs.
         </p>
@@ -55,15 +55,15 @@ export default function HomePageClient({
 
       {/* Featured Grants Section: Styled h2 and loading/error states */}
       <section className="mt-16">
-        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">
+        <h2 className="text-3xl font-semibold text-center text-foreground mb-10">
           Featured Grants
         </h2>
         {isLoading ? (
-          <p className="text-center text-gray-500">
+          <p className="text-center text-muted-foreground">
             Loading featured grants...
           </p>
         ) : error ? (
-          <p className="text-center text-red-600 font-medium">{error}</p>
+          <p className="text-center text-destructive font-medium">{error}</p>
         ) : featuredGrants.length > 0 ? (
           <GrantList grants={featuredGrants} />
         ) : (
