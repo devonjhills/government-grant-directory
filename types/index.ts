@@ -19,7 +19,7 @@ export interface GrantsGovGrant {
   number: string; // e.g., "TEST-ABC-20231011-OPP1"
   title: string;
   agencyCode: string;
-  agencyName: string;
+  agency: string;
   openDate: string | null; // e.g., "10/11/2023"
   closeDate: string | null;
   oppStatus: string; // e.g., "posted"

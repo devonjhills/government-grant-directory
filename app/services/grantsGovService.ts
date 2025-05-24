@@ -1,7 +1,8 @@
 import type { Grant, GrantsGovResponse, GrantsGovGrant } from "../../types";
-import sanitizeHtmlLib from 'sanitize-html';
+import sanitizeHtmlLib from "sanitize-html";
 
-const ABSOLUTE_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+const ABSOLUTE_APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 // Use our own API routes instead of directly calling the external API
 const API_BASE_URL = "/api/grants"; // This might become redundant or used differently
 
@@ -10,11 +11,11 @@ function _mapOppHitToGrant(apiGrant: GrantsGovGrant): Grant {
   return {
     id: apiGrant.id,
     title: apiGrant.title,
-    agency: apiGrant.agencyName,
+    agency: apiGrant.agency,
     description: `Synopsis for ${apiGrant.title}. More details available.`,
     eligibilityCriteria: "Varies; see full announcement.",
     deadline: apiGrant.closeDate || "N/A",
-    amount: 0, 
+    amount: 0,
     linkToApply: `https://www.grants.gov/search-results-detail/${apiGrant.id}`,
     sourceAPI: "Grants.gov",
     opportunityNumber: apiGrant.number,
@@ -78,8 +79,8 @@ export async function searchGrants(searchParams: {
 function sanitizeHtmlContent(htmlString: string): string {
   if (!htmlString) return "";
   return sanitizeHtmlLib(htmlString, {
-    allowedTags: ['p', 'ul', 'ol', 'li', 'strong', 'em', 'br'], 
-    allowedAttributes: {} // No attributes allowed
+    allowedTags: ["p", "ul", "ol", "li", "strong", "em", "br"],
+    allowedAttributes: {}, // No attributes allowed
   });
 }
 
@@ -91,12 +92,15 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
   // If !grantData, it implies an issue with the API response structure or an error code.
   // getGrantDetails should ideally handle cases where grantData is not present based on error codes.
   // For now, we proceed assuming grantData might be null/undefined and rely on optional chaining and defaults.
-  
-  const eligibilityCriteria = 
-    synopsis?.applicantTypes?.map((at: any) => at.description).join(", ") || "Not specified";
 
-  const fundingActivityCategories = synopsis?.fundingActivityCategories?.map((fc: any) => fc.description) || [];
-  const fundingInstruments = synopsis?.fundingInstruments?.map((fi: any) => fi.description) || [];
+  const eligibilityCriteria =
+    synopsis?.applicantTypes?.map((at: any) => at.description).join(", ") ||
+    "Not specified";
+
+  const fundingActivityCategories =
+    synopsis?.fundingActivityCategories?.map((fc: any) => fc.description) || [];
+  const fundingInstruments =
+    synopsis?.fundingInstruments?.map((fi: any) => fi.description) || [];
   let categories = [...fundingActivityCategories, ...fundingInstruments];
   if (categories.length === 0) {
     categories = ["N/A"];
@@ -106,7 +110,7 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
   let parsedAmount = 0; // Default to 0
   const ceilingStr = synopsis?.awardCeiling?.toString();
   if (ceilingStr) {
-    const cleanedCeilingStr = ceilingStr.replace(/,/g, ''); // Remove commas
+    const cleanedCeilingStr = ceilingStr.replace(/,/g, ""); // Remove commas
     const num = parseInt(cleanedCeilingStr, 10);
     if (!isNaN(num)) {
       parsedAmount = num;
@@ -114,11 +118,16 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
   }
 
   // LinkToApply generation - Standardized based on user feedback
-  let applyLink = 'https://www.grants.gov'; // Default fallback
+  let applyLink = "https://www.grants.gov"; // Default fallback
   // grantData is apiDetailResponse.data. The numeric ID is grantData.id as per fetchOpportunity sample.
-  const numericIdFromApi = grantData?.id?.toString(); 
+  const numericIdFromApi = grantData?.id?.toString();
 
-  if (numericIdFromApi && numericIdFromApi.toLowerCase() !== 'n/a' && numericIdFromApi.toLowerCase() !== 'undefined' && /^[0-9]+$/.test(numericIdFromApi)) {
+  if (
+    numericIdFromApi &&
+    numericIdFromApi.toLowerCase() !== "n/a" &&
+    numericIdFromApi.toLowerCase() !== "undefined" &&
+    /^[0-9]+$/.test(numericIdFromApi)
+  ) {
     // Ensure it's purely numeric, as it's used in the URL path segment
     applyLink = `https://www.grants.gov/search-results-detail/${numericIdFromApi}`;
   }
@@ -127,7 +136,9 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
     id: grantData?.opportunityId?.toString() || "N/A", // This is the main alphanumeric Opportunity ID
     title: grantData?.opportunityTitle || "N/A",
     agency: synopsis?.agencyName || grantData?.owningAgencyCode || "N/A",
-    description: sanitizeHtmlContent(synopsis?.synopsisDesc || "No detailed description available."),
+    description: sanitizeHtmlContent(
+      synopsis?.synopsisDesc || "No detailed description available."
+    ),
     eligibilityCriteria: eligibilityCriteria,
     deadline: synopsis?.closeDate || synopsis?.responseDateDesc || "N/A", // Prioritize closeDate as per sample
     amount: parsedAmount,
@@ -150,7 +161,7 @@ export async function getGrantDetails(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ opportunityId: opportunityId }), 
+      body: JSON.stringify({ opportunityId: opportunityId }),
     });
 
     if (!response.ok) {
@@ -165,18 +176,21 @@ export async function getGrantDetails(
       );
     }
 
-    const apiResponse = await response.json(); 
+    const apiResponse = await response.json();
 
     // Check specifically for the 'data' object within the apiResponse
     if (apiResponse && apiResponse.data) {
       return _mapFetchedOpportunityToGrant(apiResponse); // Pass the whole response
     } else {
       // Handle cases where apiResponse.data is not present, or if there's an error code in apiResponse
-      console.warn(`No data found or error in API response for opportunity ID: ${opportunityId}`, apiResponse);
+      console.warn(
+        `No data found or error in API response for opportunity ID: ${opportunityId}`,
+        apiResponse
+      );
       return null;
     }
   } catch (error) {
     console.error(`Error in getGrantDetails for ID ${opportunityId}:`, error);
-    return null; 
+    return null;
   }
 }

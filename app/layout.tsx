@@ -55,12 +55,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full bg-gray-50 text-gray-900 antialiased">
       {/* Ensure html and body take full height for sticky footer */}
-      <body className="flex flex-col min-h-full">
+      <body className="flex flex-col min-h-full font-sans">
         {/* Flex column for sticky footer */}
         <Header />
-        <main className="flex-grow container mx-auto px-4 py-8">
+        <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl">
           {/* flex-grow pushes footer down */}
           {children}
         </main>

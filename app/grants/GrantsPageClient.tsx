@@ -29,8 +29,12 @@ export default function GrantsPageClient({
   const [searchResults, setSearchResults] = useState<Grant[]>(initialGrants);
   const [currentPage, setCurrentPage] = useState<number>(initialCurrentPage);
   const [totalPages, setTotalPages] = useState<number>(initialTotalPages);
-  const [currentSearchTerm, setCurrentSearchTerm] = useState<string>(initialSearchTerm || "");
-  const [currentFilters, setCurrentFilters] = useState<any>(initialFilters || {}); // Define more strictly
+  const [currentSearchTerm, setCurrentSearchTerm] = useState<string>(
+    initialSearchTerm || ""
+  );
+  const [currentFilters, setCurrentFilters] = useState<any>(
+    initialFilters || {}
+  ); // Define more strictly
   const [isLoading, setIsLoading] = useState<boolean>(false); // False initially, data comes from server
   const [error, setError] = useState<string | null>(initialError || null);
 
@@ -45,7 +49,11 @@ export default function GrantsPageClient({
       const response = await fetch("/api/grants/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ keyword: searchTerm, rows: ITEMS_PER_PAGE, startRecordNum: 0 }),
+        body: JSON.stringify({
+          keyword: searchTerm,
+          rows: ITEMS_PER_PAGE,
+          startRecordNum: 0,
+        }),
       });
       if (!response.ok) throw new Error("Failed to fetch grants");
       const data = await response.json();
@@ -68,7 +76,12 @@ export default function GrantsPageClient({
     setError(null);
     try {
       // Combine searchTerm with filters for the API call
-      const payload = { ...filters, keyword: currentSearchTerm, rows: ITEMS_PER_PAGE, startRecordNum: 0 };
+      const payload = {
+        ...filters,
+        keyword: currentSearchTerm,
+        rows: ITEMS_PER_PAGE,
+        startRecordNum: 0,
+      };
       const response = await fetch("/api/grants/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -86,29 +99,30 @@ export default function GrantsPageClient({
       setIsLoading(false);
     }
   };
-  
+
   // handlePageChange will fetch data for the new page
   const handlePageChange = async (pageNumber: number) => {
     setCurrentPage(pageNumber);
     setIsLoading(true);
     setError(null);
     try {
-      const payload = { 
-        ...currentFilters, 
-        keyword: currentSearchTerm, 
-        rows: ITEMS_PER_PAGE, 
-        startRecordNum: (pageNumber - 1) * ITEMS_PER_PAGE 
+      const payload = {
+        ...currentFilters,
+        keyword: currentSearchTerm,
+        rows: ITEMS_PER_PAGE,
+        startRecordNum: (pageNumber - 1) * ITEMS_PER_PAGE,
       };
       const response = await fetch("/api/grants/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!response.ok) throw new Error("Failed to fetch grants for page " + pageNumber);
+      if (!response.ok)
+        throw new Error("Failed to fetch grants for page " + pageNumber);
       const data = await response.json();
       setSearchResults(data.grants || []);
       // totalPages should ideally remain the same, but API might recalculate
-      setTotalPages(Math.ceil((data.totalRecords || 0) / ITEMS_PER_PAGE)); 
+      setTotalPages(Math.ceil((data.totalRecords || 0) / ITEMS_PER_PAGE));
     } catch (err) {
       setError(`Failed to load page ${pageNumber}. Please try again.`);
       setSearchResults([]); // Clear results on page load error
@@ -129,8 +143,8 @@ export default function GrantsPageClient({
         </h1>
       </header>
 
-      <SearchBar onSearch={handleSearch} initialSearchTerm={currentSearchTerm} />
-      <FilterControls onApplyFilters={handleApplyFilters} initialFilters={currentFilters} />
+      <SearchBar onSearch={handleSearch} />
+      <FilterControls onApplyFilters={handleApplyFilters} />
 
       <section className="mt-8">
         {isLoading ? (

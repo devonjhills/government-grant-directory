@@ -39,24 +39,28 @@ const GrantCard: React.FC<GrantCardProps> = ({ grant }) => {
       : grant.description || "No description available."; // Handle null/undefined description
 
   return (
-    <Card className="w-full flex flex-col h-full">
-      {" "}
-      {/* Ensure card takes full height of grid cell and content is flexible */}
+    <Card className="w-full flex flex-col h-full border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-shadow rounded-lg">
       <CardHeader>
-        <CardTitle>{displayTitle}</CardTitle>
-        <CardDescription>Agency: {grant.agency}</CardDescription>
+        <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          {displayTitle}
+        </CardTitle>
+        <CardDescription className="text-sm text-gray-600 dark:text-gray-400">
+          Agency: {grant.agency}
+        </CardDescription>
       </CardHeader>
-      <CardContent className="flex-grow">
-        {" "}
-        {/* Allow content to grow and push footer down */}
-        <p className="text-sm text-muted-foreground mb-2">
+      <CardContent className="flex-grow px-6">
+        <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
           Deadline: {grant.deadline}
         </p>
-        <p className="text-sm">{descriptionSnippet}</p>{" "}
-        {/* Ensure description text size is appropriate */}
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {descriptionSnippet}
+        </p>
       </CardContent>
-      <CardFooter>
-        <Button asChild variant="outline" className="w-full">
+      <CardFooter className="px-6">
+        <Button
+          asChild
+          variant="outline"
+          className="w-full text-gray-700 dark:text-gray-300 hover:text-pink-500 dark:hover:text-pink-400 border-gray-300 dark:border-gray-600 hover:border-pink-500 dark:hover:border-pink-400 transition-colors">
           <Link href={`/grants/${grant.id}`}>View Details</Link>
         </Button>
       </CardFooter>

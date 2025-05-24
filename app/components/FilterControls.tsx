@@ -1,16 +1,16 @@
 "use client"; // For form state and event handlers
 
-import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+import React, { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 // Define a type for filter values for clarity, can be expanded
 export interface GrantFilters {
@@ -29,9 +29,9 @@ interface FilterControlsProps {
 }
 
 const FilterControls: React.FC<FilterControlsProps> = ({ onApplyFilters }) => {
-  const [status, setStatus] = useState<string>('');
-  const [minAmount, setMinAmount] = useState<string>('');
-  const [maxAmount, setMaxAmount] = useState<string>('');
+  const [status, setStatus] = useState<string>("");
+  const [minAmount, setMinAmount] = useState<string>("");
+  const [maxAmount, setMaxAmount] = useState<string>("");
   // Add states for other filters as needed (e.g., dates)
 
   const handleApply = () => {
@@ -44,21 +44,27 @@ const FilterControls: React.FC<FilterControlsProps> = ({ onApplyFilters }) => {
   };
 
   return (
-    <div className="bg-card p-6 rounded-lg shadow-lg mb-8 border">
-      <h3 className="text-xl font-semibold mb-6 text-card-foreground">Filter Grants</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Status Filter */}
-        <div className="space-y-2">
-          <Label htmlFor="status-filter">Opportunity Status</Label>
+    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-lg mb-10 border border-gray-200 dark:border-gray-700">
+      <h3 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
+        Filter Grants
+      </h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="space-y-3">
+          <Label
+            htmlFor="status-filter"
+            className="text-gray-700 dark:text-gray-300 font-medium">
+            Opportunity Status
+          </Label>
           <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger id="status-filter">
+            <SelectTrigger
+              id="status-filter"
+              className="border-gray-300 dark:border-gray-600 focus:ring-pink-400">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="posted">Posted</SelectItem>
               <SelectItem value="forecasted">Forecasted</SelectItem>
               <SelectItem value="closed">Closed</SelectItem>
-              {/* Add other statuses as needed */}
             </SelectContent>
           </Select>
         </div>

@@ -1,7 +1,7 @@
 "use client"; // Keep this if it uses client-side logic
 
-import React from 'react';
-import { Button } from '@/components/ui/button'; // Verify path
+import React from "react";
+import { Button } from "@/components/ui/button"; // Verify path
 
 interface PaginationProps {
   currentPage: number;
@@ -9,7 +9,11 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+const Pagination: React.FC<PaginationProps> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+}) => {
   const handlePrevious = () => {
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
@@ -39,25 +43,23 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
   }
 
   return (
-    <div className="flex items-center justify-center space-x-1 sm:space-x-2 mt-8 flex-wrap"> {/* Added flex-wrap for smaller screens */}
+    <div className="flex items-center justify-center space-x-2 sm:space-x-3 mt-8 flex-wrap">
       <Button
         variant="outline"
-        size="sm" // Smaller buttons for pagination
+        size="sm"
         onClick={handlePrevious}
         disabled={currentPage === 1}
-        className="text-xs sm:text-sm" // Responsive text size
-      >
+        className="text-xs sm:text-sm">
         Previous
       </Button>
 
       {startPage > 1 && ( // Show first page and ellipsis if not in the initial range
         <>
           <Button
-            variant={currentPage === 1 ? 'default' : 'outline'}
+            variant={currentPage === 1 ? "default" : "outline"}
             size="sm"
             onClick={() => onPageChange(1)}
-            className="text-xs sm:text-sm"
-          >
+            className="text-xs sm:text-sm">
             1
           </Button>
           {startPage > 2 && <span className="text-muted-foreground">...</span>}
@@ -67,24 +69,24 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
       {pageNumbers.map((number) => (
         <Button
           key={number}
-          variant={currentPage === number ? 'default' : 'outline'}
+          variant={currentPage === number ? "default" : "outline"}
           size="sm"
           onClick={() => onPageChange(number)}
-          className="text-xs sm:text-sm"
-        >
+          className="text-xs sm:text-sm">
           {number}
         </Button>
       ))}
 
       {endPage < totalPages && ( // Show last page and ellipsis if not in the final range
         <>
-          {endPage < totalPages - 1 && <span className="text-muted-foreground">...</span>}
+          {endPage < totalPages - 1 && (
+            <span className="text-muted-foreground">...</span>
+          )}
           <Button
-            variant={currentPage === totalPages ? 'default' : 'outline'}
+            variant={currentPage === totalPages ? "default" : "outline"}
             size="sm"
             onClick={() => onPageChange(totalPages)}
-            className="text-xs sm:text-sm"
-          >
+            className="text-xs sm:text-sm">
             {totalPages}
           </Button>
         </>
@@ -95,8 +97,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         size="sm"
         onClick={handleNext}
         disabled={currentPage === totalPages}
-        className="text-xs sm:text-sm"
-      >
+        className="text-xs sm:text-sm">
         Next
       </Button>
     </div>
