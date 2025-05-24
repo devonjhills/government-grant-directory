@@ -1,29 +1,11 @@
 import type { Grant, GrantsGovResponse, GrantsGovGrant } from "../../types";
+import { mapGrantsGovGrantToGrant } from "../lib/grant-mapping"; // Import the moved function
 import sanitizeHtmlLib from "sanitize-html";
 
 const ABSOLUTE_APP_URL =
   process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 // Use our own API routes instead of directly calling the external API
 const API_BASE_URL = "/api/grants"; // This might become redundant or used differently
-
-// Private helper function to map Grants.gov oppHit to our Grant interface
-function _mapOppHitToGrant(apiGrant: GrantsGovGrant): Grant {
-  return {
-    id: apiGrant.id,
-    title: apiGrant.title,
-    agency: apiGrant.agency,
-    description: `Synopsis for ${apiGrant.title}. More details available.`,
-    eligibilityCriteria: "Varies; see full announcement.",
-    deadline: apiGrant.closeDate || "N/A",
-    amount: 0,
-    linkToApply: `https://www.grants.gov/search-results-detail/${apiGrant.id}`,
-    sourceAPI: "Grants.gov",
-    opportunityNumber: apiGrant.number,
-    opportunityStatus: apiGrant.oppStatus,
-    postedDate: apiGrant.openDate || "N/A",
-    categories: apiGrant.alnist || [],
-  };
-}
 
 // Search for grants
 export async function searchGrants(searchParams: {
@@ -50,27 +32,23 @@ export async function searchGrants(searchParams: {
       );
     }
 
-    const apiResponse: GrantsGovResponse = await response.json();
+    // The /api/grants/search route now returns data in the expected format: { grants: Grant[], totalRecords: number }
+    // It also handles Grants.gov specific API errors, so we don't need to check for apiResponse.errorcode here.
+    // The response.json() will be the actual data structure we need or an error structure if the API route failed.
+    const mappedData: { grants: Grant[]; totalRecords: number } = await response.json();
+    
+    // If response.ok was true, mappedData is { grants, totalRecords }.
+    // If response.ok was false, the error would have been caught above and this part wouldn't be reached.
+    // If mappedData contains an error structure from our API route (e.g. { error: "message" }),
+    // this will be passed along. The calling function should be prepared for that or
+    // this function could add another layer of checking if desired, but typically,
+    // if response.ok is true, the body is the expected successful payload.
+    return mappedData;
 
-    if (apiResponse.errorcode !== 0 || !apiResponse.data) {
-      console.error(
-        "Grants.gov API Logic Error:",
-        apiResponse.msg,
-        apiResponse.errorcode
-      );
-      throw new Error(
-        `API returned an error: ${apiResponse.msg} (code: ${apiResponse.errorcode})`
-      );
-    }
-
-    const mappedGrants = apiResponse.data.oppHits.map(_mapOppHitToGrant);
-
-    return {
-      grants: mappedGrants,
-      totalRecords: apiResponse.data.hitCount,
-    };
   } catch (error) {
     console.error("Error in searchGrants:", error);
+    // The function signature expects { grants: Grant[]; totalRecords: number },
+    // so we should return that structure even in case of an error caught here.
     return { grants: [], totalRecords: 0 }; // Return empty on error
   }
 }
