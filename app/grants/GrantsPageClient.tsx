@@ -143,7 +143,7 @@ export default function GrantsPageClient({
         </h1>
       </header>
 
-      <SearchBar onSearch={handleSearch} />
+      <SearchBar onSearch={handleSearch} initialValue={initialSearchTerm} />
       <FilterControls onApplyFilters={handleApplyFilters} />
 
       <section className="mt-8">
