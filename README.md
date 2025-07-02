@@ -150,14 +150,6 @@ npm run start
 - **Tablet**: 768-1024px
 - **Desktop**: 1024px+
 
-## 📱 Screenshots
-
-### Desktop View
-![Desktop Screenshot](docs/screenshots/desktop.png) *(Add actual screenshot)*
-
-### Mobile View
-![Mobile Screenshot](docs/screenshots/mobile.png) *(Add actual screenshot)*
-
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
@@ -206,14 +198,6 @@ Currently, this project does not include a testing framework. Future enhancement
 - **Environment variables** for sensitive configuration
 - **HTTPS** enforcement in production
 
-## 🤝 Contributing
-
-1. **Fork the repository**
-2. **Create feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit changes** (`git commit -m 'Add amazing feature'`)
-4. **Push to branch** (`git push origin feature/amazing-feature`)
-5. **Open Pull Request**
-
 ## 📄 License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
@@ -224,13 +208,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - **shadcn** for the excellent UI component library
 - **Vercel** for Next.js and deployment platform
 - **Tailwind Labs** for the CSS framework
-
-## 📧 Contact
-
-**Developer**: Your Name  
-**Email**: your.email@example.com  
-**LinkedIn**: [Your LinkedIn](https://linkedin.com/in/yourprofile)  
-**Portfolio**: [Your Portfolio](https://yourportfolio.com)
 
 ---
 
