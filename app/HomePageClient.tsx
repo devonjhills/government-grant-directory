@@ -1,13 +1,11 @@
 "use client";
 
-import React, { useState } from "react"; // Removed useEffect
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Target, Search, Award, Users } from "lucide-react";
 import SearchBar from "@/app/components/SearchBar";
 import GrantList from "@/app/components/GrantList";
 import type { Grant } from "@/types";
-// Removed searchGrants import, it's not used here anymore
-
-// mockGrantsData is removed from here, will be passed from server or handled by server if API fails
 
 interface HomePageClientProps {
   initialFeaturedGrants: Grant[];
@@ -23,56 +21,90 @@ export default function HomePageClient({
     initialFeaturedGrants
   );
   const [error, setError] = useState<string | null>(initialError || null);
-  // Set loading to true only if no initial data/error is provided,
-  // though with server-side fetching, this might always be false on initial load.
-  // This primarily handles cases where client-side fetching might still be a fallback (not in this refactor's scope).
   const [isLoading, setIsLoading] = useState<boolean>(
     initialFeaturedGrants.length === 0 && !initialError
   );
-
-  // useEffect for data fetching has been removed.
 
   const handleSearch = (searchTerm: string) => {
     router.push(`/grants?q=${encodeURIComponent(searchTerm)}`);
   };
 
   return (
-    // Main container: Replaced inline styles with Tailwind classes
-    <main className="max-w-5xl mx-auto">
-      {/* Header section: Styled using Tailwind typography and spacing */}
-      <header className="text-center mb-12">
-        <h1 className="text-5xl font-extrabold text-primary mb-4 leading-tight">
-          Welcome to the Government Grant Finder
-        </h1>
-        <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-          Your one-stop portal to discover and apply for government grants. Use
-          the search below to find opportunities relevant to your needs.
-        </p>
-      </header>
-
-      {/* SearchBar: Already refactored, integrates here. It has its own margins. */}
-      <SearchBar onSearch={handleSearch} />
-
-      {/* Featured Grants Section: Styled h2 and loading/error states */}
-      <section className="mt-16">
-        <h2 className="text-3xl font-semibold text-center text-foreground mb-10">
-          Featured Grants
-        </h2>
-        {isLoading ? (
-          <p className="text-center text-muted-foreground">
-            Loading featured grants...
+    <main className="max-w-6xl mx-auto px-4">
+      {/* Hero Section */}
+      <section className="text-center py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl"></div>
+        <div className="relative z-10">
+          <h1 className="text-6xl md:text-7xl font-extrabold text-primary mb-6 leading-tight">
+            Grant Finder
+          </h1>
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
+            Discover federal funding opportunities with ease. Search, filter, and find the perfect grants for your organization.
           </p>
+          
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+            <div className="flex flex-col items-center p-6 bg-white/50 rounded-xl border border-border/50">
+              <Search className="h-12 w-12 text-primary mb-4" />
+              <h3 className="font-semibold text-foreground mb-2">Smart Search</h3>
+              <p className="text-sm text-muted-foreground text-center">
+                Find grants by keyword, category, or agency
+              </p>
+            </div>
+            <div className="flex flex-col items-center p-6 bg-white/50 rounded-xl border border-border/50">
+              <Target className="h-12 w-12 text-primary mb-4" />
+              <h3 className="font-semibold text-foreground mb-2">Real-time Data</h3>
+              <p className="text-sm text-muted-foreground text-center">
+                Direct integration with Grants.gov API
+              </p>
+            </div>
+            <div className="flex flex-col items-center p-6 bg-white/50 rounded-xl border border-border/50">
+              <Award className="h-12 w-12 text-primary mb-4" />
+              <h3 className="font-semibold text-foreground mb-2">Federal Grants</h3>
+              <p className="text-sm text-muted-foreground text-center">
+                Access thousands of government opportunities
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Search Section */}
+      <section className="mb-20">
+        <SearchBar onSearch={handleSearch} />
+      </section>
+
+      {/* Featured Grants Section */}
+      <section className="mb-20">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-foreground mb-4">
+            Featured Opportunities
+          </h2>
+          <p className="text-lg text-muted-foreground">
+            Discover the latest grant opportunities available now
+          </p>
+        </div>
+
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
         ) : error ? (
-          <p className="text-center text-destructive font-medium">{error}</p>
+          <div className="text-center py-20">
+            <p className="text-destructive font-medium text-lg mb-4">{error}</p>
+            <p className="text-muted-foreground">
+              Please try refreshing the page or searching for grants directly.
+            </p>
+          </div>
         ) : featuredGrants.length > 0 ? (
           <GrantList grants={featuredGrants} />
         ) : (
-          // Fallback to mock data if API fails but no error state was set for this case before,
-          // now ensuring it's explicitly handled or removed if mock data isn't desired on API error.
-          // If there was an error (initialError was passed), it shows the error.
-          // If initialFeaturedGrants is empty and no error, GrantList will show "No grants found."
-          // The direct rendering of mockGrantsData on error is now handled by the server component passing it as initialFeaturedGrants.
-          <GrantList grants={featuredGrants} />
+          <div className="text-center py-20">
+            <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+            <p className="text-lg text-muted-foreground">
+              No featured grants available at the moment.
+            </p>
+          </div>
         )}
       </section>
     </main>

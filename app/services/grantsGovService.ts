@@ -110,6 +110,37 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
     applyLink = `https://www.grants.gov/search-results-detail/${numericIdFromApi}`;
   }
 
+  // Parse award floor
+  let parsedFloor = 0;
+  const floorStr = synopsis?.awardFloor?.toString();
+  if (floorStr) {
+    const cleanedFloorStr = floorStr.replace(/,/g, "");
+    const num = parseInt(cleanedFloorStr, 10);
+    if (!isNaN(num)) {
+      parsedFloor = num;
+    }
+  }
+
+  // Parse expected awards
+  let expectedAwards = 0;
+  const expectedStr = synopsis?.expectedAwards?.toString();
+  if (expectedStr) {
+    const num = parseInt(expectedStr, 10);
+    if (!isNaN(num)) {
+      expectedAwards = num;
+    }
+  }
+
+  // Extract CFDA numbers
+  const cfdaNumbers = synopsis?.cfdaNumbers?.map((cfda: any) => cfda.number) || [];
+
+  // Extract contact information
+  const grantorContactInfo = synopsis?.grantorContactInfo ? {
+    name: synopsis.grantorContactInfo.contactName || undefined,
+    email: synopsis.grantorContactInfo.contactEmail || undefined,
+    phone: synopsis.grantorContactInfo.contactPhone || undefined,
+  } : undefined;
+
   return {
     id: grantData?.opportunityId?.toString() || "N/A", // This is the main alphanumeric Opportunity ID
     title: grantData?.opportunityTitle || "N/A",
@@ -118,7 +149,7 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
       synopsis?.synopsisDesc || "No detailed description available."
     ),
     eligibilityCriteria: eligibilityCriteria,
-    deadline: synopsis?.closeDate || synopsis?.responseDateDesc || "N/A", // Prioritize closeDate as per sample
+    deadline: synopsis?.responseDate || synopsis?.responseDateStr || "N/A", // Use responseDate from detail API
     amount: parsedAmount,
     linkToApply: applyLink,
     sourceAPI: "Grants.gov",
@@ -126,6 +157,19 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
     opportunityStatus: grantData?.opportunityCategory?.description || "N/A",
     postedDate: synopsis?.postingDate || "N/A",
     categories: categories,
+    // Enhanced fields
+    awardFloor: parsedFloor > 0 ? parsedFloor : undefined,
+    awardCeiling: parsedAmount > 0 ? parsedAmount : undefined,
+    expectedAwards: expectedAwards > 0 ? expectedAwards : undefined,
+    fundingInstruments: fundingInstruments.length > 0 ? fundingInstruments : undefined,
+    fundingActivityCategories: fundingActivityCategories.length > 0 ? fundingActivityCategories : undefined,
+    applicantTypes: synopsis?.applicantTypes?.map((at: any) => at.description) || undefined,
+    agencyCode: grantData?.owningAgencyCode || undefined,
+    cfda: cfdaNumbers.length > 0 ? cfdaNumbers : undefined,
+    costSharing: synopsis?.costSharingDescription || undefined,
+    grantorContactInfo: grantorContactInfo,
+    additionalInfo: sanitizeHtmlContent(synopsis?.additionalInformation || ""),
+    version: synopsis?.version?.toString() || undefined,
   };
 }
 

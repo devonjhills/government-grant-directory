@@ -1,19 +1,26 @@
-"use client"; // Keep this if it uses client-side logic
+"use client";
 
 import React from "react";
-import { Button } from "@/components/ui/button"; // Verify path
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  totalResults?: number;
+  resultsPerPage?: number;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
+  totalResults,
+  resultsPerPage = 10,
 }) => {
+  if (totalPages <= 1) return null;
+
   const handlePrevious = () => {
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
@@ -26,80 +33,99 @@ const Pagination: React.FC<PaginationProps> = ({
     }
   };
 
-  // Determine the range of page numbers to display
-  let startPage = Math.max(1, currentPage - 2);
-  let endPage = Math.min(totalPages, currentPage + 2);
+  // Calculate which page numbers to show
+  const getVisiblePages = () => {
+    const delta = 2;
+    const range = [];
+    const rangeWithDots = [];
 
-  if (currentPage <= 3) {
-    endPage = Math.min(totalPages, 5);
-  }
-  if (currentPage > totalPages - 3) {
-    startPage = Math.max(1, totalPages - 4);
-  }
+    for (let i = Math.max(2, currentPage - delta); 
+         i <= Math.min(totalPages - 1, currentPage + delta); 
+         i++) {
+      range.push(i);
+    }
 
-  const pageNumbers = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i);
-  }
+    if (currentPage - delta > 2) {
+      rangeWithDots.push(1, '...');
+    } else {
+      rangeWithDots.push(1);
+    }
+
+    rangeWithDots.push(...range);
+
+    if (currentPage + delta < totalPages - 1) {
+      rangeWithDots.push('...', totalPages);
+    } else if (totalPages > 1) {
+      rangeWithDots.push(totalPages);
+    }
+
+    return rangeWithDots;
+  };
+
+  const visiblePages = getVisiblePages();
+
+  const startResult = (currentPage - 1) * resultsPerPage + 1;
+  const endResult = Math.min(currentPage * resultsPerPage, totalResults || 0);
 
   return (
-    <div className="flex items-center justify-center space-x-3 sm:space-x-4 mt-10 flex-wrap">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handlePrevious}
-        disabled={currentPage === 1}
-        className="text-xs sm:text-sm px-3 py-1 rounded-md">
-        Previous
-      </Button>
-
-      {startPage > 1 && ( // Show first page and ellipsis if not in the initial range
-        <>
-          <Button
-            variant={currentPage === 1 ? "default" : "outline"}
-            size="sm"
-            onClick={() => onPageChange(1)}
-            className="text-xs sm:text-sm px-3 py-1 rounded-md">
-            1
-          </Button>
-          {startPage > 2 && <span className="text-muted-foreground">...</span>}
-        </>
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-12 pt-8 border-t border-border">
+      {/* Results info */}
+      {totalResults && (
+        <p className="text-sm text-muted-foreground">
+          Showing <span className="font-medium">{startResult}</span> to{' '}
+          <span className="font-medium">{endResult}</span> of{' '}
+          <span className="font-medium">{totalResults}</span> results
+        </p>
       )}
 
-      {pageNumbers.map((number) => (
+      {/* Pagination controls */}
+      <div className="flex items-center space-x-2">
         <Button
-          key={number}
-          variant={currentPage === number ? "default" : "outline"}
+          variant="outline"
           size="sm"
-          onClick={() => onPageChange(number)}
-          className="text-xs sm:text-sm px-3 py-1 rounded-md">
-          {number}
+          onClick={handlePrevious}
+          disabled={currentPage === 1}
+          className="flex items-center gap-1"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Previous
         </Button>
-      ))}
 
-      {endPage < totalPages && ( // Show last page and ellipsis if not in the final range
-        <>
-          {endPage < totalPages - 1 && (
-            <span className="text-muted-foreground">...</span>
-          )}
-          <Button
-            variant={currentPage === totalPages ? "default" : "outline"}
-            size="sm"
-            onClick={() => onPageChange(totalPages)}
-            className="text-xs sm:text-sm">
-            {totalPages}
-          </Button>
-        </>
-      )}
+        <div className="flex items-center space-x-1">
+          {visiblePages.map((page, index) => {
+            if (page === '...') {
+              return (
+                <span key={`dots-${index}`} className="px-2">
+                  <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                </span>
+              );
+            }
 
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleNext}
-        disabled={currentPage === totalPages}
-        className="text-xs sm:text-sm">
-        Next
-      </Button>
+            return (
+              <Button
+                key={page}
+                variant={currentPage === page ? "default" : "outline"}
+                size="sm"
+                onClick={() => onPageChange(page as number)}
+                className="min-w-[40px]"
+              >
+                {page}
+              </Button>
+            );
+          })}
+        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleNext}
+          disabled={currentPage === totalPages}
+          className="flex items-center gap-1"
+        >
+          Next
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 };

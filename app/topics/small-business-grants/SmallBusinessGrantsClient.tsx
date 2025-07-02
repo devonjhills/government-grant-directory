@@ -87,7 +87,7 @@ export default function SmallBusinessGrantsClient({
             Grants for Small Businesses
           </h1>
           <p className="text-lg text-secondary-foreground max-w-4xl mx-auto leading-relaxed">
-            Navigating the world of grants can be challenging, but we're here to
+            Navigating the world of grants can be challenging, but we&apos;re here to
             help. Discover a variety of funding opportunities designed to
             support small businesses at every stage, from innovative startups to
             established enterprises looking to expand.

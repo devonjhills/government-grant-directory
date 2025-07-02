@@ -1,5 +1,5 @@
 // app/lib/grant-mapping.ts
-import type { Grant, GrantsGovGrant, GrantsGovData } from "../../types"; // GrantsGovData might not be directly used by the moved function but is good for context
+import type { Grant, GrantsGovGrant } from "../../types"; // GrantsGovData might not be directly used by the moved function but is good for context
 
 // Renamed and exported function from grantsGovService.ts
 export function mapGrantsGovGrantToGrant(apiGrant: GrantsGovGrant): Grant {

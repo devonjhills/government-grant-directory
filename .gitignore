@@ -18,6 +18,7 @@ build
 # Misc
 .DS_Store
 *.pem
+CLAUDE.md
 
 # Environment Variables
 .env*.local

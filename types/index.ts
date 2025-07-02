@@ -12,6 +12,23 @@ export interface Grant {
   opportunityStatus: string; // e.g., 'posted', 'forecasted', 'closed'
   postedDate: string; // Date grant was posted, ISO format
   categories: string[]; // Array of categories or keywords
+  // Enhanced fields
+  awardFloor?: number;
+  awardCeiling?: number;
+  expectedAwards?: number;
+  fundingInstruments?: string[];
+  fundingActivityCategories?: string[];
+  applicantTypes?: string[];
+  agencyCode?: string;
+  cfda?: string[];
+  costSharing?: string;
+  grantorContactInfo?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
+  additionalInfo?: string;
+  version?: string;
 }
 
 export interface GrantsGovGrant {
