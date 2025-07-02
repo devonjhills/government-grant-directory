@@ -33,10 +33,6 @@ A modern, performant web application for discovering federal funding opportuniti
 - **Robust error handling** with user-friendly messages
 - **Data sanitization** for security
 
-## 🚀 Live Demo
-
-Visit the live application: [Grant Finder](https://your-domain.com) *(Update with actual URL)*
-
 ## 🛠️ Tech Stack
 
 ### Frontend
