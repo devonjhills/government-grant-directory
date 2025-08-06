@@ -4,60 +4,309 @@
 
 @layer base {
   :root {
-    --background: 140 30% 98%; /* very light greenish neutral */
-    --foreground: 140 20% 20%; /* dark green-gray */
+    /* Modern professional color palette for government directory */
+    --background: 220 15% 98%; /* clean off-white with subtle blue undertone */
+    --foreground: 220 25% 8%; /* deep navy for excellent readability */
 
-    --card: 140 30% 100%; /* pure white with green tint */
-    --card-foreground: 140 20% 20%; /* dark green-gray */
+    --card: 0 0% 100%; /* pure white for cards */
+    --card-foreground: 220 25% 8%; /* deep navy */
 
-    --popover: 140 30% 100%; /* pure white with green tint */
-    --popover-foreground: 140 20% 20%; /* dark green-gray */
+    --popover: 0 0% 100%; /* pure white */
+    --popover-foreground: 220 25% 8%; /* deep navy */
 
-    --primary: 140 60% 40%; /* professional green */
-    --primary-foreground: 140 100% 98%; /* almost white */
+    --primary: 214 95% 46%; /* vibrant professional blue */
+    --primary-foreground: 0 0% 98%; /* almost white */
 
-    --secondary: 140 20% 75%; /* light green-gray */
-    --secondary-foreground: 140 20% 40%; /* medium green-gray */
+    --secondary: 220 15% 92%; /* light gray-blue */
+    --secondary-foreground: 220 25% 20%; /* dark gray-blue */
 
-    --muted: 140 20% 90%; /* very light green-gray */
-    --muted-foreground: 140 20% 50%; /* medium gray-green */
+    --muted: 220 15% 95%; /* very light gray-blue */
+    --muted-foreground: 220 10% 46%; /* medium gray */
 
-    --accent: 140 30% 55%; /* muted green-gray */
-    --accent-foreground: 140 25% 25%; /* dark muted green-gray */
+    --accent: 169 84% 42%; /* modern teal accent */
+    --accent-foreground: 0 0% 98%; /* almost white */
 
-    --destructive: 0 70% 50%; /* accessible red for destructive actions */
-    --destructive-foreground: 0 100% 98%; /* almost white */
+    --destructive: 0 84% 60%; /* modern red for destructive actions */
+    --destructive-foreground: 0 0% 98%; /* almost white */
 
-    --border: 140 20% 85%; /* light green-gray */
-    --input: 140 20% 85%; /* light green-gray */
-    --ring: 140 60% 45%; /* professional green */
+    --border: 220 15% 88%; /* light gray-blue border */
+    --input: 220 15% 88%; /* light gray-blue input */
+    --ring: 214 95% 46%; /* primary blue for focus rings */
 
-    --radius: 0.5rem;
+    /* Opportunity type colors */
+    --grant: 142 71% 45%; /* green for grants */
+    --grant-foreground: 0 0% 98%;
+    
+    --contract: 262 83% 58%; /* purple for contracts */
+    --contract-foreground: 0 0% 98%;
+    
+    --procurement: 32 95% 44%; /* orange for procurement */
+    --procurement-foreground: 0 0% 98%;
+    
+    --cooperative: 169 84% 42%; /* teal for cooperative agreements */
+    --cooperative-foreground: 0 0% 98%;
+
+    /* Status colors */
+    --status-open: 142 71% 45%; /* green for open opportunities */
+    --status-closing: 32 95% 44%; /* orange for closing soon */
+    --status-closed: 0 84% 60%; /* red for closed */
+    
+    /* Priority/featured colors */
+    --featured: 45 93% 47%; /* gold for featured opportunities */
+    --featured-foreground: 0 0% 98%;
+    
+    --high-value: 262 83% 58%; /* purple for high-value opportunities */
+    --high-value-foreground: 0 0% 98%;
+
+    --radius: 0.75rem; /* Increased radius for modern look */
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 
   .dark {
-    --background: 140 30% 10%; /* very dark greenish neutral */
-    --foreground: 140 20% 85%; /* light green-gray */
+    --background: 220 25% 4%; /* very dark navy */
+    --foreground: 220 15% 92%; /* light gray-blue */
 
-    --card: 140 30% 18%; /* very dark green-gray */
-    --card-foreground: 140 20% 85%; /* light green-gray */
+    --card: 220 25% 7%; /* dark navy card */
+    --card-foreground: 220 15% 92%; /* light gray-blue */
 
-    --popover: 140 30% 18%; /* very dark green-gray */
-    --popover-foreground: 140 20% 85%; /* light green-gray */
+    --popover: 220 25% 7%; /* dark navy */
+    --popover-foreground: 220 15% 92%; /* light gray-blue */
 
-    --primary: 140 60% 60%; /* professional green */
-    --primary-foreground: 140 30% 10%; /* very dark green-gray */
+    --primary: 214 95% 56%; /* brighter blue for dark mode */
+    --primary-foreground: 220 25% 4%; /* very dark navy */
 
-    --secondary: 140 20% 35%; /* dark green-gray */
-    --secondary-foreground: 140 20% 85%; /* light green-gray */
+    --secondary: 220 25% 15%; /* dark gray-blue */
+    --secondary-foreground: 220 15% 85%; /* light gray-blue */
 
-    --muted: 140 20% 35%; /* dark green-gray */
-    --muted-foreground: 140 30% 70%; /* medium light green-gray */
+    --muted: 220 25% 12%; /* very dark gray-blue */
+    --muted-foreground: 220 10% 54%; /* medium gray */
 
-    --accent: 140 30% 65%; /* muted green-gray */
-    --accent-foreground: 140 25% 25%; /* dark muted green-gray */
+    --accent: 169 84% 52%; /* brighter teal for dark mode */
+    --accent-foreground: 220 25% 4%; /* very dark navy */
 
-    --destructive: 0 70% 50%; /* accessible red for destructive actions */
-    --destructive-foreground: 0 100% 98%; /* almost white */
+    --destructive: 0 84% 70%; /* brighter red for dark mode */
+    --destructive-foreground: 220 25% 4%; /* very dark navy */
+
+    --border: 220 25% 18%; /* dark gray-blue border */
+    --input: 220 25% 18%; /* dark gray-blue input */
+    --ring: 214 95% 56%; /* brighter blue for focus rings */
+
+    /* Dark mode opportunity colors */
+    --grant: 142 71% 55%;
+    --grant-foreground: 220 25% 4%;
+    
+    --contract: 262 83% 68%;
+    --contract-foreground: 220 25% 4%;
+    
+    --procurement: 32 95% 54%;
+    --procurement-foreground: 220 25% 4%;
+    
+    --cooperative: 169 84% 52%;
+    --cooperative-foreground: 220 25% 4%;
+
+    /* Dark mode status colors */
+    --status-open: 142 71% 55%;
+    --status-closing: 32 95% 54%;
+    --status-closed: 0 84% 70%;
+    
+    --featured: 45 93% 57%;
+    --featured-foreground: 220 25% 4%;
+    
+    --high-value: 262 83% 68%;
+    --high-value-foreground: 220 25% 4%;
+
+    /* Dark mode shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
   }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Enhanced focus styles for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
+
+@layer components {
+  /* Opportunity type indicators */
+  .opportunity-grant {
+    @apply bg-grant text-grant-foreground;
+  }
+  
+  .opportunity-contract {
+    @apply bg-contract text-contract-foreground;
+  }
+  
+  .opportunity-procurement {
+    @apply bg-procurement text-procurement-foreground;
+  }
+  
+  .opportunity-cooperative {
+    @apply bg-cooperative text-cooperative-foreground;
+  }
+  
+  /* Status indicators */
+  .status-open {
+    @apply bg-status-open text-white;
+  }
+  
+  .status-closing {
+    @apply bg-status-closing text-white;
+  }
+  
+  .status-closed {
+    @apply bg-status-closed text-white;
+  }
+  
+  /* Featured/special indicators */
+  .featured {
+    @apply bg-featured text-featured-foreground;
+  }
+  
+  .high-value {
+    @apply bg-high-value text-high-value-foreground;
+  }
+  
+  /* Modern card styles */
+  .card-modern {
+    @apply bg-card text-card-foreground rounded-lg border shadow-md hover:shadow-lg transition-all duration-300;
+  }
+  
+  .card-featured {
+    @apply bg-card text-card-foreground rounded-lg border-2 border-featured shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+  
+  /* Button enhancements */
+  .btn-gradient {
+    @apply bg-gradient-to-r from-primary to-accent text-white hover:from-primary/90 hover:to-accent/90;
+  }
+  
+  /* Typography enhancements */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+  
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out;
+  }
+  
+  .animate-scale-in {
+    animation: scale-in 0.4s ease-out;
+  }
+}
+
+@layer utilities {
+  /* Shadow utilities */
+  .shadow-custom {
+    box-shadow: var(--shadow);
+  }
+  
+  .shadow-custom-md {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .shadow-custom-lg {
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .shadow-custom-xl {
+    box-shadow: var(--shadow-xl);
+  }
+}
+
+/* Custom animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Loading shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background-size: 200px 100%;
 }

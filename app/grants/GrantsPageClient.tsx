@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import SearchBar from "@/app/components/SearchBar";
 import FilterControls from "@/app/components/FilterControls";
 import GrantList from "@/app/components/GrantList";
@@ -26,6 +27,9 @@ export default function GrantsPageClient({
   initialFilters,
   error: initialError,
 }: GrantsPageClientProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
   const [searchResults, setSearchResults] = useState<Grant[]>(initialGrants);
   const [currentPage, setCurrentPage] = useState<number>(initialCurrentPage);
   const [totalPages, setTotalPages] = useState<number>(initialTotalPages);
@@ -38,97 +42,65 @@ export default function GrantsPageClient({
   const [isLoading, setIsLoading] = useState<boolean>(false); // False initially, data comes from server
   const [error, setError] = useState<string | null>(initialError || null);
 
-  // handleSearch will be used for subsequent client-side searches
-  const handleSearch = async (searchTerm: string) => {
-    setCurrentSearchTerm(searchTerm);
-    setCurrentFilters({}); // Reset filters on new search term
-    setCurrentPage(1); // Reset to first page
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch("/api/grants/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          keyword: searchTerm,
-          rows: ITEMS_PER_PAGE,
-          startRecordNum: 0,
-        }),
-      });
-      if (!response.ok) throw new Error("Failed to fetch grants");
-      const data = await response.json();
-      setSearchResults(data.grants || []);
-      setTotalPages(Math.ceil((data.totalRecords || 0) / ITEMS_PER_PAGE));
-    } catch (err) {
-      setError("Failed to fetch grants. Please try again later.");
-      setSearchResults([]);
-      setTotalPages(1);
-    } finally {
-      setIsLoading(false);
+  // Helper function to update URL with search params
+  const updateUrlParams = (params: Record<string, string | number | undefined>) => {
+    setIsLoading(true); // Show loading state during navigation
+    
+    const url = new URLSearchParams(searchParams.toString());
+    
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== '' && value !== 0) {
+        url.set(key, String(value));
+      } else {
+        url.delete(key);
+      }
+    });
+
+    // Remove page param if it's 1 (default)
+    if (url.get('page') === '1') {
+      url.delete('page');
     }
+
+    const newUrl = `/grants${url.toString() ? `?${url.toString()}` : ''}`;
+    router.push(newUrl);
   };
 
-  // handleApplyFilters will be used for subsequent client-side filter applications
-  const handleApplyFilters = async (filters: any) => {
-    setCurrentFilters(filters);
-    setCurrentPage(1); // Reset to first page
-    setIsLoading(true);
-    setError(null);
-    try {
-      // Combine searchTerm with filters for the API call
-      const payload = {
-        ...filters,
-        keyword: currentSearchTerm,
-        rows: ITEMS_PER_PAGE,
-        startRecordNum: 0,
-      };
-      const response = await fetch("/api/grants/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) throw new Error("Failed to fetch grants");
-      const data = await response.json();
-      setSearchResults(data.grants || []);
-      setTotalPages(Math.ceil((data.totalRecords || 0) / ITEMS_PER_PAGE));
-    } catch (err) {
-      setError("Failed to apply filters. Please try again later.");
-      setSearchResults([]);
-      setTotalPages(1);
-    } finally {
-      setIsLoading(false);
-    }
+  // Sync client state with server props when URL changes
+  useEffect(() => {
+    setSearchResults(initialGrants);
+    setCurrentPage(initialCurrentPage);
+    setTotalPages(initialTotalPages);
+    setCurrentSearchTerm(initialSearchTerm || "");
+    setCurrentFilters(initialFilters || {});
+    setError(initialError || null);
+    setIsLoading(false);
+  }, [initialGrants, initialCurrentPage, initialTotalPages, initialSearchTerm, initialFilters, initialError]);
+
+  // handleSearch will update URL params, triggering page reload with new search
+  const handleSearch = (searchTerm: string) => {
+    updateUrlParams({
+      q: searchTerm,
+      page: undefined, // Reset to page 1
+      // Reset other filter params if needed
+    });
   };
 
-  // handlePageChange will fetch data for the new page
-  const handlePageChange = async (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-    setIsLoading(true);
-    setError(null);
-    try {
-      const payload = {
-        ...currentFilters,
-        keyword: currentSearchTerm,
-        rows: ITEMS_PER_PAGE,
-        startRecordNum: (pageNumber - 1) * ITEMS_PER_PAGE,
-      };
-      const response = await fetch("/api/grants/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok)
-        throw new Error("Failed to fetch grants for page " + pageNumber);
-      const data = await response.json();
-      setSearchResults(data.grants || []);
-      // totalPages should ideally remain the same, but API might recalculate
-      setTotalPages(Math.ceil((data.totalRecords || 0) / ITEMS_PER_PAGE));
-    } catch (err) {
-      setError(`Failed to load page ${pageNumber}. Please try again.`);
-      setSearchResults([]); // Clear results on page load error
-    } finally {
-      setIsLoading(false);
-    }
+  // handleApplyFilters will update URL params with filter values
+  const handleApplyFilters = (filters: any) => {
+    updateUrlParams({
+      q: currentSearchTerm,
+      page: undefined, // Reset to page 1
+      ...filters, // Spread filter params into URL
+    });
+  };
+
+  // handlePageChange will update URL params with new page number
+  const handlePageChange = (pageNumber: number) => {
+    updateUrlParams({
+      q: currentSearchTerm,
+      page: pageNumber > 1 ? pageNumber : undefined, // Only include page if > 1
+      ...currentFilters, // Maintain current filters
+    });
   };
 
   // The grants displayed are now directly from searchResults, not a separate 'paginatedGrants'
@@ -148,11 +120,32 @@ export default function GrantsPageClient({
 
       <section className="mt-8">
         {isLoading ? (
-          <p className="text-center text-muted-foreground">Loading grants...</p>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            <p className="ml-4 text-muted-foreground">Loading grants...</p>
+          </div>
         ) : error ? (
-          <p className="text-center text-destructive">{error}</p>
+          <div className="text-center py-20">
+            <p className="text-destructive font-medium text-lg mb-4">{error}</p>
+            <p className="text-muted-foreground">
+              Try refreshing the page or searching with different terms.
+            </p>
+          </div>
+        ) : searchResults.length > 0 ? (
+          <GrantList grants={searchResults} />
         ) : (
-          <GrantList grants={searchResults} /> // Use searchResults directly
+          <div className="text-center py-20">
+            <p className="text-lg text-muted-foreground mb-4">
+              {currentSearchTerm 
+                ? `No grants found for "${currentSearchTerm}"` 
+                : "No grants available"}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {currentSearchTerm 
+                ? "Try searching with different keywords or browse all grants." 
+                : "Please try refreshing the page."}
+            </p>
+          </div>
         )}
       </section>
 

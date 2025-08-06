@@ -472,37 +472,37 @@ export default function GrantDetailClient({ params }: GrantDetailPageProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {grantData.grantorContactInfo ? (
+                  {grantData.contactInfo ? (
                     <div className="space-y-4">
-                      {grantData.grantorContactInfo.name && (
+                      {grantData.contactInfo.name && (
                         <div>
                           <h4 className="font-semibold text-sm text-muted-foreground mb-1">Contact Name</h4>
-                          <p className="text-lg">{grantData.grantorContactInfo.name}</p>
+                          <p className="text-lg">{grantData.contactInfo.name}</p>
                         </div>
                       )}
                       
-                      {grantData.grantorContactInfo.email && (
+                      {grantData.contactInfo.email && (
                         <div>
                           <h4 className="font-semibold text-sm text-muted-foreground mb-1">Email</h4>
                           <a 
-                            href={`mailto:${grantData.grantorContactInfo.email}`}
+                            href={`mailto:${grantData.contactInfo.email}`}
                             className="text-lg text-primary hover:underline flex items-center gap-2"
                           >
                             <Mail className="h-4 w-4" />
-                            {grantData.grantorContactInfo.email}
+                            {grantData.contactInfo.email}
                           </a>
                         </div>
                       )}
                       
-                      {grantData.grantorContactInfo.phone && (
+                      {grantData.contactInfo.phone && (
                         <div>
                           <h4 className="font-semibold text-sm text-muted-foreground mb-1">Phone</h4>
                           <a 
-                            href={`tel:${grantData.grantorContactInfo.phone}`}
+                            href={`tel:${grantData.contactInfo.phone}`}
                             className="text-lg text-primary hover:underline flex items-center gap-2"
                           >
                             <Phone className="h-4 w-4" />
-                            {grantData.grantorContactInfo.phone}
+                            {grantData.contactInfo.phone}
                           </a>
                         </div>
                       )}

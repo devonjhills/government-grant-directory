@@ -1,5 +1,69 @@
+# https://www.robotstxt.org/robotstxt.html
+# Government Grant & Procurement Directory - AI-Optimized for Crawling
+
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /admin
+Disallow: /_next/
+Disallow: /private/
 
+# Specific bots
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+
+# AI Training Bots
+User-agent: GPTBot
+Allow: /
+Crawl-delay: 1
+
+User-agent: ChatGPT-User
+Allow: /
+Crawl-delay: 1
+
+User-agent: CCBot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Claude-Web
+Allow: /
+Crawl-delay: 1
+
+User-agent: anthropic-ai
+Allow: /
+Crawl-delay: 1
+
+User-agent: ClaudeBot
+Allow: /
+Crawl-delay: 1
+
+# Archive bots
+User-agent: ia_archiver
+Allow: /
+Crawl-delay: 5
+
+# Social media crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+# Sitemaps
 Sitemap: https://www.grantfinder.example.com/sitemap.xml
+Sitemap: https://www.grantfinder.example.com/sitemap-opportunities.xml
+
+# RSS Feed
+Sitemap: https://www.grantfinder.example.com/feed.xml

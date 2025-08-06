@@ -1,4 +1,5 @@
 import type { Metadata, ResolvingMetadata } from 'next';
+import { Suspense } from 'react';
 import GrantsPageClient from "./GrantsPageClient";
 import { searchGrants } from "@/app/services/grantsGovService"; // Using alias
 import type { Grant } from "@/types"; // Using alias
@@ -10,23 +11,56 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const searchTerm = searchParams?.q?.toString() || '';
-  const parentMetadata = await parent; // Get metadata from parent (layout)
+  const currentPage = parseInt(searchParams?.page?.toString() || "1", 10);
+  const parentMetadata = await parent;
 
-  let pageTitle = 'Search Grants';
+  let pageTitle = 'Browse Government Grants';
+  let description = 'Browse all available government grants and funding opportunities from federal, state, and local sources.';
+  
   if (searchTerm) {
-    pageTitle = `Search Results for "${searchTerm}"`;
+    pageTitle = `"${searchTerm}" Grant Search Results`;
+    description = `Find government grants and funding opportunities related to ${searchTerm}. Search results from federal agencies including NIH, NSF, and more.`;
+    
+    if (currentPage > 1) {
+      pageTitle += ` - Page ${currentPage}`;
+      description += ` Page ${currentPage} of search results.`;
+    }
+  } else if (currentPage > 1) {
+    pageTitle += ` - Page ${currentPage}`;
+    description += ` Page ${currentPage} of all available grants.`;
   }
 
+  // Build URL with current search params
+  const urlParams = new URLSearchParams();
+  if (searchTerm) urlParams.set('q', searchTerm);
+  if (currentPage > 1) urlParams.set('page', currentPage.toString());
+  const canonical = `/grants${urlParams.toString() ? `?${urlParams.toString()}` : ''}`;
+
   return {
-    title: pageTitle, // This will use the template from layout e.g., "Search Results for "X" | Grant Finder"
-    description: `Find and filter grants. Search results for ${searchTerm || 'all available grants'}.`,
-    openGraph: {
-      ...parentMetadata.openGraph, // Inherit OpenGraph from layout
-      title: `${pageTitle} | Grant Finder`, // Explicitly set full OG title
-      url: `/grants${searchTerm ? `?q=${encodeURIComponent(searchTerm)}` : ''}`,
-      description: `Search results for ${searchTerm || 'all available grants'}.`,
+    title: pageTitle,
+    description,
+    alternates: {
+      canonical,
     },
-    // Twitter card can also be customized or inherited
+    openGraph: {
+      ...parentMetadata.openGraph,
+      title: `${pageTitle} | Grant Finder`,
+      url: canonical,
+      description,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${pageTitle} | Grant Finder`,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   };
 }
 
@@ -60,38 +94,48 @@ export default async function GrantsPage({
   let totalPages = 1;
   let pageError: string | null = null;
 
-  // Only fetch if there's a search term or active filters
-  // Modify this condition if you want to load initial grants even without search/filters
+  // Fetch grants if there's a search term, filters, or show default grants
   const hasSearchParams = searchTerm || Object.keys(otherFilterParams).length > 0;
 
-  if (hasSearchParams) {
-    try {
+  try {
+    if (hasSearchParams) {
+      // Use the provided search/filter params
       const response = await searchGrants(searchPayload);
-      grants = response.grants || []; // Ensure grants is always an array
+      grants = response.grants || [];
       totalPages = Math.ceil((response.totalRecords || 0) / ITEMS_PER_PAGE);
-      if (totalPages === 0 && grants.length === 0 && searchTerm) { // No results for a specific search
+      if (totalPages === 0 && grants.length === 0 && searchTerm) {
         pageError = `No grants found for "${searchTerm}". Try a different search.`;
       }
-    } catch (err) {
-      console.error("Failed to fetch grants for server page:", err);
-      pageError = "Could not load grants due to a server error. Please try again later.";
-      grants = []; // Ensure grants is empty on error
-      totalPages = 1; // Reset total pages on error
+    } else {
+      // Show default grants when no search params (e.g., recent or featured grants)
+      const response = await searchGrants({
+        rows: ITEMS_PER_PAGE,
+        oppStatuses: "posted|forecasted",
+        startRecordNum: 0,
+      });
+      grants = response.grants || [];
+      totalPages = Math.ceil((response.totalRecords || 0) / ITEMS_PER_PAGE);
     }
-  } else {
-    // Optional: Could set a message like "Please enter a search term or apply filters to see grants."
-    // For now, it will just render with empty grants if no search params.
+  } catch (err) {
+    console.error("Failed to fetch grants for server page:", err);
+    pageError = "Could not load grants due to a server error. Please try again later.";
+    grants = [];
+    totalPages = 1;
   }
 
 
   return (
-    <GrantsPageClient
-      initialGrants={grants}
-      initialTotalPages={totalPages}
-      initialCurrentPage={currentPage}
-      initialSearchTerm={searchTerm}
-      initialFilters={otherFilterParams} // Pass the extracted filters
-      error={pageError}
-    />
+    <Suspense fallback={<div className="flex justify-center items-center py-20">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    </div>}>
+      <GrantsPageClient
+        initialGrants={grants}
+        initialTotalPages={totalPages}
+        initialCurrentPage={currentPage}
+        initialSearchTerm={searchTerm}
+        initialFilters={otherFilterParams} // Pass the extracted filters
+        error={pageError}
+      />
+    </Suspense>
   );
 }

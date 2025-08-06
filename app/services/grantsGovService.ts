@@ -167,9 +167,10 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
     agencyCode: grantData?.owningAgencyCode || undefined,
     cfda: cfdaNumbers.length > 0 ? cfdaNumbers : undefined,
     costSharing: synopsis?.costSharingDescription || undefined,
-    grantorContactInfo: grantorContactInfo,
+    contactInfo: grantorContactInfo,
     additionalInfo: sanitizeHtmlContent(synopsis?.additionalInformation || ""),
     version: synopsis?.version?.toString() || undefined,
+    type: 'grant', // Required by Grant interface
   };
 }
 
