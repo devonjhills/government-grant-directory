@@ -48,10 +48,6 @@ A comprehensive intelligence platform that transforms raw government funding dat
 - **Robust error handling** with user-friendly messages
 - **Data sanitization** for security
 
-## 🚀 Live Demo
-
-Visit the live application: [Grant Finder](https://your-domain.com) _(Update with actual URL)_
-
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -180,16 +176,6 @@ npm run start
 - **Tablet**: 768-1024px
 - **Desktop**: 1024px+
 
-## 📱 Screenshots
-
-### Desktop View
-
-![Desktop Screenshot](docs/screenshots/desktop.png) _(Add actual screenshot)_
-
-### Mobile View
-
-![Mobile Screenshot](docs/screenshots/mobile.png) _(Add actual screenshot)_
-
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
@@ -251,10 +237,6 @@ Currently, this project does not include a testing framework. Future enhancement
 4. **Push to branch** (`git push origin feature/amazing-feature`)
 5. **Open Pull Request**
 
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
 ## 🙏 Acknowledgments
 
 - **Grants.gov** for providing the official API
@@ -264,10 +246,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 📧 Contact
 
-**Developer**: Your Name  
-**Email**: your.email@example.com  
-**LinkedIn**: [Your LinkedIn](https://linkedin.com/in/yourprofile)  
-**Portfolio**: [Your Portfolio](https://yourportfolio.com)
+**LinkedIn**: [Your LinkedIn](https://linkedin.com/in/devonjhills)  
+**Portfolio**: [Portfolio](https://devonhills.dev)
 
 ---
 
