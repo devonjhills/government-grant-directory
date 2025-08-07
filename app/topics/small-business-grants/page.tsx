@@ -57,7 +57,7 @@ export default async function SmallBusinessGrantsPage() {
   } catch (err) {
     console.error(
       "Failed to fetch small business grants for server page:",
-      err
+      err,
     );
     pageError = "Failed to load grants. Please try again later.";
     // grantsData will remain empty
@@ -78,7 +78,7 @@ export default async function SmallBusinessGrantsPage() {
   } catch (err) {
     console.error(
       "Failed to fetch featured grants for small business page:",
-      err
+      err,
     );
     featuredError = "Could not load featured grants.";
   }

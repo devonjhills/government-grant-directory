@@ -7,16 +7,16 @@ const STAGING_API_URL = "https://api.grants.gov/v1/api";
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get('q') || searchParams.get('keyword') || '';
-    const rows = parseInt(searchParams.get('rows') || '20');
-    const offset = parseInt(searchParams.get('offset') || '0');
-    
+    const query = searchParams.get("q") || searchParams.get("keyword") || "";
+    const rows = parseInt(searchParams.get("rows") || "20");
+    const offset = parseInt(searchParams.get("offset") || "0");
+
     // Build search parameters for Grants.gov API
     const grantsGovParams = {
       keyword: query,
       rows,
       offset,
-      oppStatuses: 'posted|forecasted',
+      oppStatuses: "posted|forecasted",
     };
 
     const response = await fetch(`${STAGING_API_URL}/search2`, {
@@ -32,13 +32,13 @@ export async function GET(request: Request) {
       console.error(
         "Grants.gov API Error (Network):",
         response.status,
-        errorText
+        errorText,
       );
       return NextResponse.json(
         {
           error: `API request failed with status ${response.status}: ${errorText}`,
         },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
@@ -46,20 +46,20 @@ export async function GET(request: Request) {
 
     if (data.errorcode !== 0) {
       console.error(
-        `Grants.gov API Error (code: ${data.errorcode}): ${data.msg}`
+        `Grants.gov API Error (code: ${data.errorcode}): ${data.msg}`,
       );
       return NextResponse.json(
         {
           error: `Grants.gov API Error: ${data.msg} (code: ${data.errorcode})`,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!data.data) {
       console.warn(
         "Grants.gov response had errorcode 0 but no 'data' field. Treating as no results.",
-        data
+        data,
       );
       return NextResponse.json({ grants: [], totalRecords: 0 });
     }
@@ -78,7 +78,7 @@ export async function GET(request: Request) {
       error instanceof Error ? error.message : "An unexpected error occurred";
     return NextResponse.json(
       { error: `Failed to fetch data from Grants.gov API: ${errorMessage}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -100,13 +100,13 @@ export async function POST(request: Request) {
       console.error(
         "Grants.gov API Error (Network):",
         response.status,
-        errorText
+        errorText,
       );
       return NextResponse.json(
         {
           error: `API request failed with status ${response.status}: ${errorText}`,
         },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
@@ -115,13 +115,13 @@ export async function POST(request: Request) {
     if (data.errorcode !== 0) {
       // Log the specific error message from Grants.gov for server-side debugging
       console.error(
-        `Grants.gov API Error (code: ${data.errorcode}): ${data.msg}`
+        `Grants.gov API Error (code: ${data.errorcode}): ${data.msg}`,
       );
       return NextResponse.json(
         {
           error: `Grants.gov API Error: ${data.msg} (code: ${data.errorcode})`,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -129,7 +129,7 @@ export async function POST(request: Request) {
     if (!data.data) {
       console.warn(
         "Grants.gov response had errorcode 0 but no 'data' field. Treating as no results.",
-        data
+        data,
       );
       return NextResponse.json({ grants: [], totalRecords: 0 });
     }
@@ -154,7 +154,7 @@ export async function POST(request: Request) {
       error instanceof Error ? error.message : "An unexpected error occurred";
     return NextResponse.json(
       { error: `Failed to fetch data from Grants.gov API: ${errorMessage}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

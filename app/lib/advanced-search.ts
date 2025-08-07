@@ -1,5 +1,5 @@
-import { Opportunity, OpportunitySearchParams } from '@/types';
-import { User } from './subscription';
+import { Opportunity, OpportunitySearchParams } from "@/types";
+import { User } from "./subscription";
 
 // Advanced search filters for B2B users
 export interface AdvancedSearchFilters {
@@ -25,7 +25,7 @@ export interface AdvancedSearchFilters {
       international?: boolean;
     };
   };
-  
+
   // Advanced filters (Professional tier and above)
   advanced?: {
     industryCategories?: string[]; // NAICS codes
@@ -35,7 +35,7 @@ export interface AdvancedSearchFilters {
       minDuration?: number; // months
       maxDuration?: number; // months
     };
-    competitionLevel?: 'low' | 'medium' | 'high';
+    competitionLevel?: "low" | "medium" | "high";
     historicalSuccessRate?: {
       min?: number; // percentage
       max?: number;
@@ -44,13 +44,13 @@ export interface AdvancedSearchFilters {
     costSharingRequired?: boolean;
     securityClearanceRequired?: boolean;
   };
-  
+
   // Premium filters (Business tier and above)
   premium?: {
     customKeywords?: string[];
     excludeKeywords?: string[];
     similarOpportunities?: string[]; // Find opportunities similar to these IDs
-    predictedCompetition?: 'low' | 'medium' | 'high';
+    predictedCompetition?: "low" | "medium" | "high";
     trendingCategories?: boolean;
     newAgencies?: boolean; // Agencies that recently started posting
     undervaluedOpportunities?: boolean; // Low competition, high value
@@ -64,7 +64,7 @@ export interface SavedSearch {
   name: string;
   filters: AdvancedSearchFilters;
   alertEnabled: boolean;
-  alertFrequency: 'daily' | 'weekly' | 'monthly';
+  alertFrequency: "daily" | "weekly" | "monthly";
   lastRun?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -85,7 +85,12 @@ export class AdvancedSearchEngine {
   static async executeAdvancedSearch(
     filters: AdvancedSearchFilters,
     user: User,
-    pagination: { page?: number; limit?: number; sortBy?: string; sortOrder?: 'asc' | 'desc' } = {}
+    pagination: {
+      page?: number;
+      limit?: number;
+      sortBy?: string;
+      sortOrder?: "asc" | "desc";
+    } = {},
   ): Promise<{
     opportunities: Opportunity[];
     totalCount: number;
@@ -95,15 +100,15 @@ export class AdvancedSearchEngine {
   }> {
     // Convert advanced filters to standard search params
     const searchParams = this.convertToSearchParams(filters);
-    
+
     // Apply user-specific enhancements based on subscription tier
     const enhancedParams = this.enhanceSearchForUser(searchParams, user);
-    
+
     // Execute the search (this would use the unified opportunity service)
     // For now, we'll return a placeholder structure
-    
+
     const searchId = this.generateSearchId();
-    
+
     return {
       opportunities: [], // Would contain actual results
       totalCount: 0,
@@ -114,70 +119,93 @@ export class AdvancedSearchEngine {
   }
 
   // Generate search facets for filtering
-  static async generateSearchFacets(filters: AdvancedSearchFilters, user: User): Promise<SearchFacets> {
+  static async generateSearchFacets(
+    filters: AdvancedSearchFilters,
+    user: User,
+  ): Promise<SearchFacets> {
     return {
       agencies: {
-        'Department of Defense': 156,
-        'National Science Foundation': 89,
-        'Department of Health and Human Services': 134,
-        'Small Business Administration': 67,
-        'Department of Energy': 45,
+        "Department of Defense": 156,
+        "National Science Foundation": 89,
+        "Department of Health and Human Services": 134,
+        "Small Business Administration": 67,
+        "Department of Energy": 45,
       },
       opportunityTypes: {
-        'Grant': 245,
-        'Contract': 189,
-        'Cooperative Agreement': 78,
-        'Other': 34,
+        Grant: 245,
+        Contract: 189,
+        "Cooperative Agreement": 78,
+        Other: 34,
       },
       industries: {
-        'Research & Development': 123,
-        'Healthcare': 98,
-        'Technology': 87,
-        'Education': 76,
-        'Infrastructure': 65,
+        "Research & Development": 123,
+        Healthcare: 98,
+        Technology: 87,
+        Education: 76,
+        Infrastructure: 65,
       },
       amounts: {
-        'Under $100K': 167,
-        '$100K - $500K': 134,
-        '$500K - $1M': 89,
-        '$1M - $10M': 67,
-        'Over $10M': 23,
+        "Under $100K": 167,
+        "$100K - $500K": 134,
+        "$500K - $1M": 89,
+        "$1M - $10M": 67,
+        "Over $10M": 23,
       },
-      setAsides: user.subscription?.tierId !== 'free' ? {
-        '8(a)': 45,
-        'HubZone': 34,
-        'SDVOSB': 28,
-        'WOSB': 23,
-        'Small Business': 156,
-      } : undefined,
+      setAsides:
+        user.subscription?.tierId !== "free"
+          ? {
+              "8(a)": 45,
+              HubZone: 34,
+              SDVOSB: 28,
+              WOSB: 23,
+              "Small Business": 156,
+            }
+          : undefined,
     };
   }
 
   // Generate search recommendations based on filters and user history
-  static generateSearchRecommendations(filters: AdvancedSearchFilters, user: User): string[] {
+  static generateSearchRecommendations(
+    filters: AdvancedSearchFilters,
+    user: User,
+  ): string[] {
     const recommendations: string[] = [];
-    
+
     // Basic recommendations for all users
     if (!filters.basic.query) {
-      recommendations.push('Try adding keywords to narrow your search');
+      recommendations.push("Try adding keywords to narrow your search");
     }
-    
-    if (!filters.basic.opportunityTypes || filters.basic.opportunityTypes.length === 0) {
-      recommendations.push('Filter by opportunity type for more relevant results');
+
+    if (
+      !filters.basic.opportunityTypes ||
+      filters.basic.opportunityTypes.length === 0
+    ) {
+      recommendations.push(
+        "Filter by opportunity type for more relevant results",
+      );
     }
 
     // Advanced recommendations for premium users
-    if (user.subscription && ['business', 'enterprise'].includes(user.subscription.tierId)) {
+    if (
+      user.subscription &&
+      ["business", "enterprise"].includes(user.subscription.tierId)
+    ) {
       if (!filters.premium?.customKeywords) {
-        recommendations.push('Use custom keywords to find highly specific opportunities');
+        recommendations.push(
+          "Use custom keywords to find highly specific opportunities",
+        );
       }
-      
+
       if (!filters.premium?.similarOpportunities) {
-        recommendations.push('Find similar opportunities based on your successful applications');
+        recommendations.push(
+          "Find similar opportunities based on your successful applications",
+        );
       }
-      
+
       if (!filters.premium?.predictedCompetition) {
-        recommendations.push('Enable competition prediction to focus on winnable opportunities');
+        recommendations.push(
+          "Enable competition prediction to focus on winnable opportunities",
+        );
       }
     }
 
@@ -189,7 +217,10 @@ export class AdvancedSearchEngine {
     userId: string,
     name: string,
     filters: AdvancedSearchFilters,
-    alertSettings?: { enabled: boolean; frequency: 'daily' | 'weekly' | 'monthly' }
+    alertSettings?: {
+      enabled: boolean;
+      frequency: "daily" | "weekly" | "monthly";
+    },
   ): Promise<SavedSearch> {
     const savedSearch: SavedSearch = {
       id: this.generateSearchId(),
@@ -197,13 +228,13 @@ export class AdvancedSearchEngine {
       name,
       filters,
       alertEnabled: alertSettings?.enabled || false,
-      alertFrequency: alertSettings?.frequency || 'weekly',
+      alertFrequency: alertSettings?.frequency || "weekly",
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
     // This would save to database
-    console.log('Saving search:', savedSearch);
+    console.log("Saving search:", savedSearch);
 
     return savedSearch;
   }
@@ -217,22 +248,27 @@ export class AdvancedSearchEngine {
   // Update saved search
   static async updateSavedSearch(
     searchId: string,
-    updates: Partial<Pick<SavedSearch, 'name' | 'filters' | 'alertEnabled' | 'alertFrequency'>>
+    updates: Partial<
+      Pick<SavedSearch, "name" | "filters" | "alertEnabled" | "alertFrequency">
+    >,
   ): Promise<SavedSearch | null> {
     // This would update in database
-    console.log('Updating search:', searchId, updates);
+    console.log("Updating search:", searchId, updates);
     return null;
   }
 
   // Delete saved search
   static async deleteSavedSearch(searchId: string): Promise<boolean> {
     // This would delete from database
-    console.log('Deleting search:', searchId);
+    console.log("Deleting search:", searchId);
     return true;
   }
 
   // Execute saved search
-  static async executeSavedSearch(searchId: string, user: User): Promise<{
+  static async executeSavedSearch(
+    searchId: string,
+    user: User,
+  ): Promise<{
     opportunities: Opportunity[];
     totalCount: number;
     newSinceLastRun: number;
@@ -252,55 +288,61 @@ export class AdvancedSearchEngine {
     personalizedOpportunities: Opportunity[];
     industryInsights: {
       industry: string;
-      trend: 'increasing' | 'decreasing' | 'stable';
+      trend: "increasing" | "decreasing" | "stable";
       averageAward: number;
-      competitionLevel: 'low' | 'medium' | 'high';
+      competitionLevel: "low" | "medium" | "high";
     }[];
   }> {
     // This would analyze user behavior and generate personalized suggestions
     return {
       trendingKeywords: [
-        'artificial intelligence',
-        'cybersecurity',
-        'clean energy',
-        'supply chain',
-        'digital transformation',
+        "artificial intelligence",
+        "cybersecurity",
+        "clean energy",
+        "supply chain",
+        "digital transformation",
       ],
       suggestedFilters: {
         basic: {
-          opportunityTypes: ['grant', 'contract'],
+          opportunityTypes: ["grant", "contract"],
           amountRange: { min: 100000, max: 1000000 },
         },
-        advanced: user.subscription?.tierId !== 'free' ? {
-          industryCategories: ['54', '51'], // Professional services, Information
-          competitionLevel: 'low',
-        } : undefined,
+        advanced:
+          user.subscription?.tierId !== "free"
+            ? {
+                industryCategories: ["54", "51"], // Professional services, Information
+                competitionLevel: "low",
+              }
+            : undefined,
       },
       personalizedOpportunities: [], // Based on user's industry and past searches
       industryInsights: [
         {
-          industry: 'Cybersecurity',
-          trend: 'increasing',
+          industry: "Cybersecurity",
+          trend: "increasing",
           averageAward: 750000,
-          competitionLevel: 'medium',
+          competitionLevel: "medium",
         },
         {
-          industry: 'Clean Energy',
-          trend: 'increasing',
+          industry: "Clean Energy",
+          trend: "increasing",
           averageAward: 2500000,
-          competitionLevel: 'high',
+          competitionLevel: "high",
         },
       ],
     };
   }
 
   // Convert advanced filters to standard search parameters
-  private static convertToSearchParams(filters: AdvancedSearchFilters): OpportunitySearchParams {
+  private static convertToSearchParams(
+    filters: AdvancedSearchFilters,
+  ): OpportunitySearchParams {
     const params: OpportunitySearchParams = {};
 
     // Basic filters
     if (filters.basic.query) params.query = filters.basic.query;
-    if (filters.basic.opportunityTypes) params.type = filters.basic.opportunityTypes as any[];
+    if (filters.basic.opportunityTypes)
+      params.type = filters.basic.opportunityTypes as any[];
     if (filters.basic.agencies) params.agencies = filters.basic.agencies;
     if (filters.basic.status) params.status = filters.basic.status;
     if (filters.basic.amountRange) {
@@ -332,14 +374,20 @@ export class AdvancedSearchEngine {
   }
 
   // Enhance search parameters based on user's subscription tier
-  private static enhanceSearchForUser(params: OpportunitySearchParams, user: User): OpportunitySearchParams {
+  private static enhanceSearchForUser(
+    params: OpportunitySearchParams,
+    user: User,
+  ): OpportunitySearchParams {
     const enhanced = { ...params };
 
     // Premium features for Business+ tiers
-    if (user.subscription && ['business', 'enterprise'].includes(user.subscription.tierId)) {
+    if (
+      user.subscription &&
+      ["business", "enterprise"].includes(user.subscription.tierId)
+    ) {
       // Add AI-enhanced search scoring
-      enhanced.sortBy = 'relevance';
-      
+      enhanced.sortBy = "relevance";
+
       // Add user-specific preferences if available
       if (user.preferences.industryAlerts.length > 0) {
         enhanced.industryCategories = [
@@ -372,4 +420,5 @@ export interface SearchFacets {
 // Export convenience functions
 export const executeAdvancedSearch = AdvancedSearchEngine.executeAdvancedSearch;
 export const saveSearch = AdvancedSearchEngine.saveSearch;
-export const generateSmartSuggestions = AdvancedSearchEngine.generateSmartSuggestions;
+export const generateSmartSuggestions =
+  AdvancedSearchEngine.generateSmartSuggestions;

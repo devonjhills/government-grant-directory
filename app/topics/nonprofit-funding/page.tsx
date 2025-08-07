@@ -76,7 +76,7 @@ export default async function NonprofitFundingPage() {
   } catch (err) {
     console.error(
       "Failed to fetch featured grants for nonprofit funding page:",
-      err
+      err,
     );
     featuredError = "Could not load featured grants.";
   }

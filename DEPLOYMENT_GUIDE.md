@@ -32,7 +32,6 @@ The Government Grant & Procurement Directory aggregates data from multiple gover
 
 ### Required API Keys
 
-
 #### 1. USAspending.gov API (NO KEY REQUIRED)
 
 **What it provides:** Historical federal spending data, contract awards
@@ -58,6 +57,7 @@ The Government Grant & Procurement Directory aggregates data from multiple gover
 **Purpose:** Web analytics and user tracking
 
 **How to obtain:**
+
 1. Visit [Google Analytics](https://analytics.google.com/)
 2. Create new GA4 property
 3. Get Measurement ID (format: G-XXXXXXXXXX)
@@ -69,18 +69,21 @@ The Government Grant & Procurement Directory aggregates data from multiple gover
 Choose one of the following services:
 
 **SendGrid (Recommended)**
+
 - Sign up at [sendgrid.com](https://sendgrid.com)
 - Create API key in Settings → API Keys
 - Verify your domain for better deliverability
 - Environment variable: `SENDGRID_API_KEY`
 
 **AWS SES**
+
 - Set up AWS SES in your AWS account
 - Verify email domain
 - Create IAM user with SES send permissions
 - Environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`
 
 **Resend (Alternative)**
+
 - Sign up at [resend.com](https://resend.com)
 - Create API key
 - Environment variable: `RESEND_API_KEY`
@@ -90,6 +93,7 @@ Choose one of the following services:
 The application supports SQLite for development and PostgreSQL for production.
 
 **PostgreSQL (Recommended for production)**
+
 - Use managed services like:
   - Vercel Postgres
   - AWS RDS
@@ -149,6 +153,7 @@ ENABLE_ALERTS=true
 ### PostgreSQL Production Setup
 
 1. **Create database:**
+
 ```sql
 CREATE DATABASE grant_directory;
 CREATE USER grant_user WITH ENCRYPTED PASSWORD 'your_secure_password';
@@ -156,11 +161,13 @@ GRANT ALL PRIVILEGES ON DATABASE grant_directory TO grant_user;
 ```
 
 2. **Run migrations:**
+
 ```bash
 npm run db:migrate
 ```
 
 3. **Seed initial data (optional):**
+
 ```bash
 npm run db:seed
 ```
@@ -171,7 +178,7 @@ The application will create the following tables:
 
 - `users` - User accounts and profiles
 - `subscriptions` - Subscription tiers and billing
-- `saved_opportunities` - User saved opportunities  
+- `saved_opportunities` - User saved opportunities
 - `search_alerts` - Email alert configurations
 - `usage_metrics` - API usage tracking
 - `opportunity_cache` - Cached opportunity data
@@ -186,6 +193,7 @@ The application will create the following tables:
    - Configure environment variables in Vercel dashboard
 
 2. **Configure build settings:**
+
    ```json
    {
      "buildCommand": "npm run build",
@@ -201,11 +209,13 @@ The application will create the following tables:
 ### Option 2: Docker Deployment
 
 1. **Build Docker image:**
+
 ```bash
 docker build -t grant-directory .
 ```
 
 2. **Run container:**
+
 ```bash
 docker run -d \
   --name grant-directory \
@@ -215,8 +225,9 @@ docker run -d \
 ```
 
 3. **Use docker-compose for full stack:**
+
 ```yaml
-version: '3.8'
+version: "3.8"
 services:
   app:
     build: .
@@ -226,7 +237,7 @@ services:
       - .env.production
     depends_on:
       - db
-  
+
   db:
     image: postgres:15
     environment:
@@ -243,7 +254,9 @@ volumes:
 ### Option 3: AWS/Cloud Deployment
 
 **Using AWS App Runner:**
+
 1. Create `apprunner.yaml`:
+
 ```yaml
 version: 1.0
 runtime: nodejs18
@@ -268,45 +281,49 @@ run:
 ### 1. Domain and SSL Setup
 
 **Custom Domain:**
+
 1. Point your domain to deployment platform
 2. Configure DNS records (A/CNAME)
 3. Enable SSL certificate (automatic with most platforms)
 
 **CDN Configuration (Optional but recommended):**
+
 ```javascript
 // next.config.mjs
 const nextConfig = {
   images: {
-    loader: 'cloudinary', // or 'custom'
-    domains: ['your-cdn-domain.com'],
+    loader: "cloudinary", // or 'custom'
+    domains: ["your-cdn-domain.com"],
   },
   // Add CDN for static assets
-  assetPrefix: process.env.NODE_ENV === 'production' 
-    ? 'https://your-cdn-domain.com' 
-    : '',
+  assetPrefix:
+    process.env.NODE_ENV === "production" ? "https://your-cdn-domain.com" : "",
 };
 ```
 
 ### 2. Email Templates Setup
 
 Create email templates for:
+
 - Welcome emails
-- Alert notifications  
+- Alert notifications
 - Password resets
 - Subscription updates
 
 ### 3. Monitoring Setup
 
 **Application Monitoring:**
+
 ```bash
 # Install monitoring packages
 npm install @vercel/analytics @opentelemetry/api @opentelemetry/auto-instrumentations-node
 ```
 
 **Error Tracking:**
+
 ```javascript
 // Add to your Next.js app
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -317,6 +334,7 @@ Sentry.init({
 ### 4. Caching Configuration
 
 **Redis Setup (Optional for advanced caching):**
+
 ```bash
 # Environment variable
 REDIS_URL=redis://your-redis-url
@@ -324,7 +342,7 @@ REDIS_URL=redis://your-redis-url
 
 ```javascript
 // lib/redis.ts
-import Redis from 'ioredis';
+import Redis from "ioredis";
 
 export const redis = new Redis(process.env.REDIS_URL);
 ```
@@ -350,15 +368,15 @@ export const redis = new Redis(process.env.REDIS_URL);
 
 ```javascript
 // lib/logger.ts
-import winston from 'winston';
+import winston from "winston";
 
 export const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  level: process.env.NODE_ENV === "production" ? "info" : "debug",
   format: winston.format.json(),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'logs/combined.log' }),
+    new winston.transports.File({ filename: "logs/error.log", level: "error" }),
+    new winston.transports.File({ filename: "logs/combined.log" }),
   ],
 });
 ```
@@ -383,11 +401,11 @@ The application includes health check endpoints:
 
 ```javascript
 // lib/rate-limit.ts
-import { Ratelimit } from '@upstash/ratelimit';
+import { Ratelimit } from "@upstash/ratelimit";
 
 export const ratelimit = new Ratelimit({
   redis: redis,
-  limiter: Ratelimit.slidingWindow(100, '1 h'),
+  limiter: Ratelimit.slidingWindow(100, "1 h"),
 });
 ```
 
@@ -398,7 +416,7 @@ Add CSP headers in `next.config.mjs`:
 ```javascript
 const securityHeaders = [
   {
-    key: 'Content-Security-Policy',
+    key: "Content-Security-Policy",
     value: `
       default-src 'self';
       script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com;
@@ -406,14 +424,17 @@ const securityHeaders = [
       connect-src 'self' https://api.grants.gov https://api.usaspending.gov;
       img-src 'self' data: https:;
       frame-src 'none';
-    `.replace(/\s{2,}/g, ' ').trim()
-  }
+    `
+      .replace(/\s{2,}/g, " ")
+      .trim(),
+  },
 ];
 ```
 
 ### 4. HTTPS Enforcement
 
 Ensure all production traffic uses HTTPS:
+
 - Configure your hosting platform to redirect HTTP to HTTPS
 - Use HSTS headers
 - Regular SSL certificate monitoring
@@ -423,21 +444,24 @@ Ensure all production traffic uses HTTPS:
 ### Common Issues
 
 **1. API Connection Issues:**
+
 ```bash
 # Test USAspending API
 curl "https://api.usaspending.gov/api/v2/search/spending_by_award/"
 
-# Test Grants.gov API  
+# Test Grants.gov API
 curl "https://api.grants.gov/v1/api/search2?keyword=health"
 ```
 
 **2. Database Connection Issues:**
+
 ```bash
 # Test database connection
 npm run db:test-connection
 ```
 
 **3. Build Failures:**
+
 ```bash
 # Clear Next.js cache
 rm -rf .next
@@ -445,6 +469,7 @@ npm run build
 ```
 
 **4. Memory Issues:**
+
 ```bash
 # Increase Node.js memory limit
 NODE_OPTIONS="--max_old_space_size=4096" npm start
@@ -476,17 +501,20 @@ NODE_OPTIONS="--max_old_space_size=4096" npm start
 ### Regular Tasks
 
 **Weekly:**
+
 - Review error logs
 - Monitor API usage
 - Check system performance metrics
 
-**Monthly:**  
+**Monthly:**
+
 - Update dependencies
 - Review security settings
 - Analyze user feedback
 - Update content and data sources
 
 **Quarterly:**
+
 - Rotate API keys
 - Security audit
 - Performance optimization review
@@ -495,6 +523,7 @@ NODE_OPTIONS="--max_old_space_size=4096" npm start
 ### Contact Information
 
 For deployment issues or questions:
+
 - Check GitHub Issues for common problems
 - Review API documentation for external services
 - Monitor service status pages for outages
@@ -504,8 +533,9 @@ For deployment issues or questions:
 This deployment guide covers all aspects of taking the Government Grant & Procurement Directory from development to production. Follow the checklists and monitoring guidelines to ensure a stable, performant, and secure deployment.
 
 Remember to:
+
 1. Test thoroughly in a staging environment
-2. Monitor closely after initial deployment  
+2. Monitor closely after initial deployment
 3. Have a rollback plan ready
 4. Keep all dependencies updated
 5. Regular security reviews

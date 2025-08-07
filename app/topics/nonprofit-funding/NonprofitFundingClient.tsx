@@ -27,15 +27,15 @@ export default function NonprofitFundingClient({
 }: NonprofitFundingClientProps) {
   const [grants, setGrants] = useState<Grant[]>(initialGrants);
   const [isLoading, setIsLoading] = useState<boolean>(
-    initialGrants.length === 0 && !initialError
+    initialGrants.length === 0 && !initialError,
   );
   const [error, setError] = useState<string | null>(initialError || null);
 
   const [featuredGrants, setFeaturedGrants] = useState<Grant[]>(
-    initialFeaturedGrants || []
+    initialFeaturedGrants || [],
   );
   const [featuredError, setFeaturedError] = useState<string | null>(
-    initialFeaturedError || null
+    initialFeaturedError || null,
   );
 
   const generateJsonLd = () => {

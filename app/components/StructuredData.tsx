@@ -1,4 +1,4 @@
-import { Opportunity } from '@/types';
+import { Opportunity } from "@/types";
 
 interface WebSiteStructuredDataProps {
   name: string;
@@ -17,169 +17,196 @@ interface OrganizationStructuredDataProps {
   url: string;
 }
 
-export function WebSiteStructuredData({ name, description, url }: WebSiteStructuredDataProps) {
+export function WebSiteStructuredData({
+  name,
+  description,
+  url,
+}: WebSiteStructuredDataProps) {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": name,
-    "description": description,
-    "url": url,
-    "potentialAction": {
+    name: name,
+    description: description,
+    url: url,
+    potentialAction: {
       "@type": "SearchAction",
-      "target": {
+      target: {
         "@type": "EntryPoint",
-        "urlTemplate": `${url}/search?q={search_term_string}`
+        urlTemplate: `${url}/search?q={search_term_string}`,
       },
-      "query-input": "required name=search_term_string"
+      "query-input": "required name=search_term_string",
     },
-    "mainEntity": {
+    mainEntity: {
       "@type": "DataCatalog",
-      "name": "Government Funding and Procurement Opportunities",
-      "description": "Comprehensive directory of government grants, contracts, and procurement opportunities",
-      "publisher": {
+      name: "Government Funding and Procurement Opportunities",
+      description:
+        "Comprehensive directory of government grants, contracts, and procurement opportunities",
+      publisher: {
         "@type": "Organization",
-        "name": name
+        name: name,
       },
-      "dataset": [
+      dataset: [
         {
           "@type": "Dataset",
-          "name": "Federal Grants Database",
-          "description": "Federal grant opportunities from Grants.gov",
-          "creator": {
+          name: "Federal Grants Database",
+          description: "Federal grant opportunities from Grants.gov",
+          creator: {
             "@type": "Organization",
-            "name": "Grants.gov"
-          }
+            name: "Grants.gov",
+          },
         },
         {
-          "@type": "Dataset", 
-          "name": "Federal Spending Database",
-          "description": "Historical federal awards and spending data from USAspending.gov",
-          "creator": {
+          "@type": "Dataset",
+          name: "Federal Spending Database",
+          description:
+            "Historical federal awards and spending data from USAspending.gov",
+          creator: {
             "@type": "Organization",
-            "name": "USAspending.gov"
-          }
-        }
-      ]
-    }
+            name: "USAspending.gov",
+          },
+        },
+      ],
+    },
   };
 
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData, null, 2) }}
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(structuredData, null, 2),
+      }}
     />
   );
 }
 
-export function OpportunityStructuredData({ opportunity, url }: OpportunityStructuredDataProps) {
+export function OpportunityStructuredData({
+  opportunity,
+  url,
+}: OpportunityStructuredDataProps) {
   const getOpportunityType = (type: string) => {
     switch (type) {
-      case 'grant':
-        return 'GovernmentGrant';
-      case 'contract':
-      case 'procurement':
-        return 'GovernmentContract';
-      case 'cooperative_agreement':
-        return 'CooperativeAgreement';
+      case "grant":
+        return "GovernmentGrant";
+      case "contract":
+      case "procurement":
+        return "GovernmentContract";
+      case "cooperative_agreement":
+        return "CooperativeAgreement";
       default:
-        return 'GovernmentService';
+        return "GovernmentService";
     }
   };
 
   const structuredData = {
     "@context": "https://schema.org",
     "@type": getOpportunityType(opportunity.type),
-    "identifier": opportunity.id,
-    "name": opportunity.title,
-    "description": opportunity.description,
-    "url": url,
-    "provider": {
+    identifier: opportunity.id,
+    name: opportunity.title,
+    description: opportunity.description,
+    url: url,
+    provider: {
       "@type": "GovernmentOrganization",
-      "name": opportunity.agency,
-      "identifier": opportunity.agencyCode
+      name: opportunity.agency,
+      identifier: opportunity.agencyCode,
     },
-    "availableChannel": {
+    availableChannel: {
       "@type": "ServiceChannel",
-      "serviceUrl": opportunity.linkToApply,
-      "availableLanguage": "English"
+      serviceUrl: opportunity.linkToApply,
+      availableLanguage: "English",
     },
-    "serviceType": opportunity.type,
-    "areaServed": {
+    serviceType: opportunity.type,
+    areaServed: {
       "@type": "Country",
-      "name": "United States"
+      name: "United States",
     },
     ...(opportunity.amount && {
-      "offers": {
+      offers: {
         "@type": "Offer",
-        "price": opportunity.amount,
-        "priceCurrency": "USD"
-      }
+        price: opportunity.amount,
+        priceCurrency: "USD",
+      },
     }),
     ...(opportunity.deadline && {
-      "applicationDeadline": opportunity.deadline
+      applicationDeadline: opportunity.deadline,
     }),
-    ...(opportunity.categories && opportunity.categories.length > 0 && {
-      "category": opportunity.categories
-    }),
-    ...(opportunity.industryCategories && opportunity.industryCategories.length > 0 && {
-      "industryCode": opportunity.industryCategories
-    }),
+    ...(opportunity.categories &&
+      opportunity.categories.length > 0 && {
+        category: opportunity.categories,
+      }),
+    ...(opportunity.industryCategories &&
+      opportunity.industryCategories.length > 0 && {
+        industryCode: opportunity.industryCategories,
+      }),
     ...(opportunity.contactInfo && {
-      "contactPoint": {
+      contactPoint: {
         "@type": "ContactPoint",
-        "contactType": "customer service",
-        ...(opportunity.contactInfo.name && { "name": opportunity.contactInfo.name }),
-        ...(opportunity.contactInfo.email && { "email": opportunity.contactInfo.email }),
-        ...(opportunity.contactInfo.phone && { "telephone": opportunity.contactInfo.phone })
-      }
+        contactType: "customer service",
+        ...(opportunity.contactInfo.name && {
+          name: opportunity.contactInfo.name,
+        }),
+        ...(opportunity.contactInfo.email && {
+          email: opportunity.contactInfo.email,
+        }),
+        ...(opportunity.contactInfo.phone && {
+          telephone: opportunity.contactInfo.phone,
+        }),
+      },
     }),
-    "datePosted": opportunity.postedDate,
-    "validThrough": opportunity.deadline,
-    "isAccessibleForFree": true,
-    "inLanguage": "en-US"
+    datePosted: opportunity.postedDate,
+    validThrough: opportunity.deadline,
+    isAccessibleForFree: true,
+    inLanguage: "en-US",
   };
 
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData, null, 2) }}
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(structuredData, null, 2),
+      }}
     />
   );
 }
 
-export function OrganizationStructuredData({ name, description, url }: OrganizationStructuredDataProps) {
+export function OrganizationStructuredData({
+  name,
+  description,
+  url,
+}: OrganizationStructuredDataProps) {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": name,
-    "description": description,
-    "url": url,
-    "logo": `${url}/logo.png`,
-    "sameAs": [
+    name: name,
+    description: description,
+    url: url,
+    logo: `${url}/logo.png`,
+    sameAs: [
       // Add social media profiles when available
       // "https://twitter.com/grantdirectory",
       // "https://linkedin.com/company/grant-directory"
     ],
-    "contactPoint": {
+    contactPoint: {
       "@type": "ContactPoint",
-      "contactType": "customer service",
-      "availableLanguage": "English"
+      contactType: "customer service",
+      availableLanguage: "English",
     },
-    "areaServed": {
+    areaServed: {
       "@type": "Country",
-      "name": "United States"
+      name: "United States",
     },
-    "serviceType": [
+    serviceType: [
       "Government Grant Directory",
       "Procurement Opportunities Directory",
-      "Funding Database"
-    ]
+      "Funding Database",
+    ],
   };
 
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData, null, 2) }}
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(structuredData, null, 2),
+      }}
     />
   );
 }
@@ -193,22 +220,26 @@ interface BreadcrumbStructuredDataProps {
   items: BreadcrumbItem[];
 }
 
-export function BreadcrumbStructuredData({ items }: BreadcrumbStructuredDataProps) {
+export function BreadcrumbStructuredData({
+  items,
+}: BreadcrumbStructuredDataProps) {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": items.map((item, index) => ({
+    itemListElement: items.map((item, index) => ({
       "@type": "ListItem",
-      "position": index + 1,
-      "name": item.name,
-      "item": item.url
-    }))
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
   };
 
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData, null, 2) }}
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(structuredData, null, 2),
+      }}
     />
   );
 }
@@ -224,20 +255,22 @@ export function FAQStructuredData({ faqs }: FAQStructuredDataProps) {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": faqs.map((faq) => ({
+    mainEntity: faqs.map((faq) => ({
       "@type": "Question",
-      "name": faq.question,
-      "acceptedAnswer": {
+      name: faq.question,
+      acceptedAnswer: {
         "@type": "Answer",
-        "text": faq.answer
-      }
-    }))
+        text: faq.answer,
+      },
+    })),
   };
 
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData, null, 2) }}
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(structuredData, null, 2),
+      }}
     />
   );
 }

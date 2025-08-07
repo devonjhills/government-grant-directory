@@ -17,7 +17,7 @@ export function mapGrantsGovGrantToGrant(apiGrant: GrantsGovGrant): Grant {
     opportunityStatus: apiGrant.oppStatus,
     postedDate: apiGrant.openDate || "N/A",
     categories: apiGrant.alnist || [], // Assuming alnist maps to categories
-    type: 'grant', // Required by Grant interface
+    type: "grant", // Required by Grant interface
   };
 }
 

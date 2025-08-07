@@ -27,15 +27,15 @@ export default function SmallBusinessGrantsClient({
 }: SmallBusinessGrantsClientProps) {
   const [grants, setGrants] = useState<Grant[]>(initialGrants);
   const [isLoading, setIsLoading] = useState<boolean>(
-    initialGrants.length === 0 && !initialError
+    initialGrants.length === 0 && !initialError,
   );
   const [error, setError] = useState<string | null>(initialError || null);
 
   const [featuredGrants, setFeaturedGrants] = useState<Grant[]>(
-    initialFeaturedGrants || []
+    initialFeaturedGrants || [],
   );
   const [featuredError, setFeaturedError] = useState<string | null>(
-    initialFeaturedError || null
+    initialFeaturedError || null,
   );
 
   const generateJsonLd = () => {
@@ -87,10 +87,10 @@ export default function SmallBusinessGrantsClient({
             Grants for Small Businesses
           </h1>
           <p className="text-lg text-secondary-foreground max-w-4xl mx-auto leading-relaxed">
-            Navigating the world of grants can be challenging, but we&apos;re here to
-            help. Discover a variety of funding opportunities designed to
-            support small businesses at every stage, from innovative startups to
-            established enterprises looking to expand.
+            Navigating the world of grants can be challenging, but we&apos;re
+            here to help. Discover a variety of funding opportunities designed
+            to support small businesses at every stage, from innovative startups
+            to established enterprises looking to expand.
           </p>
         </header>
 

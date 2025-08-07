@@ -1,5 +1,5 @@
-import type { Metadata, ResolvingMetadata } from 'next';
-import { Suspense } from 'react';
+import type { Metadata, ResolvingMetadata } from "next";
+import { Suspense } from "react";
 import GrantsPageClient from "./GrantsPageClient";
 import { searchGrants } from "@/app/services/grantsGovService"; // Using alias
 import type { Grant } from "@/types"; // Using alias
@@ -7,20 +7,23 @@ import type { Grant } from "@/types"; // Using alias
 const ITEMS_PER_PAGE = 10;
 
 export async function generateMetadata(
-  { searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } },
-  parent: ResolvingMetadata
+  {
+    searchParams,
+  }: { searchParams?: { [key: string]: string | string[] | undefined } },
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const searchTerm = searchParams?.q?.toString() || '';
+  const searchTerm = searchParams?.q?.toString() || "";
   const currentPage = parseInt(searchParams?.page?.toString() || "1", 10);
   const parentMetadata = await parent;
 
-  let pageTitle = 'Browse Government Grants';
-  let description = 'Browse all available government grants and funding opportunities from federal, state, and local sources.';
-  
+  let pageTitle = "Browse Government Grants";
+  let description =
+    "Browse all available government grants and funding opportunities from federal, state, and local sources.";
+
   if (searchTerm) {
     pageTitle = `"${searchTerm}" Grant Search Results`;
     description = `Find government grants and funding opportunities related to ${searchTerm}. Search results from federal agencies including NIH, NSF, and more.`;
-    
+
     if (currentPage > 1) {
       pageTitle += ` - Page ${currentPage}`;
       description += ` Page ${currentPage} of search results.`;
@@ -32,9 +35,9 @@ export async function generateMetadata(
 
   // Build URL with current search params
   const urlParams = new URLSearchParams();
-  if (searchTerm) urlParams.set('q', searchTerm);
-  if (currentPage > 1) urlParams.set('page', currentPage.toString());
-  const canonical = `/grants${urlParams.toString() ? `?${urlParams.toString()}` : ''}`;
+  if (searchTerm) urlParams.set("q", searchTerm);
+  if (currentPage > 1) urlParams.set("page", currentPage.toString());
+  const canonical = `/grants${urlParams.toString() ? `?${urlParams.toString()}` : ""}`;
 
   return {
     title: pageTitle,
@@ -47,19 +50,19 @@ export async function generateMetadata(
       title: `${pageTitle} | Grant Finder`,
       url: canonical,
       description,
-      type: 'website',
+      type: "website",
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: `${pageTitle} | Grant Finder`,
       description,
     },
     robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   };
 }
@@ -71,10 +74,10 @@ export default async function GrantsPage({
 }) {
   const searchTerm = searchParams?.q?.toString() || "";
   const currentPage = parseInt(searchParams?.page?.toString() || "1", 10);
-  
+
   // Extract other filter params - example for oppStatuses
   // In a real app, you'd extract all relevant filter keys you expect
-  const oppStatuses = searchParams?.oppStatuses?.toString() || undefined; 
+  const oppStatuses = searchParams?.oppStatuses?.toString() || undefined;
   // Add other filter extractions here, e.g., agency, eligibility, etc.
   // For simplicity, we'll make a basic filter object for now
   const otherFilterParams: any = {};
@@ -95,7 +98,8 @@ export default async function GrantsPage({
   let pageError: string | null = null;
 
   // Fetch grants if there's a search term, filters, or show default grants
-  const hasSearchParams = searchTerm || Object.keys(otherFilterParams).length > 0;
+  const hasSearchParams =
+    searchTerm || Object.keys(otherFilterParams).length > 0;
 
   try {
     if (hasSearchParams) {
@@ -118,16 +122,20 @@ export default async function GrantsPage({
     }
   } catch (err) {
     console.error("Failed to fetch grants for server page:", err);
-    pageError = "Could not load grants due to a server error. Please try again later.";
+    pageError =
+      "Could not load grants due to a server error. Please try again later.";
     grants = [];
     totalPages = 1;
   }
 
-
   return (
-    <Suspense fallback={<div className="flex justify-center items-center py-20">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-    </div>}>
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      }
+    >
       <GrantsPageClient
         initialGrants={grants}
         initialTotalPages={totalPages}

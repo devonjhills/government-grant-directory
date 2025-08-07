@@ -25,7 +25,7 @@ export interface SubscriptionTier {
 export interface UserSubscription {
   userId: string;
   tierId: string;
-  status: 'active' | 'cancelled' | 'past_due' | 'trialing';
+  status: "active" | "cancelled" | "past_due" | "trialing";
   currentPeriodStart: Date;
   currentPeriodEnd: Date;
   cancelAtPeriodEnd: boolean;
@@ -46,8 +46,14 @@ export interface User {
   email: string;
   name: string;
   organization?: string;
-  organizationType?: 'small-business' | 'large-business' | 'nonprofit' | 'government' | 'academic' | 'other';
-  role?: 'individual' | 'team-member' | 'admin';
+  organizationType?:
+    | "small-business"
+    | "large-business"
+    | "nonprofit"
+    | "government"
+    | "academic"
+    | "other";
+  role?: "individual" | "team-member" | "admin";
   subscription?: UserSubscription;
   preferences: {
     emailNotifications: boolean;
@@ -63,17 +69,17 @@ export interface User {
 // Subscription tier definitions
 export const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
   {
-    id: 'free',
-    name: 'Free Explorer',
+    id: "free",
+    name: "Free Explorer",
     price: 0,
     yearlyPrice: 0,
     features: [
-      'Basic opportunity search',
-      'View opportunity details',
-      'Up to 50 searches per month',
-      'Save up to 10 opportunities',
-      'Email alerts (1 active)',
-      'Basic filters',
+      "Basic opportunity search",
+      "View opportunity details",
+      "Up to 50 searches per month",
+      "Save up to 10 opportunities",
+      "Email alerts (1 active)",
+      "Basic filters",
     ],
     limits: {
       searchesPerMonth: 50,
@@ -87,19 +93,19 @@ export const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
     },
   },
   {
-    id: 'professional',
-    name: 'Professional Researcher',
+    id: "professional",
+    name: "Professional Researcher",
     price: 4900, // $49/month
     yearlyPrice: 47040, // $39/month when paid yearly (20% discount)
     features: [
-      'Unlimited opportunity search',
-      'Advanced filtering and sorting',
-      'Save up to 500 opportunities',
-      'Up to 10 email alerts',
-      'Weekly opportunity digest',
-      'Export to CSV/Excel',
-      'Priority email support',
-      'Historical data access',
+      "Unlimited opportunity search",
+      "Advanced filtering and sorting",
+      "Save up to 500 opportunities",
+      "Up to 10 email alerts",
+      "Weekly opportunity digest",
+      "Export to CSV/Excel",
+      "Priority email support",
+      "Historical data access",
     ],
     limits: {
       searchesPerMonth: -1, // Unlimited
@@ -115,20 +121,20 @@ export const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
     popular: true,
   },
   {
-    id: 'business',
-    name: 'Business Intelligence',
+    id: "business",
+    name: "Business Intelligence",
     price: 14900, // $149/month
     yearlyPrice: 143040, // $119/month when paid yearly (20% discount)
     features: [
-      'Everything in Professional',
-      'Unlimited saved opportunities',
-      'Unlimited email alerts',
-      'Custom opportunity reports',
-      'Advanced analytics dashboard',
-      'API access (10,000 calls/month)',
-      'Bulk export (up to 10,000 records)',
-      'Phone support',
-      'Team collaboration (up to 5 users)',
+      "Everything in Professional",
+      "Unlimited saved opportunities",
+      "Unlimited email alerts",
+      "Custom opportunity reports",
+      "Advanced analytics dashboard",
+      "API access (10,000 calls/month)",
+      "Bulk export (up to 10,000 records)",
+      "Phone support",
+      "Team collaboration (up to 5 users)",
     ],
     limits: {
       searchesPerMonth: -1,
@@ -144,21 +150,21 @@ export const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
     },
   },
   {
-    id: 'enterprise',
-    name: 'Enterprise Solutions',
+    id: "enterprise",
+    name: "Enterprise Solutions",
     price: 49900, // $499/month
     yearlyPrice: 479040, // $399/month when paid yearly (20% discount)
     features: [
-      'Everything in Business',
-      'Unlimited API access',
-      'Custom integrations',
-      'Dedicated account manager',
-      'Custom data feeds',
-      'White-label options',
-      'Advanced security features',
-      'SLA guarantee',
-      'Unlimited team members',
-      'Custom training sessions',
+      "Everything in Business",
+      "Unlimited API access",
+      "Custom integrations",
+      "Dedicated account manager",
+      "Custom data feeds",
+      "White-label options",
+      "Advanced security features",
+      "SLA guarantee",
+      "Unlimited team members",
+      "Custom training sessions",
     ],
     limits: {
       searchesPerMonth: -1,
@@ -180,31 +186,50 @@ export class SubscriptionManager {
   // Check if user can perform an action based on their subscription
   static canPerformAction(
     user: User,
-    action: 'search' | 'save' | 'alert' | 'export' | 'api' | 'advanced_filter' | 'custom_report',
-    count?: number
+    action:
+      | "search"
+      | "save"
+      | "alert"
+      | "export"
+      | "api"
+      | "advanced_filter"
+      | "custom_report",
+    count?: number,
   ): { allowed: boolean; reason?: string; upgradeRequired?: string } {
-    if (!user.subscription || user.subscription.status !== 'active') {
+    if (!user.subscription || user.subscription.status !== "active") {
       // Treat as free tier
-      const freeTier = SUBSCRIPTION_TIERS.find(t => t.id === 'free')!;
-      return this.checkActionAgainstTier(freeTier, user.subscription?.usage || this.getDefaultUsage(), action, count);
+      const freeTier = SUBSCRIPTION_TIERS.find((t) => t.id === "free")!;
+      return this.checkActionAgainstTier(
+        freeTier,
+        user.subscription?.usage || this.getDefaultUsage(),
+        action,
+        count,
+      );
     }
 
-    const tier = SUBSCRIPTION_TIERS.find(t => t.id === user.subscription!.tierId);
+    const tier = SUBSCRIPTION_TIERS.find(
+      (t) => t.id === user.subscription!.tierId,
+    );
     if (!tier) {
-      return { allowed: false, reason: 'Invalid subscription tier' };
+      return { allowed: false, reason: "Invalid subscription tier" };
     }
 
-    return this.checkActionAgainstTier(tier, user.subscription.usage, action, count);
+    return this.checkActionAgainstTier(
+      tier,
+      user.subscription.usage,
+      action,
+      count,
+    );
   }
 
   private static checkActionAgainstTier(
     tier: SubscriptionTier,
-    usage: UserSubscription['usage'],
+    usage: UserSubscription["usage"],
     action: string,
-    count?: number
+    count?: number,
   ): { allowed: boolean; reason?: string; upgradeRequired?: string } {
     switch (action) {
-      case 'search':
+      case "search":
         if (tier.limits.searchesPerMonth === -1) return { allowed: true };
         if (usage.searchesThisMonth >= tier.limits.searchesPerMonth) {
           return {
@@ -215,7 +240,7 @@ export class SubscriptionManager {
         }
         return { allowed: true };
 
-      case 'save':
+      case "save":
         const currentSaved = usage.savedOpportunities || 0;
         const newTotal = currentSaved + (count || 1);
         if (tier.limits.savedOpportunities === -1) return { allowed: true };
@@ -228,7 +253,7 @@ export class SubscriptionManager {
         }
         return { allowed: true };
 
-      case 'alert':
+      case "alert":
         const currentAlerts = usage.emailAlertsUsed || 0;
         const newAlerts = currentAlerts + (count || 1);
         if (tier.limits.emailAlerts === -1) return { allowed: true };
@@ -241,11 +266,11 @@ export class SubscriptionManager {
         }
         return { allowed: true };
 
-      case 'export':
+      case "export":
         if (!tier.limits.bulkExport) {
           return {
             allowed: false,
-            reason: 'Bulk export not available in your plan',
+            reason: "Bulk export not available in your plan",
             upgradeRequired: this.getNextTier(tier.id),
           };
         }
@@ -261,11 +286,11 @@ export class SubscriptionManager {
         }
         return { allowed: true };
 
-      case 'api':
+      case "api":
         if (!tier.limits.apiAccess) {
           return {
             allowed: false,
-            reason: 'API access not available in your plan',
+            reason: "API access not available in your plan",
             upgradeRequired: this.getNextTier(tier.id),
           };
         }
@@ -281,21 +306,21 @@ export class SubscriptionManager {
         }
         return { allowed: true };
 
-      case 'advanced_filter':
+      case "advanced_filter":
         if (!tier.limits.advancedFilters) {
           return {
             allowed: false,
-            reason: 'Advanced filters not available in your plan',
+            reason: "Advanced filters not available in your plan",
             upgradeRequired: this.getNextTier(tier.id),
           };
         }
         return { allowed: true };
 
-      case 'custom_report':
+      case "custom_report":
         if (!tier.limits.customReports) {
           return {
             allowed: false,
-            reason: 'Custom reports not available in your plan',
+            reason: "Custom reports not available in your plan",
             upgradeRequired: this.getNextTier(tier.id),
           };
         }
@@ -307,15 +332,15 @@ export class SubscriptionManager {
   }
 
   private static getNextTier(currentTierId: string): string {
-    const tierOrder = ['free', 'professional', 'business', 'enterprise'];
+    const tierOrder = ["free", "professional", "business", "enterprise"];
     const currentIndex = tierOrder.indexOf(currentTierId);
     if (currentIndex === -1 || currentIndex === tierOrder.length - 1) {
-      return 'enterprise';
+      return "enterprise";
     }
     return tierOrder[currentIndex + 1];
   }
 
-  private static getDefaultUsage(): UserSubscription['usage'] {
+  private static getDefaultUsage(): UserSubscription["usage"] {
     return {
       searchesThisMonth: 0,
       savedOpportunities: 0,
@@ -328,8 +353,8 @@ export class SubscriptionManager {
   // Track usage for a user action
   static async trackUsage(
     userId: string,
-    action: 'search' | 'save' | 'alert' | 'export' | 'api',
-    count = 1
+    action: "search" | "save" | "alert" | "export" | "api",
+    count = 1,
   ): Promise<void> {
     // This would update the user's usage in the database
     // For now, we'll just log it
@@ -338,7 +363,7 @@ export class SubscriptionManager {
 
   // Get subscription tier by ID
   static getTier(tierId: string): SubscriptionTier | undefined {
-    return SUBSCRIPTION_TIERS.find(t => t.id === tierId);
+    return SUBSCRIPTION_TIERS.find((t) => t.id === tierId);
   }
 
   // Get all available tiers
@@ -349,37 +374,47 @@ export class SubscriptionManager {
   // Calculate usage percentage for a user
   static calculateUsagePercentages(user: User): Record<string, number> {
     if (!user.subscription) {
-      const freeTier = SUBSCRIPTION_TIERS.find(t => t.id === 'free')!;
+      const freeTier = SUBSCRIPTION_TIERS.find((t) => t.id === "free")!;
       return this.calculateTierUsage(freeTier, this.getDefaultUsage());
     }
 
-    const tier = SUBSCRIPTION_TIERS.find(t => t.id === user.subscription!.tierId);
+    const tier = SUBSCRIPTION_TIERS.find(
+      (t) => t.id === user.subscription!.tierId,
+    );
     if (!tier) return {};
 
     return this.calculateTierUsage(tier, user.subscription!.usage);
   }
 
-  private static calculateTierUsage(tier: SubscriptionTier, usage: UserSubscription['usage']): Record<string, number> {
+  private static calculateTierUsage(
+    tier: SubscriptionTier,
+    usage: UserSubscription["usage"],
+  ): Record<string, number> {
     const percentages: Record<string, number> = {};
 
     if (tier.limits.searchesPerMonth > 0) {
-      percentages.searches = (usage.searchesThisMonth / tier.limits.searchesPerMonth) * 100;
+      percentages.searches =
+        (usage.searchesThisMonth / tier.limits.searchesPerMonth) * 100;
     }
 
     if (tier.limits.savedOpportunities > 0) {
-      percentages.saved = (usage.savedOpportunities / tier.limits.savedOpportunities) * 100;
+      percentages.saved =
+        (usage.savedOpportunities / tier.limits.savedOpportunities) * 100;
     }
 
     if (tier.limits.emailAlerts > 0) {
-      percentages.alerts = (usage.emailAlertsUsed / tier.limits.emailAlerts) * 100;
+      percentages.alerts =
+        (usage.emailAlertsUsed / tier.limits.emailAlerts) * 100;
     }
 
     if (tier.limits.apiCalls && tier.limits.apiCalls > 0) {
-      percentages.api = ((usage.apiCallsThisMonth || 0) / tier.limits.apiCalls) * 100;
+      percentages.api =
+        ((usage.apiCallsThisMonth || 0) / tier.limits.apiCalls) * 100;
     }
 
     if (tier.limits.exportLimit && tier.limits.exportLimit > 0) {
-      percentages.exports = ((usage.exportsThisMonth || 0) / tier.limits.exportLimit) * 100;
+      percentages.exports =
+        ((usage.exportsThisMonth || 0) / tier.limits.exportLimit) * 100;
     }
 
     return percentages;
@@ -388,22 +423,27 @@ export class SubscriptionManager {
   // Check if subscription is expired or needs renewal
   static needsRenewal(subscription: UserSubscription): boolean {
     const now = new Date();
-    return subscription.currentPeriodEnd < now && subscription.status !== 'active';
+    return (
+      subscription.currentPeriodEnd < now && subscription.status !== "active"
+    );
   }
 
   // Check if user is in trial period
   static isInTrial(subscription: UserSubscription): boolean {
     if (!subscription.trialEnd) return false;
-    return new Date() < subscription.trialEnd && subscription.status === 'trialing';
+    return (
+      new Date() < subscription.trialEnd && subscription.status === "trialing"
+    );
   }
 
   // Get days remaining in current period
   static getDaysRemaining(subscription: UserSubscription): number {
     const now = new Date();
-    const end = subscription.trialEnd && subscription.status === 'trialing' 
-      ? subscription.trialEnd 
-      : subscription.currentPeriodEnd;
-    
+    const end =
+      subscription.trialEnd && subscription.status === "trialing"
+        ? subscription.trialEnd
+        : subscription.currentPeriodEnd;
+
     const diffTime = end.getTime() - now.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }

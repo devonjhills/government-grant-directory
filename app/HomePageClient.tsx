@@ -18,11 +18,11 @@ export default function HomePageClient({
 }: HomePageClientProps) {
   const router = useRouter();
   const [featuredGrants, setFeaturedGrants] = useState<Grant[]>(
-    initialFeaturedGrants
+    initialFeaturedGrants,
   );
   const [error, setError] = useState<string | null>(initialError || null);
   const [isLoading, setIsLoading] = useState<boolean>(
-    initialFeaturedGrants.length === 0 && !initialError
+    initialFeaturedGrants.length === 0 && !initialError,
   );
 
   const handleSearch = (searchTerm: string) => {
@@ -39,28 +39,35 @@ export default function HomePageClient({
             Grant Finder
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
-            Discover federal funding opportunities with ease. Search, filter, and find the perfect grants for your organization.
+            Discover federal funding opportunities with ease. Search, filter,
+            and find the perfect grants for your organization.
           </p>
-          
+
           {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
             <div className="flex flex-col items-center p-6 bg-card rounded-lg border border-border shadow-sm">
               <Search className="h-10 w-10 text-primary mb-3" />
-              <h3 className="font-semibold text-foreground mb-2">Smart Search</h3>
+              <h3 className="font-semibold text-foreground mb-2">
+                Smart Search
+              </h3>
               <p className="text-sm text-muted-foreground text-center">
                 Find grants by keyword, category, or agency
               </p>
             </div>
             <div className="flex flex-col items-center p-6 bg-card rounded-lg border border-border shadow-sm">
               <Target className="h-10 w-10 text-primary mb-3" />
-              <h3 className="font-semibold text-foreground mb-2">Real-time Data</h3>
+              <h3 className="font-semibold text-foreground mb-2">
+                Real-time Data
+              </h3>
               <p className="text-sm text-muted-foreground text-center">
                 Direct integration with Grants.gov API
               </p>
             </div>
             <div className="flex flex-col items-center p-6 bg-card rounded-lg border border-border shadow-sm">
               <Award className="h-10 w-10 text-primary mb-3" />
-              <h3 className="font-semibold text-foreground mb-2">Federal Grants</h3>
+              <h3 className="font-semibold text-foreground mb-2">
+                Federal Grants
+              </h3>
               <p className="text-sm text-muted-foreground text-center">
                 Access thousands of government opportunities
               </p>

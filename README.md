@@ -10,30 +10,35 @@ A comprehensive intelligence platform that transforms raw government funding dat
 ## ✨ Features
 
 ### 🧠 Intelligence Analysis
+
 - **Real Success Probabilities** based on published federal agency statistics (NSF: 11%, NIH: 14%, VA: 18%, SBA: 22%)
 - **Competition Intelligence** with realistic applicant pool analysis and expected application estimates
 - **Opportunity-Specific Insights** with detailed calculation breakdowns and methodology explanations
 - **Educational Transparency** - all estimates clearly sourced and explained
 
 ### 🎯 Opportunity Type Differentiation
+
 - **Visual Distinction** - Grants (green), Contracts (purple), Cooperative Agreements (orange), Other (teal)
 - **Type-Specific Terminology** - "Apply for" vs "Bid on" vs "Partner with" based on opportunity type
 - **Relevant Metrics** - Different data points displayed based on whether it's a grant, contract, or other opportunity
 - **Professional Styling** - Consistent design system with type-aware color schemes
 
 ### 🎨 Professional Design System
+
 - **8px Grid System** for consistent spacing throughout the application
 - **Professional Typography** hierarchy with improved readability
 - **Accessible Design** with proper focus states and contrast ratios
 - **Type-Aware UI** that adapts styling and terminology based on opportunity type
 
 ### ⚡ Technical Excellence
+
 - **Next.js 14 App Router** with Server Components and TypeScript
 - **Advanced Caching** with stale-while-revalidate patterns
-- **Error Handling** - Robust API error handling and graceful fallbacks  
+- **Error Handling** - Robust API error handling and graceful fallbacks
 - **Performance Optimization** with Core Web Vitals focus
 
 ### 📊 Data Integration
+
 - **Multi-Source APIs** - Grants.gov, USAspending.gov with unified data layer
 - **Real-time data** from official government sources with comprehensive error handling
 - **Data Standardization** - Consistent format across different government APIs
@@ -43,11 +48,12 @@ A comprehensive intelligence platform that transforms raw government funding dat
 
 ## 🚀 Live Demo
 
-Visit the live application: [Grant Finder](https://your-domain.com) *(Update with actual URL)*
+Visit the live application: [Grant Finder](https://your-domain.com) _(Update with actual URL)_
 
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **[Next.js 14](https://nextjs.org/)** - React framework with App Router
 - **[React 18](https://reactjs.org/)** - UI library with modern features
 - **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
@@ -57,22 +63,26 @@ Visit the live application: [Grant Finder](https://your-domain.com) *(Update wit
 - **[Lucide React](https://lucide.dev/)** - Beautiful & consistent icons
 
 ### Development & Build
+
 - **[ESLint](https://eslint.org/)** - Code linting
 - **[PostCSS](https://postcss.org/)** - CSS processing
 - **[Autoprefixer](https://autoprefixer.github.io/)** - CSS vendor prefixing
 
 ### API Integration
+
 - **Grants.gov API** - Official U.S. government grant data
 - **sanitize-html** - HTML content sanitization
 
 ## 🏗️ Architecture
 
 ### Server-Side First Approach
+
 - **Server Components** for initial data fetching
 - **Client Components** only where interactivity is needed
 - **API Proxy Pattern** for secure external API integration
 
 ### Component Structure
+
 ```
 app/
 ├── components/           # Reusable UI components
@@ -93,18 +103,21 @@ app/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - **Node.js** 18.0 or higher
 - **npm** or **yarn** package manager
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/your-username/government-grant-finder.git
    cd government-grant-finder
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -112,6 +125,7 @@ app/
    ```
 
 3. **Start development server**
+
    ```bash
    npm run dev
    # or
@@ -131,6 +145,7 @@ npm run start
 ## 📡 API Integration
 
 ### Grants.gov API
+
 - **Base URL**: `https://api.grants.gov/v1/api`
 - **Endpoints Used**:
   - `search2` - Grant search with filters
@@ -139,6 +154,7 @@ npm run start
 - **Rate Limiting**: Respectful usage patterns implemented
 
 ### Data Flow
+
 1. **User Search** → Internal API route (`/api/grants/search`)
 2. **API Route** → Grants.gov API with parameters
 3. **Data Transformation** → Mapped to internal `Grant` interface
@@ -147,17 +163,20 @@ npm run start
 ## 🎨 Design System
 
 ### Color Palette
+
 - **Primary**: Government blue theme
 - **Secondary**: Complementary grays
 - **Accent**: Interactive elements
 - **Semantic**: Success, warning, error states
 
 ### Typography
+
 - **Headings**: Bold, clear hierarchy
 - **Body**: Readable, accessible font sizes
 - **Code**: Monospace for technical content
 
 ### Responsive Breakpoints
+
 - **Mobile**: 0-768px
 - **Tablet**: 768-1024px
 - **Desktop**: 1024px+
@@ -165,20 +184,24 @@ npm run start
 ## 📱 Screenshots
 
 ### Desktop View
-![Desktop Screenshot](docs/screenshots/desktop.png) *(Add actual screenshot)*
+
+![Desktop Screenshot](docs/screenshots/desktop.png) _(Add actual screenshot)_
 
 ### Mobile View
-![Mobile Screenshot](docs/screenshots/mobile.png) *(Add actual screenshot)*
+
+![Mobile Screenshot](docs/screenshots/mobile.png) _(Add actual screenshot)_
 
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
+
 ```bash
 npm install -g vercel
 vercel
 ```
 
 ### Docker
+
 ```dockerfile
 FROM node:18-alpine
 WORKDIR /app
@@ -193,6 +216,7 @@ CMD ["npm", "start"]
 ## 🧪 Testing
 
 Currently, this project does not include a testing framework. Future enhancements may include:
+
 - **Unit tests** with Jest
 - **Integration tests** with Testing Library
 - **E2E tests** with Playwright
@@ -200,12 +224,14 @@ Currently, this project does not include a testing framework. Future enhancement
 ## 📈 Performance
 
 ### Lighthouse Scores
+
 - **Performance**: 95+
 - **Accessibility**: 95+
 - **Best Practices**: 95+
 - **SEO**: 95+
 
 ### Optimizations
+
 - **Static generation** for improved loading
 - **Image optimization** with Next.js
 - **Tree shaking** for smaller bundles
@@ -246,4 +272,4 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ---
 
-*Built with ❤️ for grant seekers everywhere*
+_Built with ❤️ for grant seekers everywhere_

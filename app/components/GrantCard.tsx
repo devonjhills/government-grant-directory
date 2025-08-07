@@ -64,9 +64,9 @@ const GrantCard: React.FC<GrantCardProps> = ({ grant }) => {
 
   const formatAmount = (amount: number) => {
     if (amount === 0) return "Amount varies";
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -80,16 +80,21 @@ const GrantCard: React.FC<GrantCardProps> = ({ grant }) => {
             <CardTitle className="text-lg font-semibold leading-tight line-clamp-2">
               {displayTitle}
             </CardTitle>
-            <Badge variant={getStatusVariant(grant.opportunityStatus || "Unknown")} className="shrink-0 text-xs">
+            <Badge
+              variant={getStatusVariant(grant.opportunityStatus || "Unknown")}
+              className="shrink-0 text-xs"
+            >
               {grant.opportunityStatus || "Unknown"}
             </Badge>
           </div>
-          
+
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Building2 className="h-4 w-4" />
             <span>{grant.agency}</span>
             {grant.agencyCode && (
-              <Badge variant="outline" className="text-xs">{grant.agencyCode}</Badge>
+              <Badge variant="outline" className="text-xs">
+                {grant.agencyCode}
+              </Badge>
             )}
           </div>
         </div>
@@ -99,7 +104,7 @@ const GrantCard: React.FC<GrantCardProps> = ({ grant }) => {
         <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
           {descriptionSnippet}
         </p>
-        
+
         <div className="space-y-2 pt-2 border-t border-border">
           <div className="flex items-center gap-2 text-sm">
             <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -128,10 +133,7 @@ const GrantCard: React.FC<GrantCardProps> = ({ grant }) => {
       </CardContent>
 
       <CardFooter className="pt-4">
-        <Button
-          asChild
-          variant="outline"
-          className="w-full">
+        <Button asChild variant="outline" className="w-full">
           <Link href={`/grants/${grant.id}`}>
             View Details
             <ExternalLink className="ml-2 h-4 w-4" />

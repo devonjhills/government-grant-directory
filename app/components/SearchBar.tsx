@@ -34,7 +34,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, initialValue }) => {
           <Button
             type="submit"
             aria-label="Search grants"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 rounded-lg font-semibold hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 rounded-lg font-semibold hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          >
             <Search className="w-4 h-4 mr-2" />
             Search
           </Button>
@@ -42,7 +43,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, initialValue }) => {
       </form>
       <div className="mt-4 text-center">
         <p className="text-sm text-muted-foreground">
-          Powered by <span className="font-semibold">Grants.gov</span> • Search thousands of federal grants
+          Powered by <span className="font-semibold">Grants.gov</span> • Search
+          thousands of federal grants
         </p>
       </div>
     </div>

@@ -29,27 +29,29 @@ export default function GrantsPageClient({
 }: GrantsPageClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const [searchResults, setSearchResults] = useState<Grant[]>(initialGrants);
   const [currentPage, setCurrentPage] = useState<number>(initialCurrentPage);
   const [totalPages, setTotalPages] = useState<number>(initialTotalPages);
   const [currentSearchTerm, setCurrentSearchTerm] = useState<string>(
-    initialSearchTerm || ""
+    initialSearchTerm || "",
   );
   const [currentFilters, setCurrentFilters] = useState<any>(
-    initialFilters || {}
+    initialFilters || {},
   ); // Define more strictly
   const [isLoading, setIsLoading] = useState<boolean>(false); // False initially, data comes from server
   const [error, setError] = useState<string | null>(initialError || null);
 
   // Helper function to update URL with search params
-  const updateUrlParams = (params: Record<string, string | number | undefined>) => {
+  const updateUrlParams = (
+    params: Record<string, string | number | undefined>,
+  ) => {
     setIsLoading(true); // Show loading state during navigation
-    
+
     const url = new URLSearchParams(searchParams.toString());
-    
+
     Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== '' && value !== 0) {
+      if (value !== undefined && value !== "" && value !== 0) {
         url.set(key, String(value));
       } else {
         url.delete(key);
@@ -57,11 +59,11 @@ export default function GrantsPageClient({
     });
 
     // Remove page param if it's 1 (default)
-    if (url.get('page') === '1') {
-      url.delete('page');
+    if (url.get("page") === "1") {
+      url.delete("page");
     }
 
-    const newUrl = `/grants${url.toString() ? `?${url.toString()}` : ''}`;
+    const newUrl = `/grants${url.toString() ? `?${url.toString()}` : ""}`;
     router.push(newUrl);
   };
 
@@ -74,7 +76,14 @@ export default function GrantsPageClient({
     setCurrentFilters(initialFilters || {});
     setError(initialError || null);
     setIsLoading(false);
-  }, [initialGrants, initialCurrentPage, initialTotalPages, initialSearchTerm, initialFilters, initialError]);
+  }, [
+    initialGrants,
+    initialCurrentPage,
+    initialTotalPages,
+    initialSearchTerm,
+    initialFilters,
+    initialError,
+  ]);
 
   // handleSearch will update URL params, triggering page reload with new search
   const handleSearch = (searchTerm: string) => {
@@ -136,13 +145,13 @@ export default function GrantsPageClient({
         ) : (
           <div className="text-center py-20">
             <p className="text-lg text-muted-foreground mb-4">
-              {currentSearchTerm 
-                ? `No grants found for "${currentSearchTerm}"` 
+              {currentSearchTerm
+                ? `No grants found for "${currentSearchTerm}"`
                 : "No grants available"}
             </p>
             <p className="text-sm text-muted-foreground">
-              {currentSearchTerm 
-                ? "Try searching with different keywords or browse all grants." 
+              {currentSearchTerm
+                ? "Try searching with different keywords or browse all grants."
                 : "Please try refreshing the page."}
             </p>
           </div>

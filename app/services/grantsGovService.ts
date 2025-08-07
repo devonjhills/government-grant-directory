@@ -28,15 +28,16 @@ export async function searchGrants(searchParams: {
       const errorText = await response.text();
       console.error("Grants.gov API Error:", response.status, errorText);
       throw new Error(
-        `API request failed with status ${response.status}: ${errorText}`
+        `API request failed with status ${response.status}: ${errorText}`,
       );
     }
 
     // The /api/grants/search route now returns data in the expected format: { grants: Grant[], totalRecords: number }
     // It also handles Grants.gov specific API errors, so we don't need to check for apiResponse.errorcode here.
     // The response.json() will be the actual data structure we need or an error structure if the API route failed.
-    const mappedData: { grants: Grant[]; totalRecords: number } = await response.json();
-    
+    const mappedData: { grants: Grant[]; totalRecords: number } =
+      await response.json();
+
     // If response.ok was true, mappedData is { grants, totalRecords }.
     // If response.ok was false, the error would have been caught above and this part wouldn't be reached.
     // If mappedData contains an error structure from our API route (e.g. { error: "message" }),
@@ -44,7 +45,6 @@ export async function searchGrants(searchParams: {
     // this function could add another layer of checking if desired, but typically,
     // if response.ok is true, the body is the expected successful payload.
     return mappedData;
-
   } catch (error) {
     console.error("Error in searchGrants:", error);
     // The function signature expects { grants: Grant[]; totalRecords: number },
@@ -132,21 +132,24 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
   }
 
   // Extract CFDA numbers
-  const cfdaNumbers = synopsis?.cfdaNumbers?.map((cfda: any) => cfda.number) || [];
+  const cfdaNumbers =
+    synopsis?.cfdaNumbers?.map((cfda: any) => cfda.number) || [];
 
   // Extract contact information
-  const grantorContactInfo = synopsis?.grantorContactInfo ? {
-    name: synopsis.grantorContactInfo.contactName || undefined,
-    email: synopsis.grantorContactInfo.contactEmail || undefined,
-    phone: synopsis.grantorContactInfo.contactPhone || undefined,
-  } : undefined;
+  const grantorContactInfo = synopsis?.grantorContactInfo
+    ? {
+        name: synopsis.grantorContactInfo.contactName || undefined,
+        email: synopsis.grantorContactInfo.contactEmail || undefined,
+        phone: synopsis.grantorContactInfo.contactPhone || undefined,
+      }
+    : undefined;
 
   return {
     id: grantData?.opportunityId?.toString() || "N/A", // This is the main alphanumeric Opportunity ID
     title: grantData?.opportunityTitle || "N/A",
     agency: synopsis?.agencyName || grantData?.owningAgencyCode || "N/A",
     description: sanitizeHtmlContent(
-      synopsis?.synopsisDesc || "No detailed description available."
+      synopsis?.synopsisDesc || "No detailed description available.",
     ),
     eligibilityCriteria: eligibilityCriteria,
     deadline: synopsis?.responseDate || synopsis?.responseDateStr || "N/A", // Use responseDate from detail API
@@ -161,22 +164,27 @@ function _mapFetchedOpportunityToGrant(apiDetailResponse: any): Grant {
     awardFloor: parsedFloor > 0 ? parsedFloor : undefined,
     awardCeiling: parsedAmount > 0 ? parsedAmount : undefined,
     expectedAwards: expectedAwards > 0 ? expectedAwards : undefined,
-    fundingInstruments: fundingInstruments.length > 0 ? fundingInstruments : undefined,
-    fundingActivityCategories: fundingActivityCategories.length > 0 ? fundingActivityCategories : undefined,
-    applicantTypes: synopsis?.applicantTypes?.map((at: any) => at.description) || undefined,
+    fundingInstruments:
+      fundingInstruments.length > 0 ? fundingInstruments : undefined,
+    fundingActivityCategories:
+      fundingActivityCategories.length > 0
+        ? fundingActivityCategories
+        : undefined,
+    applicantTypes:
+      synopsis?.applicantTypes?.map((at: any) => at.description) || undefined,
     agencyCode: grantData?.owningAgencyCode || undefined,
     cfda: cfdaNumbers.length > 0 ? cfdaNumbers : undefined,
     costSharing: synopsis?.costSharingDescription || undefined,
     contactInfo: grantorContactInfo,
     additionalInfo: sanitizeHtmlContent(synopsis?.additionalInformation || ""),
     version: synopsis?.version?.toString() || undefined,
-    type: 'grant', // Required by Grant interface
+    type: "grant", // Required by Grant interface
   };
 }
 
 // Get detailed information for a specific grant
 export async function getGrantDetails(
-  opportunityId: string
+  opportunityId: string,
 ): Promise<Grant | null> {
   try {
     const response = await fetch(`${ABSOLUTE_APP_URL}/api/grants/details`, {
@@ -192,10 +200,10 @@ export async function getGrantDetails(
       console.error(
         "Grants.gov fetchOpportunity API Error:",
         response.status,
-        errorText
+        errorText,
       );
       throw new Error(
-        `API request failed with status ${response.status}: ${errorText}`
+        `API request failed with status ${response.status}: ${errorText}`,
       );
     }
 
@@ -208,7 +216,7 @@ export async function getGrantDetails(
       // Handle cases where apiResponse.data is not present, or if there's an error code in apiResponse
       console.warn(
         `No data found or error in API response for opportunity ID: ${opportunityId}`,
-        apiResponse
+        apiResponse,
       );
       return null;
     }

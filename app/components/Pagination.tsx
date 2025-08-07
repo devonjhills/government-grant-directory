@@ -39,14 +39,16 @@ const Pagination: React.FC<PaginationProps> = ({
     const range = [];
     const rangeWithDots = [];
 
-    for (let i = Math.max(2, currentPage - delta); 
-         i <= Math.min(totalPages - 1, currentPage + delta); 
-         i++) {
+    for (
+      let i = Math.max(2, currentPage - delta);
+      i <= Math.min(totalPages - 1, currentPage + delta);
+      i++
+    ) {
       range.push(i);
     }
 
     if (currentPage - delta > 2) {
-      rangeWithDots.push(1, '...');
+      rangeWithDots.push(1, "...");
     } else {
       rangeWithDots.push(1);
     }
@@ -54,7 +56,7 @@ const Pagination: React.FC<PaginationProps> = ({
     rangeWithDots.push(...range);
 
     if (currentPage + delta < totalPages - 1) {
-      rangeWithDots.push('...', totalPages);
+      rangeWithDots.push("...", totalPages);
     } else if (totalPages > 1) {
       rangeWithDots.push(totalPages);
     }
@@ -72,8 +74,8 @@ const Pagination: React.FC<PaginationProps> = ({
       {/* Results info */}
       {totalResults && (
         <p className="text-sm text-muted-foreground">
-          Showing <span className="font-medium">{startResult}</span> to{' '}
-          <span className="font-medium">{endResult}</span> of{' '}
+          Showing <span className="font-medium">{startResult}</span> to{" "}
+          <span className="font-medium">{endResult}</span> of{" "}
           <span className="font-medium">{totalResults}</span> results
         </p>
       )}
@@ -93,7 +95,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
         <div className="flex items-center space-x-1">
           {visiblePages.map((page, index) => {
-            if (page === '...') {
+            if (page === "...") {
               return (
                 <span key={`dots-${index}`} className="px-2">
                   <MoreHorizontal className="h-4 w-4 text-muted-foreground" />

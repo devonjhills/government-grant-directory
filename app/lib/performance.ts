@@ -10,7 +10,9 @@ export interface PerformanceMetrics {
 
 class PerformanceMonitor {
   private metrics: Map<string, PerformanceMetrics> = new Map();
-  private isEnabled = process.env.NODE_ENV !== 'production' || process.env.ENABLE_PERFORMANCE_MONITORING === 'true';
+  private isEnabled =
+    process.env.NODE_ENV !== "production" ||
+    process.env.ENABLE_PERFORMANCE_MONITORING === "true";
 
   // Start timing an operation
   startTiming(name: string, metadata?: Record<string, any>): void {
@@ -41,14 +43,21 @@ class PerformanceMonitor {
 
     // Log slow operations (>1000ms)
     if (duration > 1000) {
-      console.warn(`Slow operation detected: ${name} took ${duration.toFixed(2)}ms`, metric.metadata);
+      console.warn(
+        `Slow operation detected: ${name} took ${duration.toFixed(2)}ms`,
+        metric.metadata,
+      );
     }
 
     return duration;
   }
 
   // Measure a function execution
-  async measure<T>(name: string, fn: () => Promise<T>, metadata?: Record<string, any>): Promise<T> {
+  async measure<T>(
+    name: string,
+    fn: () => Promise<T>,
+    metadata?: Record<string, any>,
+  ): Promise<T> {
     if (!this.isEnabled) {
       return await fn();
     }
@@ -85,12 +94,14 @@ class PerformanceMonitor {
     averageDuration: number;
     slowOperations: PerformanceMetrics[];
   } {
-    const metrics = this.getMetrics().filter(m => m.duration !== undefined);
+    const metrics = this.getMetrics().filter((m) => m.duration !== undefined);
     const totalOperations = metrics.length;
-    const averageDuration = totalOperations > 0 
-      ? metrics.reduce((sum, m) => sum + (m.duration || 0), 0) / totalOperations 
-      : 0;
-    const slowOperations = metrics.filter(m => (m.duration || 0) > 1000);
+    const averageDuration =
+      totalOperations > 0
+        ? metrics.reduce((sum, m) => sum + (m.duration || 0), 0) /
+          totalOperations
+        : 0;
+    const slowOperations = metrics.filter((m) => (m.duration || 0) > 1000);
 
     return {
       totalOperations,
@@ -105,7 +116,11 @@ export const performanceMonitor = new PerformanceMonitor();
 
 // Decorator for timing async functions
 export function timed(name?: string) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) {
     const originalMethod = descriptor.value;
     const methodName = name || `${target.constructor.name}.${propertyKey}`;
 
@@ -113,7 +128,7 @@ export function timed(name?: string) {
       return await performanceMonitor.measure(
         methodName,
         () => originalMethod.apply(this, args),
-        { args: args.length }
+        { args: args.length },
       );
     };
 
@@ -135,7 +150,7 @@ export class WebVitalsMonitor {
 
   // Initialize web vitals monitoring
   init(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     // Monitor Core Web Vitals
     this.observePerformanceEntries();
@@ -143,25 +158,25 @@ export class WebVitalsMonitor {
   }
 
   private observePerformanceEntries(): void {
-    if ('PerformanceObserver' in window) {
+    if ("PerformanceObserver" in window) {
       // Largest Contentful Paint (LCP)
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1];
         this.metrics.lcp = lastEntry.startTime;
-        this.reportMetric('LCP', lastEntry.startTime);
+        this.reportMetric("LCP", lastEntry.startTime);
       });
-      lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+      lcpObserver.observe({ entryTypes: ["largest-contentful-paint"] });
 
       // First Input Delay (FID)
       const fidObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         entries.forEach((entry: any) => {
           this.metrics.fid = entry.processingStart - entry.startTime;
-          this.reportMetric('FID', entry.processingStart - entry.startTime);
+          this.reportMetric("FID", entry.processingStart - entry.startTime);
         });
       });
-      fidObserver.observe({ entryTypes: ['first-input'] });
+      fidObserver.observe({ entryTypes: ["first-input"] });
 
       // Cumulative Layout Shift (CLS)
       let clsValue = 0;
@@ -173,38 +188,40 @@ export class WebVitalsMonitor {
           }
         });
         this.metrics.cls = clsValue;
-        this.reportMetric('CLS', clsValue);
+        this.reportMetric("CLS", clsValue);
       });
-      clsObserver.observe({ entryTypes: ['layout-shift'] });
+      clsObserver.observe({ entryTypes: ["layout-shift"] });
     }
   }
 
   private setupNavigationTiming(): void {
-    window.addEventListener('load', () => {
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-      
+    window.addEventListener("load", () => {
+      const navigation = performance.getEntriesByType(
+        "navigation",
+      )[0] as PerformanceNavigationTiming;
+
       if (navigation) {
         // Time to First Byte (TTFB)
         const ttfb = navigation.responseStart - navigation.fetchStart;
         this.metrics.ttfb = ttfb;
-        this.reportMetric('TTFB', ttfb);
+        this.reportMetric("TTFB", ttfb);
 
         // DOM Content Loaded
         const dcl = navigation.domContentLoadedEventEnd - navigation.fetchStart;
         this.metrics.dcl = dcl;
-        this.reportMetric('DCL', dcl);
+        this.reportMetric("DCL", dcl);
 
         // Full page load
         const load = navigation.loadEventEnd - navigation.fetchStart;
         this.metrics.load = load;
-        this.reportMetric('Load', load);
+        this.reportMetric("Load", load);
       }
     });
   }
 
   private reportMetric(name: string, value: number): void {
     // In production, you would send these to your analytics service
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       console.log(`Web Vital - ${name}:`, value);
     }
 
@@ -220,18 +237,25 @@ export class WebVitalsMonitor {
 
 // Database query performance monitoring
 export class DatabasePerformanceMonitor {
-  private queryMetrics: Map<string, { count: number; totalTime: number; avgTime: number }> = new Map();
+  private queryMetrics: Map<
+    string,
+    { count: number; totalTime: number; avgTime: number }
+  > = new Map();
 
   // Track a database query
   trackQuery(query: string, duration: number): void {
     // Normalize query for grouping (remove values, keep structure)
     const normalizedQuery = this.normalizeQuery(query);
-    
-    const existing = this.queryMetrics.get(normalizedQuery) || { count: 0, totalTime: 0, avgTime: 0 };
+
+    const existing = this.queryMetrics.get(normalizedQuery) || {
+      count: 0,
+      totalTime: 0,
+      avgTime: 0,
+    };
     existing.count++;
     existing.totalTime += duration;
     existing.avgTime = existing.totalTime / existing.count;
-    
+
     this.queryMetrics.set(normalizedQuery, existing);
 
     // Log slow queries
@@ -243,10 +267,10 @@ export class DatabasePerformanceMonitor {
   private normalizeQuery(query: string): string {
     // Simple normalization - replace values with placeholders
     return query
-      .replace(/\$\d+/g, '$?')  // Replace $1, $2, etc. with $?
-      .replace(/'[^']*'/g, "'?'")  // Replace string literals
-      .replace(/\b\d+\b/g, '?')    // Replace numbers
-      .replace(/\s+/g, ' ')        // Normalize whitespace
+      .replace(/\$\d+/g, "$?") // Replace $1, $2, etc. with $?
+      .replace(/'[^']*'/g, "'?'") // Replace string literals
+      .replace(/\b\d+\b/g, "?") // Replace numbers
+      .replace(/\s+/g, " ") // Normalize whitespace
       .trim();
   }
 
@@ -257,10 +281,12 @@ export class DatabasePerformanceMonitor {
     totalTime: number;
     avgTime: number;
   }> {
-    return Array.from(this.queryMetrics.entries()).map(([query, stats]) => ({
-      query,
-      ...stats,
-    })).sort((a, b) => b.totalTime - a.totalTime);
+    return Array.from(this.queryMetrics.entries())
+      .map(([query, stats]) => ({
+        query,
+        ...stats,
+      }))
+      .sort((a, b) => b.totalTime - a.totalTime);
   }
 
   // Get slow queries
@@ -270,7 +296,7 @@ export class DatabasePerformanceMonitor {
     count: number;
   }> {
     return this.getQueryStats()
-      .filter(stat => stat.avgTime > threshold)
+      .filter((stat) => stat.avgTime > threshold)
       .sort((a, b) => b.avgTime - a.avgTime);
   }
 
@@ -284,21 +310,20 @@ export class DatabasePerformanceMonitor {
 export const dbPerformanceMonitor = new DatabasePerformanceMonitor();
 
 // Higher-order function to wrap database queries with performance monitoring
-export function withDatabaseMonitoring<T extends (...args: any[]) => Promise<any>>(
-  queryFn: T,
-  queryName?: string
-): T {
+export function withDatabaseMonitoring<
+  T extends (...args: any[]) => Promise<any>,
+>(queryFn: T, queryName?: string): T {
   return (async (...args: any[]) => {
     const startTime = performance.now();
     try {
       const result = await queryFn(...args);
       const duration = performance.now() - startTime;
-      const name = queryName || queryFn.name || 'unknown-query';
+      const name = queryName || queryFn.name || "unknown-query";
       dbPerformanceMonitor.trackQuery(name, duration);
       return result;
     } catch (error) {
       const duration = performance.now() - startTime;
-      const name = queryName || queryFn.name || 'unknown-query';
+      const name = queryName || queryFn.name || "unknown-query";
       dbPerformanceMonitor.trackQuery(`ERROR: ${name}`, duration);
       throw error;
     }

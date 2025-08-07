@@ -10,9 +10,11 @@ interface GrantDetailPageProps {
 
 export async function generateMetadata(
   { params }: GrantDetailPageProps,
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const opportunity = await unifiedOpportunityService.getOpportunityById(params.id);
+  const opportunity = await unifiedOpportunityService.getOpportunityById(
+    params.id,
+  );
 
   if (!opportunity) {
     return {
@@ -33,30 +35,30 @@ export async function generateMetadata(
       return opp.title;
     }
     if (opp.agency && opp.opportunityNumber) {
-      return `${opp.agency} ${opp.type === 'grant' ? 'Grant' : 'Contract'} - Opportunity ${opp.opportunityNumber}`;
+      return `${opp.agency} ${opp.type === "grant" ? "Grant" : "Contract"} - Opportunity ${opp.opportunityNumber}`;
     }
     if (opp.agency) {
-      return `${opp.agency} ${opp.type === 'grant' ? 'Grant' : 'Contract'} Opportunity`;
+      return `${opp.agency} ${opp.type === "grant" ? "Grant" : "Contract"} Opportunity`;
     }
     return "Government Funding Opportunity";
   }
 
   const meaningfulTitle = getMeaningfulTitle(opportunity);
-  
+
   // Enhanced description with funding amount and deadline info
   let enhancedDescription = opportunity.description
-    ? opportunity.description.replace(/<[^>]*>/g, '').substring(0, 120)
+    ? opportunity.description.replace(/<[^>]*>/g, "").substring(0, 120)
     : "Explore this government funding opportunity.";
-  
+
   if (opportunity.amount > 0) {
     enhancedDescription += ` Funding: $${opportunity.amount.toLocaleString()}.`;
   }
-  
+
   if (opportunity.deadline) {
     const deadline = new Date(opportunity.deadline);
     enhancedDescription += ` Deadline: ${deadline.toLocaleDateString()}.`;
   }
-  
+
   enhancedDescription = enhancedDescription.substring(0, 160);
 
   // Enhanced keywords with opportunity type and categories
@@ -64,11 +66,11 @@ export async function generateMetadata(
     ...(opportunity.categories || []),
     opportunity.agency,
     `government ${opportunity.type}`,
-    'federal funding',
-    'grants.gov',
+    "federal funding",
+    "grants.gov",
     opportunity.type,
     ...(opportunity.industryCategories || []),
-    params.id
+    params.id,
   ].filter(Boolean);
 
   const ogUrl = `/grants/${opportunity.id}`;
@@ -90,7 +92,8 @@ export async function generateMetadata(
           alt: `Details for ${meaningfulTitle}`,
         },
       ],
-      siteName: (await parent).openGraph?.siteName || "Government Grant Directory",
+      siteName:
+        (await parent).openGraph?.siteName || "Government Grant Directory",
     },
     twitter: {
       card: "summary_large_image",

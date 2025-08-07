@@ -36,13 +36,13 @@
     /* Simplified opportunity colors - cleaner approach */
     --grant: 160 84% 39%; /* professional green */
     --grant-foreground: 0 0% 98%;
-    
+
     --contract: 221 83% 53%; /* professional blue */
     --contract-foreground: 0 0% 98%;
-    
+
     --procurement: 25 95% 53%; /* warm orange */
     --procurement-foreground: 0 0% 98%;
-    
+
     --cooperative: 195 85% 41%; /* clean teal */
     --cooperative-foreground: 0 0% 98%;
 
@@ -50,22 +50,25 @@
     --status-open: 160 84% 39%; /* green - same as grant */
     --status-closing: 25 95% 53%; /* orange - urgent but not alarming */
     --status-closed: 0 84% 60%; /* red - clear but not harsh */
-    
+
     /* Simplified accent colors */
     --featured: 43 74% 66%; /* soft gold */
     --featured-foreground: 215 28% 17%;
-    
+
     --high-value: 221 83% 53%; /* professional blue */
     --high-value-foreground: 0 0% 98%;
 
     --radius: 0.5rem; /* Reduced radius for cleaner look */
-    
+
     /* Subtle shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.03);
     --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-md:
+      0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+    --shadow-lg:
+      0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+    --shadow-xl:
+      0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 
   .dark {
@@ -100,13 +103,13 @@
     /* Dark mode opportunity colors */
     --grant: 142 71% 55%;
     --grant-foreground: 220 25% 4%;
-    
+
     --contract: 262 83% 68%;
     --contract-foreground: 220 25% 4%;
-    
+
     --procurement: 32 95% 54%;
     --procurement-foreground: 220 25% 4%;
-    
+
     --cooperative: 169 84% 52%;
     --cooperative-foreground: 220 25% 4%;
 
@@ -114,19 +117,22 @@
     --status-open: 142 71% 55%;
     --status-closing: 32 95% 54%;
     --status-closed: 0 84% 70%;
-    
+
     --featured: 45 93% 57%;
     --featured-foreground: 220 25% 4%;
-    
+
     --high-value: 262 83% 68%;
     --high-value-foreground: 220 25% 4%;
 
     /* Dark mode shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
     --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+    --shadow-md:
+      0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --shadow-lg:
+      0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+    --shadow-xl:
+      0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
   }
 }
 
@@ -134,87 +140,94 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
-  
+
   /* Enhanced focus styles for accessibility */
   *:focus-visible {
     @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
-  
+
   /* Professional typography improvements */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-semibold tracking-tight;
   }
-  
+
   h1 {
     @apply text-3xl lg:text-4xl leading-tight;
   }
-  
+
   h2 {
     @apply text-2xl lg:text-3xl leading-tight;
   }
-  
+
   h3 {
     @apply text-xl lg:text-2xl leading-snug;
   }
-  
+
   h4 {
     @apply text-lg lg:text-xl leading-snug;
   }
-  
+
   /* Improved readability for body text */
   p {
     @apply leading-relaxed;
   }
-  
+
   /* Professional button styling */
   .btn-professional {
     @apply px-6 py-3 font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
   }
-  
+
   /* Card styling consistency */
   .card-professional {
     @apply bg-card border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4;
   }
-  
+
   .card-clean {
     @apply bg-card border border-border rounded-lg shadow-sm p-4;
   }
-  
+
   /* Container styles */
   .container-clean {
     @apply max-w-6xl mx-auto px-4 py-6;
   }
-  
+
   .container-narrow {
     @apply max-w-4xl mx-auto px-4 py-6;
   }
-  
+
   /* Clean spacing system - 4px base */
   .space-clean {
     @apply space-y-4;
   }
-  
+
   .space-clean-tight {
     @apply space-y-2;
   }
-  
+
   .space-clean-loose {
     @apply space-y-6;
   }
-  
+
   .space-professional {
     @apply space-y-4;
   }
-  
+
   .space-professional-tight {
     @apply space-y-3;
   }
-  
+
   .space-professional-loose {
     @apply space-y-6;
   }
@@ -223,21 +236,21 @@
   html {
     scroll-behavior: smooth;
   }
-  
+
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
-  
+
   ::-webkit-scrollbar-track {
     @apply bg-muted;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     @apply bg-muted-foreground/30 rounded-full;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground/50;
   }
@@ -248,69 +261,69 @@
   .opportunity-grant {
     @apply bg-grant text-grant-foreground;
   }
-  
+
   .opportunity-contract {
     @apply bg-contract text-contract-foreground;
   }
-  
+
   .opportunity-procurement {
     @apply bg-procurement text-procurement-foreground;
   }
-  
+
   .opportunity-cooperative {
     @apply bg-cooperative text-cooperative-foreground;
   }
-  
+
   /* Status indicators */
   .status-open {
     @apply bg-status-open text-white;
   }
-  
+
   .status-closing {
     @apply bg-status-closing text-white;
   }
-  
+
   .status-closed {
     @apply bg-status-closed text-white;
   }
-  
+
   /* Featured/special indicators */
   .featured {
     @apply bg-featured text-featured-foreground;
   }
-  
+
   .high-value {
     @apply bg-high-value text-high-value-foreground;
   }
-  
+
   /* Modern card styles */
   .card-modern {
     @apply bg-card text-card-foreground rounded-lg border shadow-md hover:shadow-lg transition-all duration-300;
   }
-  
+
   .card-featured {
     @apply bg-card text-card-foreground rounded-lg border-2 border-featured shadow-lg hover:shadow-xl transition-all duration-300;
   }
-  
+
   /* Button enhancements */
   .btn-gradient {
     @apply bg-gradient-to-r from-primary to-accent text-white hover:from-primary/90 hover:to-accent/90;
   }
-  
+
   /* Typography enhancements */
   .text-gradient {
     @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
   }
-  
+
   /* Animation utilities */
   .animate-fade-in {
     animation: fade-in 0.5s ease-out;
   }
-  
+
   .animate-slide-up {
     animation: slide-up 0.6s ease-out;
   }
-  
+
   .animate-scale-in {
     animation: scale-in 0.4s ease-out;
   }
@@ -321,15 +334,15 @@
   .shadow-custom {
     box-shadow: var(--shadow);
   }
-  
+
   .shadow-custom-md {
     box-shadow: var(--shadow-md);
   }
-  
+
   .shadow-custom-lg {
     box-shadow: var(--shadow-lg);
   }
-  
+
   .shadow-custom-xl {
     box-shadow: var(--shadow-xl);
   }
@@ -381,6 +394,11 @@
 
 .shimmer {
   animation: shimmer 2s infinite;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   background-size: 200px 100%;
 }

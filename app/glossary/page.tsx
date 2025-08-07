@@ -144,7 +144,8 @@ export default function GlossaryPage() {
             {FAQ.map(({ question, answer }) => (
               <div
                 key={question}
-                className="border rounded-md p-4 bg-background shadow-sm">
+                className="border rounded-md p-4 bg-background shadow-sm"
+              >
                 <h3 className="font-semibold text-lg mb-2">{question}</h3>
                 <p className="text-muted-foreground">{answer}</p>
               </div>

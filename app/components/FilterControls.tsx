@@ -28,9 +28,9 @@ interface FilterControlsProps {
   onClearFilters?: () => void;
 }
 
-const FilterControls: React.FC<FilterControlsProps> = ({ 
-  onApplyFilters, 
-  onClearFilters 
+const FilterControls: React.FC<FilterControlsProps> = ({
+  onApplyFilters,
+  onClearFilters,
 }) => {
   const [status, setStatus] = useState<string>("");
   const [minAmount, setMinAmount] = useState<string>("");
@@ -57,7 +57,8 @@ const FilterControls: React.FC<FilterControlsProps> = ({
     onClearFilters?.();
   };
 
-  const hasActiveFilters = status || minAmount || maxAmount || postedDateFrom || postedDateTo;
+  const hasActiveFilters =
+    status || minAmount || maxAmount || postedDateFrom || postedDateTo;
 
   return (
     <div className="bg-card border border-border rounded-xl shadow-sm mb-8 max-w-7xl mx-auto overflow-hidden">
@@ -69,7 +70,16 @@ const FilterControls: React.FC<FilterControlsProps> = ({
           </h3>
           {hasActiveFilters && (
             <span className="ml-2 text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">
-              {[status, minAmount, maxAmount, postedDateFrom, postedDateTo].filter(Boolean).length} active
+              {
+                [
+                  status,
+                  minAmount,
+                  maxAmount,
+                  postedDateFrom,
+                  postedDateTo,
+                ].filter(Boolean).length
+              }{" "}
+              active
             </span>
           )}
         </div>
@@ -79,7 +89,10 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Status Filter */}
           <div className="space-y-2">
-            <Label htmlFor="status-filter" className="text-sm font-medium flex items-center gap-2">
+            <Label
+              htmlFor="status-filter"
+              className="text-sm font-medium flex items-center gap-2"
+            >
               <span className="w-2 h-2 bg-primary rounded-full"></span>
               Opportunity Status
             </Label>
@@ -138,8 +151,8 @@ const FilterControls: React.FC<FilterControlsProps> = ({
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 mt-6 pt-4 border-t border-border">
-          <Button 
-            onClick={handleApply} 
+          <Button
+            onClick={handleApply}
             className="sm:ml-auto"
             disabled={!hasActiveFilters}
           >
@@ -147,10 +160,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
             Apply Filters
           </Button>
           {hasActiveFilters && (
-            <Button 
-              variant="outline" 
-              onClick={handleClear}
-            >
+            <Button variant="outline" onClick={handleClear}>
               <X className="w-4 h-4 mr-2" />
               Clear All
             </Button>

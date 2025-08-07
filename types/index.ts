@@ -13,8 +13,13 @@ export interface Opportunity {
   opportunityStatus: string; // e.g., 'posted', 'forecasted', 'closed', 'active', 'awarded'
   postedDate: string; // Date opportunity was posted, ISO format
   categories: string[]; // Standardized categories across all sources
-  type: 'grant' | 'contract' | 'procurement' | 'cooperative_agreement' | 'other';
-  
+  type:
+    | "grant"
+    | "contract"
+    | "procurement"
+    | "cooperative_agreement"
+    | "other";
+
   // Enhanced fields (common to all opportunity types)
   awardFloor?: number;
   awardCeiling?: number;
@@ -29,12 +34,12 @@ export interface Opportunity {
   };
   additionalInfo?: string;
   version?: string;
-  
+
   // Location and jurisdiction
-  jurisdiction?: 'federal' | 'state' | 'local';
+  jurisdiction?: "federal" | "state" | "local";
   state?: string;
   city?: string;
-  
+
   // Standardized enrichment fields
   industryCategories?: string[]; // NAICS codes or industry classifications
   businessSize?: string[]; // 'small', 'large', 'minority-owned', 'veteran-owned', etc.
@@ -43,13 +48,13 @@ export interface Opportunity {
     end?: string;
     duration?: string;
   };
-  
+
   // Grant-specific fields
   fundingInstruments?: string[];
   fundingActivityCategories?: string[];
   cfda?: string[];
   costSharing?: string;
-  
+
   // Contract/procurement-specific fields
   contractType?: string; // 'fixed-price', 'cost-plus', 'time-and-materials', etc.
   setAsideType?: string; // '8A', 'HubZone', 'SDVOSB', 'WOSB', etc.
@@ -61,7 +66,7 @@ export interface Opportunity {
   };
   solicitationType?: string; // 'RFP', 'IFB', 'RFQ', 'Sources Sought', etc.
   securityClearance?: string;
-  
+
   // Search and discovery enhancement
   keywords?: string[];
   searchScore?: number; // For relevance ranking
@@ -71,7 +76,7 @@ export interface Opportunity {
 
 // Backward compatibility alias
 export interface Grant extends Opportunity {
-  type: 'grant';
+  type: "grant";
 }
 
 export interface GrantsGovGrant {
@@ -133,13 +138,18 @@ export interface USAspendingResponse {
   };
 }
 
-
 // Unified search parameters for all APIs
 export interface OpportunitySearchParams {
   query?: string;
-  type?: ('grant' | 'contract' | 'procurement' | 'cooperative_agreement' | 'other')[];
+  type?: (
+    | "grant"
+    | "contract"
+    | "procurement"
+    | "cooperative_agreement"
+    | "other"
+  )[];
   agencies?: string[];
-  jurisdiction?: ('federal' | 'state' | 'local')[];
+  jurisdiction?: ("federal" | "state" | "local")[];
   state?: string[];
   city?: string[];
   categories?: string[];
@@ -154,8 +164,8 @@ export interface OpportunitySearchParams {
   status?: string[];
   page?: number;
   limit?: number;
-  sortBy?: 'relevance' | 'deadline' | 'amount' | 'posted_date';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: "relevance" | "deadline" | "amount" | "posted_date";
+  sortOrder?: "asc" | "desc";
 }
 
 export interface OpportunitySearchResponse {

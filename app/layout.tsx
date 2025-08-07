@@ -4,14 +4,15 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.grantfinder.example.com"), // Placeholder URL
   title: {
-    default: "Government Grant & Procurement Directory - Find Funding & Contract Opportunities", 
+    default:
+      "Government Grant & Procurement Directory - Find Funding & Contract Opportunities",
     template: "%s | Grant & Procurement Directory",
   },
   description:
     "Comprehensive directory of federal, state and local government grants, contracts, and procurement opportunities. Search funding opportunities for small businesses, nonprofits, and researchers. AI-optimized directory with real-time updates from official government APIs.",
   keywords: [
     "government grants",
-    "government contracts", 
+    "government contracts",
     "procurement opportunities",
     "small business grants",
     "nonprofit grants",
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
     "8(a) contracts",
     "SDVOSB",
     "WOSB",
-    "HubZone"
+    "HubZone",
   ],
   authors: [{ name: "Government Grant & Procurement Directory" }],
   creator: "Government Grant & Procurement Directory",
@@ -65,12 +66,16 @@ export const metadata: Metadata = {
     canonical: "/",
     types: {
       "application/rss+xml": [
-        { url: "/feed.xml", title: "Grant & Procurement Opportunities RSS Feed" },
+        {
+          url: "/feed.xml",
+          title: "Grant & Procurement Opportunities RSS Feed",
+        },
       ],
     },
   },
   openGraph: {
-    title: "Government Grant & Procurement Directory - Find Funding & Contract Opportunities",
+    title:
+      "Government Grant & Procurement Directory - Find Funding & Contract Opportunities",
     description:
       "Comprehensive directory of government grants, contracts, and procurement opportunities from federal, state and local sources. Real-time updates from official APIs.",
     url: "/",
@@ -88,7 +93,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Government Grant & Procurement Directory - Find Funding & Contract Opportunities",
+    title:
+      "Government Grant & Procurement Directory - Find Funding & Contract Opportunities",
     description:
       "Comprehensive directory of government grants, contracts, and procurement opportunities. Real-time updates from official APIs.",
     images: ["/og-image-main-site.png"],
@@ -114,17 +120,24 @@ export const metadata: Metadata = {
 
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
-import { WebSiteStructuredData, OrganizationStructuredData } from "@/app/components/StructuredData";
+import {
+  WebSiteStructuredData,
+  OrganizationStructuredData,
+} from "@/app/components/StructuredData";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.grantfinder.example.com";
-  
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://www.grantfinder.example.com";
+
   return (
-    <html lang="en" className="h-full bg-background text-foreground antialiased">
+    <html
+      lang="en"
+      className="h-full bg-background text-foreground antialiased"
+    >
       <head>
         <WebSiteStructuredData
           name="Government Grant & Procurement Directory"
@@ -140,10 +153,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://api.sam.gov" />
         <link rel="preconnect" href="https://api.usaspending.gov" />
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-        
+
         {/* Fallback styles to prevent complete unstyling */}
-        <style dangerouslySetInnerHTML={{
-          __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
             /* Fallback critical styles if Tailwind fails to load */
             html { height: 100%; }
             body { 
@@ -174,13 +188,20 @@ export default function RootLayout({
             .text-white { color: #ffffff; }
             .rounded { border-radius: 0.375rem; }
             .shadow { box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1); }
-          `
-        }} />
-        
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+          `,
+          }}
+        />
+
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
         <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
-        <meta httpEquiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+        <meta
+          httpEquiv="Referrer-Policy"
+          content="strict-origin-when-cross-origin"
+        />
         <meta name="format-detection" content="telephone=no" />
       </head>
       {/* Ensure html and body take full height for sticky footer */}
