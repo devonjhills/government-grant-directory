@@ -84,7 +84,7 @@ export default function NonprofitFundingClient({
       )}
 
       <header className="mb-12 text-center">
-        <h1 className="text-5xl font-extrabold text-primary mb-6 leading-tight">
+        <h1 className="text-4xl font-bold text-foreground mb-6 leading-tight">
           Funding Opportunities for Nonprofits
         </h1>
         <p className="text-lg text-secondary-foreground max-w-4xl mx-auto leading-relaxed">

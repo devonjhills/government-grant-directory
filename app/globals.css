@@ -4,67 +4,67 @@
 
 @layer base {
   :root {
-    /* Modern professional color palette for government directory */
-    --background: 220 15% 98%; /* clean off-white with subtle blue undertone */
-    --foreground: 220 25% 8%; /* deep navy for excellent readability */
+    /* Clean, modern professional palette for government grant seekers */
+    --background: 216 12% 99%; /* soft white background */
+    --foreground: 215 28% 17%; /* deep slate text */
 
-    --card: 0 0% 100%; /* pure white for cards */
-    --card-foreground: 220 25% 8%; /* deep navy */
+    --card: 0 0% 100%; /* pure white cards for maximum contrast */
+    --card-foreground: 215 28% 17%; /* deep slate */
 
     --popover: 0 0% 100%; /* pure white */
-    --popover-foreground: 220 25% 8%; /* deep navy */
+    --popover-foreground: 215 28% 17%; /* deep slate */
 
-    --primary: 214 95% 46%; /* vibrant professional blue */
-    --primary-foreground: 0 0% 98%; /* almost white */
+    --primary: 214 84% 56%; /* professional blue with good contrast */
+    --primary-foreground: 0 0% 98%; /* white text on primary */
 
-    --secondary: 220 15% 92%; /* light gray-blue */
-    --secondary-foreground: 220 25% 20%; /* dark gray-blue */
+    --secondary: 210 40% 95%; /* light neutral background */
+    --secondary-foreground: 215 28% 17%; /* deep slate */
 
-    --muted: 220 15% 95%; /* very light gray-blue */
-    --muted-foreground: 220 10% 46%; /* medium gray */
+    --muted: 210 40% 96%; /* very subtle background */
+    --muted-foreground: 215 16% 47%; /* medium slate */
 
-    --accent: 169 84% 42%; /* modern teal accent */
-    --accent-foreground: 0 0% 98%; /* almost white */
+    --accent: 169 84% 42%; /* teal accent with good contrast */
+    --accent-foreground: 0 0% 98%; /* white text on accent */
 
-    --destructive: 0 84% 60%; /* modern red for destructive actions */
-    --destructive-foreground: 0 0% 98%; /* almost white */
+    --destructive: 0 84% 60%; /* modern red for errors */
+    --destructive-foreground: 0 0% 98%; /* white text */
 
-    --border: 220 15% 88%; /* light gray-blue border */
-    --input: 220 15% 88%; /* light gray-blue input */
-    --ring: 214 95% 46%; /* primary blue for focus rings */
+    --border: 214 32% 91%; /* soft gray border */
+    --input: 214 32% 91%; /* light input background */
+    --ring: 210 40% 75%; /* focus ring */
 
-    /* Opportunity type colors */
-    --grant: 142 71% 45%; /* green for grants */
+    /* Simplified opportunity colors - cleaner approach */
+    --grant: 160 84% 39%; /* professional green */
     --grant-foreground: 0 0% 98%;
     
-    --contract: 262 83% 58%; /* purple for contracts */
+    --contract: 221 83% 53%; /* professional blue */
     --contract-foreground: 0 0% 98%;
     
-    --procurement: 32 95% 44%; /* orange for procurement */
+    --procurement: 25 95% 53%; /* warm orange */
     --procurement-foreground: 0 0% 98%;
     
-    --cooperative: 169 84% 42%; /* teal for cooperative agreements */
+    --cooperative: 195 85% 41%; /* clean teal */
     --cooperative-foreground: 0 0% 98%;
 
-    /* Status colors */
-    --status-open: 142 71% 45%; /* green for open opportunities */
-    --status-closing: 32 95% 44%; /* orange for closing soon */
-    --status-closed: 0 84% 60%; /* red for closed */
+    /* Clean status colors */
+    --status-open: 160 84% 39%; /* green - same as grant */
+    --status-closing: 25 95% 53%; /* orange - urgent but not alarming */
+    --status-closed: 0 84% 60%; /* red - clear but not harsh */
     
-    /* Priority/featured colors */
-    --featured: 45 93% 47%; /* gold for featured opportunities */
-    --featured-foreground: 0 0% 98%;
+    /* Simplified accent colors */
+    --featured: 43 74% 66%; /* soft gold */
+    --featured-foreground: 215 28% 17%;
     
-    --high-value: 262 83% 58%; /* purple for high-value opportunities */
+    --high-value: 221 83% 53%; /* professional blue */
     --high-value-foreground: 0 0% 98%;
 
-    --radius: 0.75rem; /* Increased radius for modern look */
+    --radius: 0.5rem; /* Reduced radius for cleaner look */
     
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    /* Subtle shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 
@@ -145,6 +145,80 @@
     @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
   
+  /* Professional typography improvements */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+  
+  h1 {
+    @apply text-3xl lg:text-4xl leading-tight;
+  }
+  
+  h2 {
+    @apply text-2xl lg:text-3xl leading-tight;
+  }
+  
+  h3 {
+    @apply text-xl lg:text-2xl leading-snug;
+  }
+  
+  h4 {
+    @apply text-lg lg:text-xl leading-snug;
+  }
+  
+  /* Improved readability for body text */
+  p {
+    @apply leading-relaxed;
+  }
+  
+  /* Professional button styling */
+  .btn-professional {
+    @apply px-6 py-3 font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  /* Card styling consistency */
+  .card-professional {
+    @apply bg-card border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4;
+  }
+  
+  .card-clean {
+    @apply bg-card border border-border rounded-lg shadow-sm p-4;
+  }
+  
+  /* Container styles */
+  .container-clean {
+    @apply max-w-6xl mx-auto px-4 py-6;
+  }
+  
+  .container-narrow {
+    @apply max-w-4xl mx-auto px-4 py-6;
+  }
+  
+  /* Clean spacing system - 4px base */
+  .space-clean {
+    @apply space-y-4;
+  }
+  
+  .space-clean-tight {
+    @apply space-y-2;
+  }
+  
+  .space-clean-loose {
+    @apply space-y-6;
+  }
+  
+  .space-professional {
+    @apply space-y-4;
+  }
+  
+  .space-professional-tight {
+    @apply space-y-3;
+  }
+  
+  .space-professional-loose {
+    @apply space-y-6;
+  }
+
   /* Smooth scrolling */
   html {
     scroll-behavior: smooth;

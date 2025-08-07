@@ -1,6 +1,7 @@
 import type { Metadata, ResolvingMetadata } from "next"; // Import Metadata types
-import type { Grant } from "@/types";
-import { getGrantDetails } from "@/app/services/grantsGovService"; // Updated import
+import type { Opportunity } from "@/types";
+import { unifiedOpportunityService } from "@/app/services/unifiedOpportunityService";
+import { enhancedDataEnrichment } from "@/app/lib/enhanced-data-enrichment";
 import GrantDetailClient from "./GrantDetailClient";
 
 interface GrantDetailPageProps {
@@ -11,9 +12,9 @@ export async function generateMetadata(
   { params }: GrantDetailPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const grant = await getGrantDetails(params.id); // Uses the actual service
+  const opportunity = await unifiedOpportunityService.getOpportunityById(params.id);
 
-  if (!grant) {
+  if (!opportunity) {
     return {
       title: "Grant Not Found",
       description: "The grant you are looking for could not be found.",
@@ -22,64 +23,84 @@ export async function generateMetadata(
 
   // Helper function to determine if a title is meaningful
   function isMeaningfulTitle(title: string): boolean {
-    // Consider titles with mostly uppercase letters, dashes, and numbers as codes (non-meaningful)
     const codePattern = /^[A-Z0-9\-]+$/;
     return !codePattern.test(title);
   }
 
   // Compose a meaningful title for metadata
-  function getMeaningfulTitle(grant: Grant): string {
-    if (grant.title && isMeaningfulTitle(grant.title)) {
-      return grant.title;
+  function getMeaningfulTitle(opp: Opportunity): string {
+    if (opp.title && isMeaningfulTitle(opp.title)) {
+      return opp.title;
     }
-    // Fallback: combine agency and opportunityNumber or generic label
-    if (grant.agency && grant.opportunityNumber) {
-      return `${grant.agency} Grant - Opportunity ${grant.opportunityNumber}`;
+    if (opp.agency && opp.opportunityNumber) {
+      return `${opp.agency} ${opp.type === 'grant' ? 'Grant' : 'Contract'} - Opportunity ${opp.opportunityNumber}`;
     }
-    if (grant.agency) {
-      return `${grant.agency} Grant Opportunity`;
+    if (opp.agency) {
+      return `${opp.agency} ${opp.type === 'grant' ? 'Grant' : 'Contract'} Opportunity`;
     }
-    return "Government Grant Details";
+    return "Government Funding Opportunity";
   }
 
-  const meaningfulTitle = getMeaningfulTitle(grant);
+  const meaningfulTitle = getMeaningfulTitle(opportunity);
+  
+  // Enhanced description with funding amount and deadline info
+  let enhancedDescription = opportunity.description
+    ? opportunity.description.replace(/<[^>]*>/g, '').substring(0, 120)
+    : "Explore this government funding opportunity.";
+  
+  if (opportunity.amount > 0) {
+    enhancedDescription += ` Funding: $${opportunity.amount.toLocaleString()}.`;
+  }
+  
+  if (opportunity.deadline) {
+    const deadline = new Date(opportunity.deadline);
+    enhancedDescription += ` Deadline: ${deadline.toLocaleDateString()}.`;
+  }
+  
+  enhancedDescription = enhancedDescription.substring(0, 160);
 
-  const descriptionSnippet = grant.description
-    ? grant.description.substring(0, 160) + "..."
-    : "No description available.";
-  const keywords = grant.categories
-    ? [...grant.categories, grant.agency, "government grant", params.id]
-    : [grant.agency, "government grant", params.id];
+  // Enhanced keywords with opportunity type and categories
+  const keywords = [
+    ...(opportunity.categories || []),
+    opportunity.agency,
+    `government ${opportunity.type}`,
+    'federal funding',
+    'grants.gov',
+    opportunity.type,
+    ...(opportunity.industryCategories || []),
+    params.id
+  ].filter(Boolean);
 
-  // Assuming metadataBase is set in app/layout.tsx (e.g., https://www.grantfinder.example.com)
-  // The URL for Open Graph should be absolute.
-  const ogUrl = `/grants/${grant.id}`; // metadataBase will prepend the domain
+  const ogUrl = `/grants/${opportunity.id}`;
 
   return {
-    title: meaningfulTitle, // Use meaningful title for SEO
-    description: descriptionSnippet,
+    title: meaningfulTitle,
+    description: enhancedDescription,
     keywords: keywords,
     openGraph: {
-      title: meaningfulTitle, // Use meaningful title for SEO
-      description: descriptionSnippet,
+      title: meaningfulTitle,
+      description: enhancedDescription,
       type: "article",
       url: ogUrl,
       images: [
         {
-          url: "/og-image-grant-specific.png", // New grant specific OG image
+          url: "/og-image-grant-specific.png",
           width: 1200,
           height: 630,
           alt: `Details for ${meaningfulTitle}`,
         },
       ],
-      siteName: (await parent).openGraph?.siteName || "Grant Finder", // Inherit siteName
+      siteName: (await parent).openGraph?.siteName || "Government Grant Directory",
     },
     twitter: {
-      // Optional: Add Twitter specific card
       card: "summary_large_image",
       title: meaningfulTitle,
-      description: descriptionSnippet,
-      images: ["/og-image-grant-specific.png"], // New grant specific OG image
+      description: enhancedDescription,
+      images: ["/og-image-grant-specific.png"],
+    },
+    // Enhanced structured data for better SEO
+    alternates: {
+      canonical: ogUrl,
     },
   };
 }

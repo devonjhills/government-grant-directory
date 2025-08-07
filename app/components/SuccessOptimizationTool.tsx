@@ -334,7 +334,7 @@ export const SuccessOptimizationTool: React.FC<SuccessOptimizationToolProps> = (
               </div>
               
               <div className="p-4 bg-white rounded-lg border">
-                <h4 className="font-medium mb-2">What you'll get:</h4>
+                <h4 className="font-medium mb-2">What you&apos;ll get:</h4>
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -416,7 +416,7 @@ export const SuccessOptimizationTool: React.FC<SuccessOptimizationToolProps> = (
                           {getCategoryIcon(strategy.category)}
                           <h5 className="font-medium text-sm">{strategy.title}</h5>
                         </div>
-                        <Badge className={getPriorityColor(strategy.priority)} size="sm">
+                        <Badge className={getPriorityColor(strategy.priority)}>
                           {strategy.priority} priority
                         </Badge>
                       </div>
@@ -439,7 +439,7 @@ export const SuccessOptimizationTool: React.FC<SuccessOptimizationToolProps> = (
                           {getCategoryIcon(strategy.category)}
                           <h5 className="font-medium text-sm">{strategy.title}</h5>
                         </div>
-                        <Badge className={getPriorityColor(strategy.priority)} size="sm">
+                        <Badge className={getPriorityColor(strategy.priority)}>
                           {strategy.priority} priority
                         </Badge>
                       </div>
@@ -462,7 +462,7 @@ export const SuccessOptimizationTool: React.FC<SuccessOptimizationToolProps> = (
                           {getCategoryIcon(strategy.category)}
                           <h5 className="font-medium text-sm">{strategy.title}</h5>
                         </div>
-                        <Badge className={getPriorityColor(strategy.priority)} size="sm">
+                        <Badge className={getPriorityColor(strategy.priority)}>
                           {strategy.priority} priority
                         </Badge>
                       </div>
@@ -487,8 +487,7 @@ export const SuccessOptimizationTool: React.FC<SuccessOptimizationToolProps> = (
                         </Badge>
                         <Button
                           variant="outline"
-                          size="sm"
-                          onClick={() => toggleStrategy(strategy.title)}
+                                                   onClick={() => toggleStrategy(strategy.title)}
                         >
                           <Bookmark className={`h-4 w-4 mr-2 ${selectedStrategies.includes(strategy.title) ? 'fill-current' : ''}`} />
                           {selectedStrategies.includes(strategy.title) ? 'Added' : 'Add to Plan'}

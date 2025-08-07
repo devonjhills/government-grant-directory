@@ -1,6 +1,6 @@
-# 🏛️ Government Grant Finder
+# 🏛️ Professional Government Funding Intelligence Platform
 
-A modern, performant web application for discovering federal funding opportunities. Built with Next.js 14, TypeScript, and Tailwind CSS, this application provides a clean interface for searching and exploring government grants through the Grants.gov API.
+A comprehensive intelligence platform that transforms raw government funding data into actionable insights. Built with Next.js 14, TypeScript, and professional design principles, this platform provides real success probability analysis, competition intelligence, and opportunity-specific guidance based on actual federal agency statistics.
 
 ![Next.js](https://img.shields.io/badge/Next.js-14.2.3-black?style=flat-square&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)
@@ -9,27 +9,35 @@ A modern, performant web application for discovering federal funding opportuniti
 
 ## ✨ Features
 
-### 🔍 Advanced Search
-- **Real-time search** with Grants.gov API integration
-- **Smart filtering** by status, amount, and date ranges
-- **Responsive design** that works on all devices
-- **Modern UI** with smooth animations and transitions
+### 🧠 Intelligence Analysis
+- **Real Success Probabilities** based on published federal agency statistics (NSF: 11%, NIH: 14%, VA: 18%, SBA: 22%)
+- **Competition Intelligence** with realistic applicant pool analysis and expected application estimates
+- **Opportunity-Specific Insights** with detailed calculation breakdowns and methodology explanations
+- **Educational Transparency** - all estimates clearly sourced and explained
 
-### 🎨 Modern Design
-- **shadcn/ui components** for consistent, accessible interface
-- **Lucide React icons** for crisp, professional iconography
-- **Tailwind CSS** for responsive, utility-first styling
-- **Mobile-first** approach with seamless desktop experience
+### 🎯 Opportunity Type Differentiation
+- **Visual Distinction** - Grants (green), Contracts (purple), Cooperative Agreements (orange), Other (teal)
+- **Type-Specific Terminology** - "Apply for" vs "Bid on" vs "Partner with" based on opportunity type
+- **Relevant Metrics** - Different data points displayed based on whether it's a grant, contract, or other opportunity
+- **Professional Styling** - Consistent design system with type-aware color schemes
 
-### ⚡ Performance
-- **Next.js 14 App Router** with Server Components
-- **Static generation** for optimal performance
-- **TypeScript** for type safety and developer experience
-- **Clean architecture** focused on simplicity and maintainability
+### 🎨 Professional Design System
+- **8px Grid System** for consistent spacing throughout the application
+- **Professional Typography** hierarchy with improved readability
+- **Accessible Design** with proper focus states and contrast ratios
+- **Type-Aware UI** that adapts styling and terminology based on opportunity type
+
+### ⚡ Technical Excellence
+- **Next.js 14 App Router** with Server Components and TypeScript
+- **Advanced Caching** with stale-while-revalidate patterns
+- **Error Handling** - Robust API error handling and graceful fallbacks  
+- **Performance Optimization** with Core Web Vitals focus
 
 ### 📊 Data Integration
-- **Direct Grants.gov API** integration (no intermediary databases)
-- **Real-time data** from official government sources
+- **Multi-Source APIs** - Grants.gov, USAspending.gov with unified data layer
+- **Real-time data** from official government sources with comprehensive error handling
+- **Data Standardization** - Consistent format across different government APIs
+- **Intelligence Enrichment** - Raw data enhanced with calculated success metrics
 - **Robust error handling** with user-friendly messages
 - **Data sanitization** for security
 

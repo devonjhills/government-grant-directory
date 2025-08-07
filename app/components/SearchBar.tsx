@@ -28,11 +28,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, initialValue }) => {
             placeholder="Search grants by keyword (e.g., research, education, small business, nonprofit)"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 pr-32 py-6 text-lg rounded-xl border-2 border-muted focus:border-primary transition-all duration-200 shadow-sm hover:shadow-md focus:shadow-lg"
+            aria-label="Search grants by keyword"
+            className="pl-12 pr-32 py-6 text-lg rounded-lg border-2 border-border focus:border-primary transition-all duration-200 shadow-sm hover:shadow-md focus:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           />
           <Button
             type="submit"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 rounded-lg font-semibold hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-md">
+            aria-label="Search grants"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 rounded-lg font-semibold hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
             <Search className="w-4 h-4 mr-2" />
             Search
           </Button>

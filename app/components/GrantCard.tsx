@@ -73,37 +73,34 @@ const GrantCard: React.FC<GrantCardProps> = ({ grant }) => {
   };
 
   return (
-    <Card className="group h-full flex flex-col shadow-sm hover:shadow-xl transition-all duration-300 border-border bg-card hover:border-primary/20 hover:-translate-y-1">
+    <Card className="group h-full flex flex-col hover:shadow-md transition-shadow duration-200">
       <CardHeader className="pb-4">
-        <div className="flex justify-between items-start gap-3">
-          <CardTitle className="text-xl font-bold leading-tight line-clamp-3 group-hover:text-primary transition-colors">
-            {displayTitle}
-          </CardTitle>
-          <Badge variant={getStatusVariant(grant.opportunityStatus || "Unknown")} className="shrink-0">
-            {grant.opportunityStatus || "Unknown"}
-          </Badge>
-        </div>
-        
-        <CardDescription className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
-          <Building2 className="h-4 w-4 text-primary" />
-          <span className="font-medium">{grant.agency}</span>
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="flex-grow space-y-4 pb-4">
-        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
-          {descriptionSnippet}
-        </p>
-        
-        <div className="grid grid-cols-1 gap-3 pt-2 border-t border-border/50">
-          <div className="flex items-center gap-2 text-sm">
-            <Hash className="h-4 w-4 text-muted-foreground" />
-            <span className="text-muted-foreground">Opportunity:</span>
-            <Badge variant="outline" className="font-mono text-xs">
-              {grant.opportunityNumber || "N/A"}
+        <div className="space-y-3">
+          <div className="flex justify-between items-start gap-3">
+            <CardTitle className="text-lg font-semibold leading-tight line-clamp-2">
+              {displayTitle}
+            </CardTitle>
+            <Badge variant={getStatusVariant(grant.opportunityStatus || "Unknown")} className="shrink-0 text-xs">
+              {grant.opportunityStatus || "Unknown"}
             </Badge>
           </div>
           
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Building2 className="h-4 w-4" />
+            <span>{grant.agency}</span>
+            {grant.agencyCode && (
+              <Badge variant="outline" className="text-xs">{grant.agencyCode}</Badge>
+            )}
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="flex-grow space-y-4 pb-4">
+        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+          {descriptionSnippet}
+        </p>
+        
+        <div className="space-y-2 pt-2 border-t border-border">
           <div className="flex items-center gap-2 text-sm">
             <Calendar className="h-4 w-4 text-muted-foreground" />
             <span className="text-muted-foreground">Deadline:</span>
@@ -115,20 +112,28 @@ const GrantCard: React.FC<GrantCardProps> = ({ grant }) => {
           {grant.amount > 0 && (
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">Award:</span>
-              <span className="font-semibold text-green-700">
+              <span className="font-medium text-emerald-700">
                 {formatAmount(grant.amount)}
               </span>
             </div>
           )}
+
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Hash className="h-3 w-3" />
+            <code className="bg-muted px-1.5 py-0.5 rounded">
+              {grant.opportunityNumber || "N/A"}
+            </code>
+          </div>
         </div>
       </CardContent>
 
-      <CardFooter className="pt-4 space-y-2">
+      <CardFooter className="pt-4">
         <Button
           asChild
-          className="w-full group-hover:bg-primary/90 transition-colors">
+          variant="outline"
+          className="w-full">
           <Link href={`/grants/${grant.id}`}>
-            View Full Details
+            View Details
             <ExternalLink className="ml-2 h-4 w-4" />
           </Link>
         </Button>

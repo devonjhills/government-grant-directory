@@ -1,6 +1,6 @@
 import { Opportunity, OpportunitySearchParams, OpportunitySearchResponse } from '@/types';
 import { usaSpendingService } from './usaSpendingService';
-import { searchGrants } from './grantsGovService';
+import { searchGrants, getGrantDetails } from './grantsGovService';
 import { cache, CacheKeys, CacheConfigs } from '@/app/lib/cache';
 import { performanceMonitor } from '@/app/lib/performance';
 
@@ -123,23 +123,46 @@ export class UnifiedOpportunityService {
     // Determine source from ID prefix
     if (id.startsWith('grants-gov-')) {
       const grantsId = id.replace('grants-gov-', '');
-      // Would need to implement getGrantDetails in grantsGovService
+      const grant = await getGrantDetails(grantsId);
+      if (grant) {
+        // Convert Grant to Opportunity format
+        const opportunity: Opportunity = {
+          ...grant,
+          type: 'grant',
+          sourceAPI: 'grants.gov',
+          industryCategories: grant.categories || []
+        };
+        cache.set(cacheKey, opportunity, CacheConfigs.stable);
+        return opportunity;
+      }
       return null;
     }
-
 
     if (id.startsWith('usaspending-')) {
       const awardId = id.replace('usaspending-', '');
       return usaSpendingService.getAwardDetails(awardId);
     }
 
-    // Try all sources if no prefix match
+    // Try all sources if no prefix match (try grants.gov first as it's more common)
     const results = await Promise.allSettled([
+      getGrantDetails(id),
       usaSpendingService.getAwardDetails(id),
     ]);
 
     for (const result of results) {
       if (result.status === 'fulfilled' && result.value) {
+        // If it's a Grant from grants.gov, convert to Opportunity format
+        if ('linkToApply' in result.value && !('type' in result.value)) {
+          const grant = result.value as any;
+          const opportunity: Opportunity = {
+            ...grant,
+            type: 'grant',
+            sourceAPI: 'grants.gov',
+            industryCategories: grant.categories || []
+          };
+          cache.set(cacheKey, opportunity, CacheConfigs.stable);
+          return opportunity;
+        }
         return result.value;
       }
     }

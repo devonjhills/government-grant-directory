@@ -8,17 +8,17 @@ const Footer: React.FC = () => {
       <div className="container mx-auto max-w-7xl px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold text-foreground">🏛️ Grant Finder</h3>
+          <div className="space-y-6">
+            <h3 className="text-lg font-bold text-foreground pt-4 pb-2">🏛️ Grant Finder</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Your gateway to federal funding opportunities. Search thousands of grants from Grants.gov to find the perfect match for your organization.
             </p>
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">Quick Links</h4>
-            <nav className="flex flex-col space-y-2">
+          <div className="space-y-6">
+            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider pt-4 pb-2">Quick Links</h4>
+            <nav className="flex flex-col space-y-3">
               <Link href="/grants" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Search All Grants
               </Link>
@@ -35,9 +35,9 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Data Source */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">Data Source</h4>
-            <div className="space-y-2">
+          <div className="space-y-6">
+            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider pt-4 pb-2">Data Source</h4>
+            <div className="space-y-3">
               <a 
                 href="https://www.grants.gov" 
                 target="_blank" 

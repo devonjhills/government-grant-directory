@@ -35,7 +35,7 @@ export default function HomePageClient({
       <section className="text-center py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl"></div>
         <div className="relative z-10">
-          <h1 className="text-6xl md:text-7xl font-extrabold text-primary mb-6 leading-tight">
+          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
             Grant Finder
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
@@ -44,22 +44,22 @@ export default function HomePageClient({
           
           {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
-            <div className="flex flex-col items-center p-6 bg-white/50 rounded-xl border border-border/50">
-              <Search className="h-12 w-12 text-primary mb-4" />
+            <div className="flex flex-col items-center p-6 bg-card rounded-lg border border-border shadow-sm">
+              <Search className="h-10 w-10 text-primary mb-3" />
               <h3 className="font-semibold text-foreground mb-2">Smart Search</h3>
               <p className="text-sm text-muted-foreground text-center">
                 Find grants by keyword, category, or agency
               </p>
             </div>
-            <div className="flex flex-col items-center p-6 bg-white/50 rounded-xl border border-border/50">
-              <Target className="h-12 w-12 text-primary mb-4" />
+            <div className="flex flex-col items-center p-6 bg-card rounded-lg border border-border shadow-sm">
+              <Target className="h-10 w-10 text-primary mb-3" />
               <h3 className="font-semibold text-foreground mb-2">Real-time Data</h3>
               <p className="text-sm text-muted-foreground text-center">
                 Direct integration with Grants.gov API
               </p>
             </div>
-            <div className="flex flex-col items-center p-6 bg-white/50 rounded-xl border border-border/50">
-              <Award className="h-12 w-12 text-primary mb-4" />
+            <div className="flex flex-col items-center p-6 bg-card rounded-lg border border-border shadow-sm">
+              <Award className="h-10 w-10 text-primary mb-3" />
               <h3 className="font-semibold text-foreground mb-2">Federal Grants</h3>
               <p className="text-sm text-muted-foreground text-center">
                 Access thousands of government opportunities

@@ -46,8 +46,23 @@ interface ApplicationReadinessAssessmentProps {
   onAssessmentComplete?: (assessment: ReadinessAssessment) => void;
 }
 
+interface AssessmentOption {
+  value: string;
+  label: string;
+  score?: number;
+}
+
+interface AssessmentQuestion {
+  id: string;
+  type: 'radio' | 'checkbox' | 'textarea';
+  question: string;
+  options: AssessmentOption[];
+  weight: number;
+  required?: string[];
+}
+
 // Assessment questions organized by category
-const assessmentQuestions = {
+const assessmentQuestions: Record<string, AssessmentQuestion[]> = {
   organizational: [
     {
       id: 'org_type',
@@ -129,7 +144,7 @@ const assessmentQuestions = {
     {
       id: 'financial_health',
       type: 'radio',
-      question: 'What is your organization\'s financial health?',
+      question: 'What is your organization&apos;s financial health?',
       options: [
         { value: 'poor', label: 'Financial difficulties', score: 10 },
         { value: 'stable', label: 'Financially stable', score: 70 },
@@ -390,7 +405,7 @@ export const ApplicationReadinessAssessment: React.FC<ApplicationReadinessAssess
               Application Readiness Assessment Results
             </CardTitle>
             <p className="text-gray-600">
-              Based on your responses, here's your readiness profile for this opportunity.
+              Based on your responses, here&apos;s your readiness profile for this opportunity.
             </p>
           </CardHeader>
         </Card>

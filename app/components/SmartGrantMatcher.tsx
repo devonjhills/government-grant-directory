@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -70,18 +70,18 @@ export const SmartGrantMatcher: React.FC<SmartGrantMatcherProps> = ({
   const profile = userProfile || defaultProfile;
 
   // Smart matching algorithm
-  const calculateMatchScore = (opportunity: Opportunity): { score: number; reasons: string[] } => {
+  const calculateMatchScore = useCallback((opportunity: Opportunity): { score: number; reasons: string[] } => {
     let score = 0;
     const reasons: string[] = [];
     const maxScore = 100;
 
     // Organization type matching (25 points)
-    const orgTypeScores = {
-      'nonprofit': { 'grant': 25, 'contract': 10, 'cooperative_agreement': 20 },
-      'small-business': { 'grant': 20, 'contract': 25, 'cooperative_agreement': 15 },
-      'university': { 'grant': 25, 'contract': 15, 'cooperative_agreement': 20 },
-      'large-business': { 'grant': 10, 'contract': 25, 'cooperative_agreement': 10 },
-      'government': { 'grant': 15, 'contract': 20, 'cooperative_agreement': 25 }
+    const orgTypeScores: Record<string, Record<string, number>> = {
+      'nonprofit': { 'grant': 25, 'contract': 10, 'cooperative_agreement': 20, 'procurement': 10, 'other': 15 },
+      'small-business': { 'grant': 20, 'contract': 25, 'cooperative_agreement': 15, 'procurement': 25, 'other': 15 },
+      'university': { 'grant': 25, 'contract': 15, 'cooperative_agreement': 20, 'procurement': 15, 'other': 20 },
+      'large-business': { 'grant': 10, 'contract': 25, 'cooperative_agreement': 10, 'procurement': 25, 'other': 15 },
+      'government': { 'grant': 15, 'contract': 20, 'cooperative_agreement': 25, 'procurement': 20, 'other': 20 }
     };
     const orgScore = orgTypeScores[profile.organizationType]?.[opportunity.type] || 10;
     score += orgScore;
@@ -161,7 +161,7 @@ export const SmartGrantMatcher: React.FC<SmartGrantMatcherProps> = ({
     }
 
     return { score: Math.min(score, maxScore), reasons };
-  };
+  }, [profile]);
 
   // Enhanced opportunities with match scores
   const enhancedOpportunities: EnhancedOpportunity[] = useMemo(() => {
@@ -187,7 +187,7 @@ export const SmartGrantMatcher: React.FC<SmartGrantMatcherProps> = ({
         matchReasons: reasons
       };
     });
-  }, [opportunities, profile]);
+  }, [opportunities, calculateMatchScore]);
 
   // Filtered and sorted opportunities
   const filteredOpportunities = useMemo(() => {
@@ -241,7 +241,7 @@ export const SmartGrantMatcher: React.FC<SmartGrantMatcherProps> = ({
             Smart Grant Matching
           </CardTitle>
           <p className="text-gray-600">
-            AI-powered matching finds opportunities perfectly suited to your organization's profile and goals.
+            AI-powered matching finds opportunities perfectly suited to your organization&apos;s profile and goals.
           </p>
         </CardHeader>
       </Card>

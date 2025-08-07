@@ -110,7 +110,7 @@ export default function GrantsPageClient({
   return (
     <main className="">
       <header className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-primary mb-4">
+        <h1 className="text-4xl font-bold text-foreground mb-4">
           Grant Search Results
         </h1>
       </header>

@@ -127,26 +127,40 @@ export class DataEnrichmentEngine {
 
 
   // USAspending.gov standardization
-  private standardizeUSASpending(award: USAspendingAward): Opportunity {
-    const awardData = award.Award;
+  private standardizeUSASpending(award: any): Opportunity {
+    // Handle different possible data structures from USAspending API
+    const awardData = award.Award || award;
+    
+    // Safely extract award ID with fallbacks
+    const awardId = awardData?.generated_unique_award_id || 
+                   awardData?.award_id || 
+                   awardData?.id || 
+                   awardData?.piid || 
+                   `unknown-${Date.now()}`;
+    
+    // Safely extract basic fields with null checks
+    const description = awardData?.description || awardData?.award_description || 'Federal Award';
+    const agencyName = awardData?.awarding_agency_name || awardData?.agency_name || 'Federal Agency';
+    const amount = awardData?.award_amount || awardData?.total_obligation || awardData?.obligation_amount || 0;
+    const awardType = awardData?.award_type || awardData?.type_description || 'contract';
     
     const standardized: Opportunity = {
-      id: `usaspending-${awardData.generated_unique_award_id}`,
-      title: this.cleanText(awardData.description || 'Federal Award'),
-      agency: this.standardizeAgency(awardData.awarding_agency_name),
-      description: this.cleanText(awardData.description || ''),
+      id: `usaspending-${awardId}`,
+      title: this.cleanText(description),
+      agency: this.standardizeAgency(agencyName),
+      description: this.cleanText(description),
       eligibilityCriteria: 'See award documentation for specific eligibility requirements',
       deadline: '', // Historical data, no deadline
-      amount: awardData.award_amount || 0,
-      linkToApply: `https://usaspending.gov/award/${awardData.generated_unique_award_id}`,
+      amount: typeof amount === 'number' ? amount : parseFloat(amount?.toString() || '0') || 0,
+      linkToApply: `https://usaspending.gov/award/${awardId}`,
       sourceAPI: 'USAspending.gov',
-      opportunityNumber: awardData.award_id_piid || awardData.generated_unique_award_id,
+      opportunityNumber: awardData?.award_id_piid || awardData?.piid || awardId,
       opportunityStatus: 'closed', // Historical awards are closed
-      postedDate: this.standardizeDate(awardData.award_latest_action_date || null),
-      categories: this.extractCategories('', awardData.description || ''),
-      type: this.determineOpportunityTypeFromAward(awardData.award_type),
+      postedDate: this.standardizeDate(awardData?.award_latest_action_date || awardData?.action_date || null),
+      categories: this.extractCategories('', description),
+      type: this.determineOpportunityTypeFromAward(awardType),
       jurisdiction: 'federal',
-      industryCategories: this.standardizeNAICS(awardData.naics_code ? [awardData.naics_code] : []),
+      industryCategories: this.standardizeNAICS(awardData?.naics_code ? [awardData.naics_code] : []),
       performancePeriod: {
         start: this.standardizeDate(awardData.period_of_performance_start_date || null),
         end: this.standardizeDate(awardData.period_of_performance_current_end_date || null),
