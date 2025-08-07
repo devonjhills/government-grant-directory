@@ -107,7 +107,7 @@ app/
 - **Node.js** 18.0 or higher
 - **npm** or **yarn** package manager
 
-### Installation
+### Installation & Setup
 
 1. **Clone the repository**
 
@@ -132,10 +132,7 @@ app/
    yarn dev
    ```
 
-4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-### Build for Production
+### Building for Production
 
 ```bash
 npm run build
