@@ -7,6 +7,8 @@ A comprehensive intelligence platform that transforms raw government funding dat
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4.17-38B2AC?style=flat-square&logo=tailwind-css)
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)
 
+<img width="997" height="554" alt="Screenshot 2025-08-07 at 2 11 07 PM" src="https://github.com/user-attachments/assets/bfb7ba58-0297-4cfc-acb6-1b24b1d5461f" />
+
 ## ✨ Features
 
 ### 🧠 Intelligence Analysis
